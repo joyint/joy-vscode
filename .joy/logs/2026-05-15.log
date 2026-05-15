@@ -1,0 +1,7 @@
+2026-05-15T10:15:44.383Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-15T10:18:40.848Z JVSC-0001-D4 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-15T10:18:55.547Z JVSC-0002-71 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-15T10:19:02.044Z JVSC-0003-E2 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-15T10:19:04.375Z JVSC-0004-C8 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-15T10:19:09.963Z JVSC-0005-FD item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-15T10:19:14.862Z JVSC-0006-79 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

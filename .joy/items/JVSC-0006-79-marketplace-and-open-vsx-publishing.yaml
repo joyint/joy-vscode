@@ -1,0 +1,15 @@
+id: JVSC-0006-79
+title: Marketplace and Open VSX publishing setup
+type: story
+status: new
+priority: low
+parent: JVSC-0001-D4
+capabilities:
+- plan
+- implement
+- review
+effort: 4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-15T10:19:14.859283476Z
+updated: 2026-05-15T10:19:14.859283476Z
+description: 'Prepare for distribution: complete package.json metadata (publisher, categories, keywords, repository, bugs, icon 128x128), README with screenshots, CHANGELOG, telemetry disclosure if any data is collected. Set up Microsoft Marketplace publisher account and Open VSX publisher account. Add GitHub Actions workflow that runs vsce package on push and vsce publish + ovsx publish on tag. Verified publisher via DNS TXT record where applicable. Restrict activation events to keep startup impact low.'

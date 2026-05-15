@@ -1,0 +1,15 @@
+id: JVSC-0003-E2
+title: Extension scaffold with item tree panel
+type: story
+status: new
+priority: medium
+parent: JVSC-0001-D4
+capabilities:
+- plan
+- implement
+- review
+effort: 5
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-15T10:19:02.039295940Z
+updated: 2026-05-15T10:19:02.039295940Z
+description: Set up the VS Code extension skeleton (package.json, activation events, command palette entries, TypeScript build, lint, test harness). Implement a TreeView in the activity bar showing items grouped/sorted (by status, priority, milestone, type) and nested under their parent epic or story. Data is fetched via joy --json ls and joy --json show. A file watcher on .joy/items/ refreshes the view on external changes. Includes context menu actions for start, submit, close, reopen via the joy shortcuts.

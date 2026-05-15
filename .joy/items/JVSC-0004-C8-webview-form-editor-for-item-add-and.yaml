@@ -1,0 +1,15 @@
+id: JVSC-0004-C8
+title: Webview form editor for item add and edit
+type: story
+status: new
+priority: medium
+parent: JVSC-0001-D4
+capabilities:
+- plan
+- implement
+- review
+effort: 5
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-15T10:19:04.372543473Z
+updated: 2026-05-15T10:19:04.372543473Z
+description: Open an item in a webview-based form editor with fields for title, type, priority, effort, status, description, tags, milestone, dependencies, and assignment. Save writes back via joy edit; new-item form writes via joy add. Validation matches the CLI constraints (title length, allowed values). The form opens via TreeView double-click or command palette.

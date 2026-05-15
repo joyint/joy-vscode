@@ -1,0 +1,70 @@
+name: joy-vscode
+acronym: JVSC
+language: en
+members:
+  ai:claude@joy:
+    capabilities:
+      conceive: {}
+      plan: {}
+      design: {}
+      implement: {}
+      test: {}
+      review: {}
+      document: {}
+      create: {}
+      assign: {}
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: ai:claude@joy
+        capabilities:
+          conceive: {}
+          plan: {}
+          design: {}
+          implement: {}
+          test: {}
+          review: {}
+          document: {}
+          create: {}
+          assign: {}
+      signed_at: 2026-05-15T10:11:50.569894784Z
+      signature: 30e652cf774f25db0ec59cb2dbc1087b7b0f95b7e81b046b3598bc19eb71b6898a73bfd57d34c5d1fa74d2fb10c6885324afce6692aee1145bc51fb3f1e88409
+  ai:copilot@joy:
+    capabilities:
+      conceive: {}
+      plan: {}
+      design: {}
+      implement: {}
+      test: {}
+      review: {}
+      document: {}
+      create: {}
+      assign: {}
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: ai:copilot@joy
+        capabilities:
+          conceive: {}
+          plan: {}
+          design: {}
+          implement: {}
+          test: {}
+          review: {}
+          document: {}
+          create: {}
+          assign: {}
+      signed_at: 2026-05-15T10:11:56.652772262Z
+      signature: 9890ba40cdb8efc44ca87409b8eb47ac9da53b4a1261488ac9575e2eeb9bcb9ca5b53b9844a7277ada0ec5253c18871faaa8000cff43fafa1093855967f80908
+  horst.schwarz@joydev.com:
+    capabilities: all
+    verify_key: 84004b374c74d2c4a6e1875cdd165714dc80359bc3582a0bf2969f047ca1d5d9
+    kdf_nonce: e107ba864d9f08bacbbb8a31c00560ec8ad6b2093211f1454846adbc7f7898b8
+    seed_wrap_passphrase: fc5aa60ceba96e531d239de4448ff35a2bca6b5fa1573360d9acee1e87b7297e8dc6aa94909ceace42da97c6122ca2ab4b6eeef2cbacf1a7a80b37b8
+    seed_wrap_recovery: 1d37521c044497e6f17f5a13e964613f8919af293b3d3b33c8d835a60754c998e7b942532ec34ca27ae9359fd30642be80f696223d709577b90adb30
+    ai_delegations:
+      ai:claude@joy:
+        delegation_verifier: 0e5e8c7b53567274b0fb80d0ac11400013d54c78951f1e30c300749bf96f686f
+        delegation_salt: 7bd5bf9a4b89e6c637e989c14affe93fccb32f5fa8da3c0b929fc0dec51d7cd9
+        created: 2026-05-15T10:15:02.037018859Z
+created: 2026-05-15T10:10:53.978494661Z

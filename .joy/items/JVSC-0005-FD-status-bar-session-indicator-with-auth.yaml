@@ -1,0 +1,15 @@
+id: JVSC-0005-FD
+title: Status bar session indicator with auth prompt on expiry
+type: story
+status: new
+priority: high
+parent: JVSC-0001-D4
+capabilities:
+- plan
+- implement
+- review
+effort: 4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-15T10:19:09.960064275Z
+updated: 2026-05-15T10:19:09.960064275Z
+description: Add a status bar item (VS Code footer) showing the current Joy member identity and remaining session time, with color/icon for authenticated, expiring-soon, and unauthenticated states. Clicking it opens a graphical passphrase InputBox; on success the extension runs joy auth and refreshes. When a joy command fails with a session-expired error, the same InputBox appears automatically before retrying the command. Depends on the joy-cli --passphrase-stdin flag (tracked separately in the joy repo) so the passphrase never appears in process listings.
