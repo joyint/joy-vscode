@@ -2,20 +2,24 @@
 
 ## Coding Conventions
 
-<!-- Formatting, naming conventions, linting rules -->
+TypeScript. Lint, format, and toolchain config land with the scaffold (`JVSC-0003-E2`).
 
 ## Commit Messages
 
-<!-- Message format, types, scopes -->
+Conventional commits: `type(scope): description [JVSC-XXXX-YY]`.
+
+Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`.
+
+Every commit must reference a Joy item ID. Pure infrastructure commits may use `[no-item]`. Do not use AI tool brand names in commits, code, or documentation.
 
 ## Testing
 
-<!-- How to run tests, what kinds of tests, coverage targets -->
+<!-- TBD: testing approach lands with the scaffold (JVSC-0003-E2). -->
 
 ## CI/CD
 
-<!-- Pipeline configuration, triggers, build matrix, artifacts -->
+GitHub Actions pipeline ships with `JVSC-0006-79`: build and test on push, `vsce publish` to the Microsoft Marketplace and `ovsx publish` to Open VSX on tag.
 
 ## Branching Strategy
 
-<!-- Branch naming, merge strategy, release process -->
+<!-- TBD: not yet decided. -->

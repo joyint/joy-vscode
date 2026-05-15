@@ -145,9 +145,4 @@ vite.config.ts.timestamp-*
 .joy/credentials.yaml
 .joy/hooks/
 .joy/project.defaults.yaml
-.claude/
-.github/copilot-instructions.md
-.github/copilot/
-.github/agents/
-.github/prompts/
 ### joy:end
