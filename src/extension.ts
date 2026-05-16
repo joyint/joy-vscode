@@ -1,10 +1,12 @@
 import { execFile } from 'node:child_process';
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
 import { promisify } from 'node:util';
 import * as vscode from 'vscode';
 import type { BacklogNode } from './backlog';
 import { BacklogProvider } from './backlogProvider';
 import { JoyClient, JoyError, JoySessionExpiredError } from './joyClient';
-import { JoyResolver, type JoyResolution } from './joyResolver';
+import { JoyResolver, buildCommonJoyPaths, type JoyResolution } from './joyResolver';
 
 const execFileAsync = promisify(execFile);
 
@@ -32,6 +34,16 @@ export function activate(context: vscode.ExtensionContext): void {
       return { stdout, stderr };
     },
     shellLookup,
+    getCommonPaths: () =>
+      buildCommonJoyPaths({ platform: process.platform, home: os.homedir(), env: process.env }),
+    pathExists: async (candidate) => {
+      try {
+        await fs.access(candidate);
+        return true;
+      } catch {
+        return false;
+      }
+    },
   });
 
   const provider = new BacklogProvider(client);
@@ -81,8 +93,9 @@ async function shellLookup(): Promise<string | undefined> {
   if (process.platform === 'win32') {
     return undefined;
   }
+  const shell = process.env['SHELL']?.trim() || '/bin/bash';
   try {
-    const { stdout } = await execFileAsync('bash', ['-lc', 'command -v joy 2>/dev/null'], {
+    const { stdout } = await execFileAsync(shell, ['-lc', 'command -v joy 2>/dev/null'], {
       timeout: SHELL_LOOKUP_TIMEOUT_MS,
     });
     const path = stdout.trim();

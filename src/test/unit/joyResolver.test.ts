@@ -2,6 +2,7 @@ import * as assert from 'node:assert/strict';
 import {
   JoyResolver,
   type JoyResolverDeps,
+  buildCommonJoyPaths,
   compareVersions,
   parseVersion,
 } from '../../joyResolver';
@@ -18,6 +19,8 @@ function makeDeps(overrides: Partial<JoyResolverDeps>): JoyResolverDeps {
     minimumVersion: '0.15.0',
     run: async () => ({ stdout: 'joy 0.15.5\n', stderr: '' }),
     shellLookup: async () => undefined,
+    getCommonPaths: () => [],
+    pathExists: async () => false,
     ...overrides,
   };
 }
@@ -164,5 +167,124 @@ describe('JoyResolver.resolve', () => {
     if (result.kind === 'unreadable') {
       assert.ok(result.error.includes('permission denied'));
     }
+  });
+
+  it('falls through to common install paths when bare and shell both fail', async () => {
+    const probed: string[] = [];
+    const exists = new Set(['/home/u/.local/bin/joy']);
+    const resolver = new JoyResolver(
+      makeDeps({
+        run: async (executable) => {
+          probed.push(executable);
+          if (executable === 'joy') throw notFoundError();
+          return { stdout: 'joy 0.15.5\n', stderr: '' };
+        },
+        shellLookup: async () => undefined,
+        getCommonPaths: () => [
+          '/opt/local/bin/joy',
+          '/home/u/.local/bin/joy',
+          '/home/u/go/bin/joy',
+        ],
+        pathExists: async (p) => exists.has(p),
+      }),
+    );
+    const result = await resolver.resolve();
+    assert.deepEqual(result, {
+      kind: 'ok',
+      executable: '/home/u/.local/bin/joy',
+      version: '0.15.5',
+    });
+    assert.deepEqual(probed, ['joy', '/home/u/.local/bin/joy']);
+  });
+
+  it('skips common paths that do not exist before probing', async () => {
+    const probedExecutables: string[] = [];
+    const existsCalls: string[] = [];
+    const resolver = new JoyResolver(
+      makeDeps({
+        run: async (executable) => {
+          probedExecutables.push(executable);
+          throw notFoundError();
+        },
+        getCommonPaths: () => ['/a/joy', '/b/joy', '/c/joy'],
+        pathExists: async (p) => {
+          existsCalls.push(p);
+          return false;
+        },
+      }),
+    );
+    const result = await resolver.resolve();
+    assert.deepEqual(result, { kind: 'missing', triedShell: true });
+    assert.deepEqual(probedExecutables, ['joy']);
+    assert.deepEqual(existsCalls, ['/a/joy', '/b/joy', '/c/joy']);
+  });
+
+  it('continues common-path probing when the first existing candidate is too old', async () => {
+    const exists = new Set(['/opt/old/joy', '/opt/new/joy']);
+    const resolver = new JoyResolver(
+      makeDeps({
+        minimumVersion: '0.15.0',
+        run: async (executable) => {
+          if (executable === 'joy') throw notFoundError();
+          if (executable === '/opt/old/joy') {
+            return { stdout: 'joy 0.10.0\n', stderr: '' };
+          }
+          return { stdout: 'joy 0.15.5\n', stderr: '' };
+        },
+        getCommonPaths: () => ['/opt/old/joy', '/opt/new/joy'],
+        pathExists: async (p) => exists.has(p),
+      }),
+    );
+    const result = await resolver.resolve();
+    assert.equal(result.kind, 'tooOld');
+    if (result.kind === 'tooOld') {
+      assert.equal(result.executable, '/opt/old/joy');
+    }
+  });
+});
+
+describe('buildCommonJoyPaths', () => {
+  it('returns Linux/macOS paths with posix separators', () => {
+    const paths = buildCommonJoyPaths({ platform: 'linux', home: '/home/u', env: {} });
+    assert.ok(paths.includes('/home/u/.local/bin/joy'));
+    assert.ok(paths.includes('/usr/local/bin/joy'));
+    assert.ok(paths.includes('/opt/homebrew/bin/joy'));
+    assert.ok(paths.includes('/home/u/go/bin/joy'));
+    assert.ok(paths.includes('/home/u/.cargo/bin/joy'));
+    for (const p of paths) {
+      assert.ok(!p.includes('\\'), `unix path ${p} should not contain backslashes`);
+      assert.ok(!p.endsWith('.exe'), `unix path ${p} should not end in .exe`);
+    }
+  });
+
+  it('returns macOS-specific Homebrew paths', () => {
+    const paths = buildCommonJoyPaths({ platform: 'darwin', home: '/Users/u', env: {} });
+    assert.ok(paths.includes('/opt/homebrew/bin/joy'));
+    assert.ok(paths.includes('/Users/u/.local/bin/joy'));
+  });
+
+  it('returns Windows paths with .exe and backslash separators', () => {
+    const paths = buildCommonJoyPaths({
+      platform: 'win32',
+      home: 'C:\\Users\\u',
+      env: {
+        ProgramFiles: 'C:\\Program Files',
+        LOCALAPPDATA: 'C:\\Users\\u\\AppData\\Local',
+      },
+    });
+    assert.ok(paths.includes('C:\\Users\\u\\.local\\bin\\joy.exe'));
+    assert.ok(paths.includes('C:\\Users\\u\\AppData\\Local\\Programs\\joy\\joy.exe'));
+    assert.ok(paths.includes('C:\\Users\\u\\go\\bin\\joy.exe'));
+    assert.ok(paths.includes('C:\\Users\\u\\.cargo\\bin\\joy.exe'));
+    assert.ok(paths.includes('C:\\Program Files\\joy\\joy.exe'));
+    for (const p of paths) {
+      assert.ok(p.endsWith('.exe'), `windows path ${p} should end in .exe`);
+    }
+  });
+
+  it('falls back to defaults when Windows env vars are unset', () => {
+    const paths = buildCommonJoyPaths({ platform: 'win32', home: 'C:\\Users\\u', env: {} });
+    assert.ok(paths.some((p) => p.startsWith('C:\\Program Files\\joy')));
+    assert.ok(paths.some((p) => p.includes('AppData\\Local\\Programs\\joy')));
   });
 });

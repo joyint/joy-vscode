@@ -11,12 +11,16 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:18:55.544112342Z
-updated: 2026-05-16T01:49:31.264942687Z
+updated: 2026-05-16T01:59:50.708896490Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-16T01:46:15.002194416Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-16T01:49:31.264942687Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T01:57:27.778564626Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T01:59:50.708896490Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Locate the joy binary at extension activation: read joy.executablePath setting, fall back to PATH lookup. If missing, show a clear status bar message and command palette entry pointing to install docs. On resolve, run joy --version --json and compare against a minimum version declared in package.json. If too old, surface a notification with a Run joy update action. The resolver is reused by all other extension features and any future companion modules.'
 comments:
@@ -67,3 +71,60 @@ comments:
     - Totals: 25 unit + 12 integration, all green
 
     Verification: in a fresh Extension Development Host on Linux without joy on PATH, the activity bar Backlog view should now show 'The joy CLI was not found. [Install joy] [Set executable path]' instead of erroring on first invocation. The status bar item displays 'Joy CLI: not found' with the install-docs click target.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T01:57:50.437964154Z
+  text: |-
+    Plan (extension during review): add a fourth resolution tier for cross-platform common-path probing, because the existing bash -lc fallback misses the common case where users put 'export PATH=...' inside ~/.bashrc behind the [[ $- != *i* ]] && return guard (Ubuntu/Debian default template, also matches this maintainer's setup).
+
+    Per JVSC-0008-7C (cross-platform decision, just created), all three platforms get equal treatment.
+
+    Resolution order (new step 4 in bold):
+    1. configured path from joy.executablePath
+    2. bare 'joy' (or joy.exe on Windows) on the extension-host PATH
+    3. login-shell lookup - now uses process.env.SHELL on Unix instead of hardcoded bash, so zsh users (macOS default since Catalina) are covered; skipped on Windows
+    4. **common install locations** - first match wins after fs.access check
+       - Unix: ~/.local/bin/joy, /usr/local/bin/joy, /opt/homebrew/bin/joy, /opt/local/bin/joy, ~/go/bin/joy, ~/.cargo/bin/joy
+       - Windows: %USERPROFILE%\.local\bin\joy.exe, %LOCALAPPDATA%\Programs\joy\joy.exe, %USERPROFILE%\go\bin\joy.exe, %USERPROFILE%\.cargo\bin\joy.exe, %PROGRAMFILES%\joy\joy.exe
+    5. missing
+
+    Code changes:
+    - Export buildCommonJoyPaths({ platform, home, env }) as a pure helper; uses path.posix or path.win32 explicitly so unit tests can run cross-platform from any host.
+    - JoyResolverDeps gains getCommonPaths() and pathExists(p) injections.
+    - Resolver loops candidates, fs.access-checks first to avoid spawning --version on non-existent paths.
+    - extension.ts wires getCommonPaths to buildCommonJoyPaths(real platform/home/env) and pathExists to fs.promises.access(F_OK).
+    - Shell lookup picks process.env.SHELL || '/bin/bash' on Unix.
+
+    Tests:
+    - buildCommonJoyPaths returns the right list shape for platform='linux'/'darwin'/'win32' (cross-platform from the Linux host).
+    - Resolver finds a common path when bare + shell both miss but a common path exists and is OK.
+    - Resolver still returns missing when all four tiers fail.
+    - Existing tests get the two new deps stubbed (getCommonPaths: () => [], pathExists: async () => false) so they keep passing without becoming common-path-dependent.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T01:59:47.152990433Z
+  text: |-
+    [x] Cross-platform common-paths tier added per JVSC-0008-7C.
+
+    joyResolver.ts:
+    - JoyResolverDeps gains getCommonPaths() and pathExists(p) injections.
+    - resolve() now has a fourth tier: after shell lookup fails, iterate getCommonPaths() and probe the first one that pathExists() confirms.
+    - New exported helper buildCommonJoyPaths({ platform, home, env }) uses path.posix vs path.win32 explicitly so unit tests can construct Linux, macOS, and Windows path lists from any host.
+
+    extension.ts:
+    - Wires getCommonPaths to buildCommonJoyPaths(process.platform, os.homedir(), process.env).
+    - pathExists uses fs.promises.access (default F_OK; works on all platforms).
+    - shellLookup now picks process.env.SHELL || '/bin/bash' so zsh users (macOS default since Catalina, also widespread on Linux) get their rc files sourced instead of always going through bash.
+
+    Common install locations covered:
+    - Unix: ~/.local/bin/joy, /usr/local/bin/joy, /opt/homebrew/bin/joy (Apple Silicon Homebrew), /opt/local/bin/joy (MacPorts), ~/go/bin/joy, ~/.cargo/bin/joy
+    - Windows: %USERPROFILE%\.local\bin\joy.exe, %LOCALAPPDATA%\Programs\joy\joy.exe, %USERPROFILE%\go\bin\joy.exe, %USERPROFILE%\.cargo\bin\joy.exe, %PROGRAMFILES%\joy\joy.exe
+
+    Tests:
+    - 3 new resolver branch tests (fall-through to common path; skip non-existent candidates; continue past tooOld candidates)
+    - 4 new buildCommonJoyPaths tests (Linux posix paths, macOS Homebrew path included, Windows .exe + backslash, Windows env-var defaults)
+    - Existing stubs gained getCommonPaths/pathExists no-op fields via makeDeps; all earlier behavior preserved.
+
+    Totals: 32 unit + 12 integration, all green. Bundle 9.6 KB.
+
+    The motivating case (this maintainer's .bashrc with [[ $- != *i* ]] && return guarding the PATH export) is now covered by the common-paths tier: ~/.local/bin/joy is in the Unix list and gets picked up via fs.access before any shell invocation.
+
+    Re-submitting.

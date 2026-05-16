@@ -1,3 +1,5 @@
+import { posix, win32 } from 'node:path';
+
 export type JoyResolution =
   | { kind: 'ok'; executable: string; version: string }
   | { kind: 'missing'; configured?: string; triedShell: boolean }
@@ -9,6 +11,8 @@ export interface JoyResolverDeps {
   minimumVersion: string;
   run: (executable: string, args: string[]) => Promise<{ stdout: string; stderr: string }>;
   shellLookup: () => Promise<string | undefined>;
+  getCommonPaths: () => string[];
+  pathExists: (path: string) => Promise<boolean>;
 }
 
 export class JoyResolver {
@@ -32,10 +36,19 @@ export class JoyResolver {
     const shellPath = await this.deps.shellLookup();
     if (shellPath) {
       const fromShell = await this.probeOrMissing(shellPath);
-      if (fromShell.kind === 'missing') {
-        return { kind: 'missing', triedShell: true };
+      if (fromShell.kind !== 'missing') {
+        return fromShell;
       }
-      return fromShell;
+    }
+
+    for (const candidate of this.deps.getCommonPaths()) {
+      if (!(await this.deps.pathExists(candidate))) {
+        continue;
+      }
+      const fromCommon = await this.probeOrMissing(candidate);
+      if (fromCommon.kind !== 'missing') {
+        return fromCommon;
+      }
     }
 
     return { kind: 'missing', triedShell: true };
@@ -96,4 +109,32 @@ function parseNumericParts(version: string): number[] {
     .split(/[.\-+]/)
     .map((s) => parseInt(s, 10))
     .filter((n) => !Number.isNaN(n));
+}
+
+export interface CommonJoyPathsInput {
+  platform: NodeJS.Platform;
+  home: string;
+  env: NodeJS.ProcessEnv;
+}
+
+export function buildCommonJoyPaths({ platform, home, env }: CommonJoyPathsInput): string[] {
+  if (platform === 'win32') {
+    const programFiles = env['ProgramFiles'] ?? 'C:\\Program Files';
+    const localAppData = env['LOCALAPPDATA'] ?? win32.join(home, 'AppData', 'Local');
+    return [
+      win32.join(home, '.local', 'bin', 'joy.exe'),
+      win32.join(localAppData, 'Programs', 'joy', 'joy.exe'),
+      win32.join(home, 'go', 'bin', 'joy.exe'),
+      win32.join(home, '.cargo', 'bin', 'joy.exe'),
+      win32.join(programFiles, 'joy', 'joy.exe'),
+    ];
+  }
+  return [
+    posix.join(home, '.local', 'bin', 'joy'),
+    '/usr/local/bin/joy',
+    '/opt/homebrew/bin/joy',
+    '/opt/local/bin/joy',
+    posix.join(home, 'go', 'bin', 'joy'),
+    posix.join(home, '.cargo', 'bin', 'joy'),
+  ];
 }

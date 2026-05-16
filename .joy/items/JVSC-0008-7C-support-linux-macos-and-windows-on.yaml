@@ -1,0 +1,29 @@
+id: JVSC-0008-7C
+title: Support Linux, macOS, and Windows on equal footing
+type: decision
+status: review
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- conceive
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-16T01:57:26.785644146Z
+updated: 2026-05-16T01:57:36.534141695Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-16T01:57:36.508987950Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T01:57:36.534141695Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: |-
+  All platform-specific behavior in joy-vscode must work on Linux, macOS, and Windows. When designing anything that touches the OS - shell invocations, file paths, executable extensions, environment variable lookups, install locations - cover all three platforms from the start. Do not Linux-first and patch later.
+
+  Concrete implications:
+  - Shell lookups respect process.env.SHELL on Unix; on Windows, use where.exe or skip if not applicable.
+  - File paths go through node:path (with posix / win32 variants when generating per-platform lists) and os.homedir(); no hardcoded '/' or '~/'.
+  - Executable names append .exe on Windows.
+  - Common install locations are maintained as two lists: Unix (~/.local/bin, /usr/local/bin, /opt/homebrew/bin, ~/go/bin, ~/.cargo/bin) and Windows (%USERPROFILE%\.local\bin, %LOCALAPPDATA%\Programs, %USERPROFILE%\go\bin, %USERPROFILE%\.cargo\bin, %PROGRAMFILES%\joy).
+  - Tests cover at least one representative branch per platform when behavior is platform-conditional.
+
+  This applies to every story and task in the project unless a specific item explicitly narrows scope (e.g. a 'Linux-only quality-of-life feature' would need to call that out and justify it).
