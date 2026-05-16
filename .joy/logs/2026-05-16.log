@@ -1,0 +1,6 @@
+2026-05-16T01:18:55.611Z JVSC-0007-95 guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
+2026-05-16T01:19:51.307Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T01:20:05.620Z JVSC-0007-95 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T01:20:09.213Z JVSC-0007-95 dep.added "JVSC-0003-E2" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T01:22:51.663Z JVSC-0003-E2 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T01:23:07.419Z JVSC-0003-E2 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

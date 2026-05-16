@@ -1,0 +1,72 @@
+{
+  "name": "joy-vscode",
+  "displayName": "Joy",
+  "description": "Joy project management inside VS Code: backlog tree, item editor, session indicator. Shells out to the joy CLI.",
+  "version": "0.0.0",
+  "publisher": "joyint",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.92.0",
+    "node": ">=20"
+  },
+  "categories": [
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joyint/joy-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joyint/joy-vscode/issues"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "joy.hello",
+        "title": "Hello",
+        "category": "Joy"
+      }
+    ],
+    "configuration": {
+      "title": "Joy",
+      "properties": {
+        "joy.executablePath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to the joy executable. Leave empty to resolve via PATH."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.config.mjs --production",
+    "watch": "node esbuild.config.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "test:unit": "tsc -p tsconfig.test.json && mocha --recursive out-test/test/unit",
+    "test:integration": "tsc -p tsconfig.test.json && vscode-test",
+    "test": "npm run test:unit && npm run test:integration",
+    "check": "npm run typecheck && npm run lint && npm run format && npm run test:unit"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.9",
+    "@types/node": "^20.16.10",
+    "@types/vscode": "^1.92.0",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "mocha": "^10.8.2",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}

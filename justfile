@@ -1,9 +1,7 @@
 # Joy VS Code extension -- Task Runner
 #
 # Lifecycle recipes mirror the umbrella's expectations: install, check,
-# release, publish. The extension scaffold (JVSC-0003-E2) will replace
-# the stubs below with npm-based recipes (tsc, eslint, prettier,
-# vscode-test). Marketplace upload (vsce + ovsx) lands with JVSC-0006-79.
+# release, publish. Marketplace upload (vsce + ovsx) lands with JVSC-0006-79.
 
 # List recipes
 default:
@@ -27,13 +25,21 @@ auto-commit:
         echo "Committed pending changes."
     fi
 
-# No-op until the TypeScript scaffold lands (JVSC-0003-E2).
+# Install npm dependencies.
 install:
-    @true
+    npm ci
 
-# No-op until the TypeScript scaffold lands (JVSC-0003-E2).
+# Typecheck, lint, format-check, and run unit tests.
 check:
-    @echo "  no checks yet (scaffolded by JVSC-0003-E2)"
+    npm run check
+
+# Bundle the extension into dist/extension.js.
+build:
+    npm run build
+
+# Run extension-host tests via @vscode/test-cli.
+test-integration:
+    npm run test:integration
 
 # Local-only release: bump version files, record, commit, tag.
 # Follow with `just publish` once this succeeds.

@@ -1,9 +1,11 @@
 id: JVSC-0003-E2
 title: Extension scaffold with item tree panel
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -11,5 +13,37 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:19:02.039295940Z
-updated: 2026-05-15T10:19:02.039295940Z
+updated: 2026-05-16T01:23:07.415221876Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-16T01:22:51.659651953Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Set up the VS Code extension skeleton (package.json, activation events, command palette entries, TypeScript build, lint, test harness). Implement a TreeView in the activity bar showing items grouped/sorted (by status, priority, milestone, type) and nested under their parent epic or story. Data is fetched via joy --json ls and joy --json show. A file watcher on .joy/items/ refreshes the view on external changes. Includes context menu actions for start, submit, close, reopen via the joy shortcuts.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T01:23:07.415220947Z
+  text: |-
+    Plan: deliver the scaffold in two commits.
+
+    Commit 1 - Foundation and CLI wrapper:
+    - package.json (name joy-vscode, engines.vscode ^1.92.0, activationEvents, contributes.commands, contributes.views, contributes.viewsContainers, contributes.configuration with joy.executablePath, scripts for build/lint/test/package)
+    - tsconfig.json (strict, target ES2022, module Node16, outDir dist)
+    - eslint.config.mjs (flat config, @typescript-eslint, prettier compat)
+    - .vscodeignore, .prettierrc, esbuild bundling for the extension entry
+    - @vscode/test-cli + Mocha smoke test
+    - src/extension.ts with activate/deactivate stubs and one 'Joy: Hello' command to verify wiring
+    - src/joyClient.ts that spawns 'joy --json <subcmd>' via child_process.execFile, honors joy.executablePath setting then PATH fallback, parses stdout JSON, maps capability/session/missing-binary errors to typed exceptions
+    - justfile install/check recipes delegate to npm scripts
+    - pin TypeScript version in docs/dev/architecture/README.md (currently TBD)
+
+    Commit 2 - TreeView, watcher, lifecycle actions:
+    - src/backlogProvider.ts implementing TreeDataProvider, fetches via JoyClient.ls(), nests children by parent field, sorts by status then priority
+    - activity bar container 'joy', view 'joyBacklog', view title refresh button
+    - workspace.createFileSystemWatcher('**/.joy/items/**') with 250ms debounce for refresh
+    - commands joy.start | joy.submit | joy.close | joy.reopen | joy.show registered against view/item/context menu, each shells out via JoyClient and refreshes on success
+    - update README with a short 'Develop locally' section (F5 in VS Code launches an Extension Development Host)
+
+    Scope decisions:
+    - One grouping mode only for this story (nested by parent, sorted by status then priority). Multi-grouping QuickPick (by status, priority, milestone, type) gets split out as a follow-up task after this scaffold lands.
+    - Webview form editor stays in JVSC-0004-C8, status bar indicator in JVSC-0005-FD - no overlap here.
+    - No publisher metadata or icon yet, those live with JVSC-0006-79 / JVSC-0007-95.

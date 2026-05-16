@@ -123,6 +123,12 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# Test build output
+out-test/
+
+# Packaged extension artifacts
+*.vsix
+
 # pnpm
 .pnpm-store
 
@@ -145,4 +151,5 @@ vite.config.ts.timestamp-*
 .joy/credentials.yaml
 .joy/hooks/
 .joy/project.defaults.yaml
+.claude/
 ### joy:end

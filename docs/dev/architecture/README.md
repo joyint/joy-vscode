@@ -2,16 +2,26 @@
 
 ## Technology Stack
 
-| Component | Version | Rationale |
-|-----------|---------|-----------|
-| TypeScript | <!-- TBD: pinned by JVSC-0003-E2 --> | VS Code extension API is TS-first |
-| VS Code Extension API | matches `engines.vscode` in `package.json` | target platform |
-| `vsce` | <!-- TBD: pinned by JVSC-0006-79 --> | Microsoft Marketplace packaging and publish |
-| `ovsx` | <!-- TBD: pinned by JVSC-0006-79 --> | Open VSX Registry publish |
+| Component             | Version                                    | Rationale                                   |
+| --------------------- | ------------------------------------------ | ------------------------------------------- |
+| TypeScript            | `^5.6.3`                                   | VS Code extension API is TS-first           |
+| Node runtime          | `>=20`                                     | matches VS Code 1.92's bundled Node         |
+| Bundler               | `esbuild ^0.24`                            | fast CJS bundle for the extension entry     |
+| Linter                | `eslint ^9` (flat config)                  | `@typescript-eslint`, prettier-compatible   |
+| Test runner           | `mocha ^10` + `@vscode/test-cli ^0.0.10`   | unit + extension-host tests                 |
+| VS Code Extension API | matches `engines.vscode` in `package.json` | target platform                             |
+| `vsce`                | <!-- TBD: pinned by JVSC-0006-79 -->       | Microsoft Marketplace packaging and publish |
+| `ovsx`                | <!-- TBD: pinned by JVSC-0006-79 -->       | Open VSX Registry publish                   |
 
 ## Repository Structure
 
-The TypeScript scaffold lands with `JVSC-0003-E2`. Until then this is a Joy-managed workspace only (`.joy/`, docs, `justfile`, license, readme).
+- `src/` — TypeScript sources. `extension.ts` is the activation entry; `joyClient.ts` wraps the `joy` CLI.
+- `src/test/unit/` — unit tests, run via `mocha` against compiled output in `out-test/`.
+- `src/test/integration/` — extension-host tests, run via `@vscode/test-cli`.
+- `dist/` — bundled extension output (esbuild), git-ignored.
+- `.vscode/` — workspace-local launch and task configuration.
+- `docs/` — vision and architecture docs (this directory).
+- `.joy/` — Joy project state; never edited by hand.
 
 ## Data Storage
 

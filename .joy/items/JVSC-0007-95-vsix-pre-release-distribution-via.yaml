@@ -1,0 +1,29 @@
+id: JVSC-0007-95
+title: VSIX pre-release distribution via GitHub Releases
+type: story
+status: new
+priority: medium
+parent: JVSC-0001-D4
+deps:
+- JVSC-0003-E2
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-16T01:20:05.616133811Z
+updated: 2026-05-16T01:20:09.210461311Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-16T01:20:09.210461311Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: |-
+  Make the extension installable for early testers before any marketplace publishing.
+
+  GitHub Actions workflow that runs `vsce package` on tagged commits and attaches the produced `.vsix` to the GitHub Release. Versioning follows semantic versioning aligned with `joy release` (format `v0.0.0`). README gets an 'Install (preview)' section explaining the two installation paths:
+
+  - VS Code UI: Command Palette -> 'Extensions: Install from VSIX...'
+  - CLI: `code --install-extension joy-vscode-X.Y.Z.vsix`
+
+  Scope is intentionally minimal: no publisher account, no marketplace metadata, no signing - just an installable VSIX asset on every tagged release so a small group of testers can try the extension and report back. Full marketplace + Open VSX publishing remains tracked under JVSC-0006-79.

@@ -1,0 +1,10 @@
+dist
+out-test
+node_modules
+.joy
+.vscode-test
+package-lock.json
+CHANGELOG.md
+
+# joy-managed files (do not reformat)
+SECURITY.md

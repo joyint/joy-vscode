@@ -4,11 +4,21 @@ Joy VS Code extension: tree view, item editor, and session indicator backed by t
 
 ## Status
 
-Pre-release. Currently a Joy-managed workspace with the initial backlog (`JVSC-0001-D4` and children). The TypeScript scaffold lands with `JVSC-0003-E2`.
+Pre-release. Scaffold in place (`JVSC-0003-E2`); item tree, webview editor, and status bar indicator follow in their own stories.
 
 ## Requirements
 
 The `joy` CLI must be installed on the system: https://github.com/joyint/joy. The extension shells out to it and does not bundle a binary.
+
+## Develop locally
+
+```bash
+just install   # npm ci
+just check     # typecheck, lint, format, unit tests
+just build     # bundle dist/extension.js via esbuild
+```
+
+Open the repo in VS Code and press `F5` to launch an Extension Development Host with the extension loaded.
 
 ## Documentation
 
