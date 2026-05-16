@@ -157,13 +157,15 @@
     "test:unit": "tsc -p tsconfig.test.json && mocha --recursive out-test/test/unit",
     "test:integration": "tsc -p tsconfig.test.json && vscode-test",
     "test": "npm run test:unit && npm run test:integration",
-    "check": "npm run typecheck && npm run lint && npm run format && npm run test:unit"
+    "check": "npm run typecheck && npm run lint && npm run format && npm run test:unit",
+    "package": "vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.9",
     "@types/node": "^20.16.10",
     "@types/vscode": "^1.92.0",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@vscode/vsce": "^3.2.1",
     "@typescript-eslint/parser": "^8.13.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",

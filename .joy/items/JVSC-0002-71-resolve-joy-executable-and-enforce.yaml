@@ -1,7 +1,7 @@
 id: JVSC-0002-71
 title: Resolve joy executable and enforce minimum version
 type: task
-status: review
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -11,8 +11,8 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:18:55.544112342Z
-updated: 2026-05-16T02:08:49.815262720Z
-updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+updated: 2026-05-16T02:10:18.582145525Z
+updated_by: horst.schwarz@joydev.com
 history:
 - date: 2026-05-16T01:46:15.002194416Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
@@ -26,6 +26,8 @@ history:
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-16T02:08:49.815262720Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:10:18.582145525Z
+  by: horst.schwarz@joydev.com
 description: 'Locate the joy binary at extension activation: read joy.executablePath setting, fall back to PATH lookup. If missing, show a clear status bar message and command palette entry pointing to install docs. On resolve, run joy --version --json and compare against a minimum version declared in package.json. If too old, surface a notification with a Run joy update action. The resolver is reused by all other extension features and any future companion modules.'
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com

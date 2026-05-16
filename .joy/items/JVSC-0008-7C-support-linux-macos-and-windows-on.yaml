@@ -1,7 +1,7 @@
 id: JVSC-0008-7C
 title: Support Linux, macOS, and Windows on equal footing
 type: decision
-status: review
+status: closed
 priority: high
 assignees:
 - member: ai:claude@joy
@@ -9,13 +9,15 @@ capabilities:
 - conceive
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-16T01:57:26.785644146Z
-updated: 2026-05-16T01:57:36.534141695Z
-updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+updated: 2026-05-16T02:10:06.660153050Z
+updated_by: horst.schwarz@joydev.com
 history:
 - date: 2026-05-16T01:57:36.508987950Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-16T01:57:36.534141695Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:10:06.660153050Z
+  by: horst.schwarz@joydev.com
 description: |-
   All platform-specific behavior in joy-vscode must work on Linux, macOS, and Windows. When designing anything that touches the OS - shell invocations, file paths, executable extensions, environment variable lookups, install locations - cover all three platforms from the start. Do not Linux-first and patch later.
 

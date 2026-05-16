@@ -41,6 +41,10 @@ build:
 test-integration:
     npm run test:integration
 
+# Build a local VSIX (joy-vscode-X.Y.Z.vsix in the working tree).
+package:
+    npm run package
+
 # Local-only release: bump version files, record, commit, tag.
 # Follow with `just publish` once this succeeds.
 release bump="patch":

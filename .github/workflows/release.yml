@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Derive version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "vsix=joy-vscode-${VERSION}.vsix" >> "$GITHUB_OUTPUT"
+
+      - name: Sync package.json version
+        run: npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
+
+      - name: Lint, typecheck, unit tests
+        run: npm run check
+
+      - name: Bundle extension
+        run: npm run build
+
+      - name: Package VSIX
+        run: npm run package
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" "${{ steps.version.outputs.vsix }}" \
+            --title "v${{ steps.version.outputs.version }}" \
+            --notes "$(cat <<'EOF'
+          Preview release. The Joy extension is not yet on the Marketplace; install the VSIX directly.
+
+          **VS Code UI**: Command Palette → `Extensions: Install from VSIX...`, then pick the downloaded file.
+
+          **CLI**: `code --install-extension joy-vscode-${{ steps.version.outputs.version }}.vsix`
+
+          Requires the [joy CLI](https://github.com/joyint/joy) on PATH (auto-discovered via login shell and common install locations; configurable via the `joy.executablePath` setting).
+          EOF
+          )"

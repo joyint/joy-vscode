@@ -1,9 +1,11 @@
 id: JVSC-0007-95
 title: VSIX pre-release distribution via GitHub Releases
 type: story
-status: new
+status: review
 priority: medium
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 deps:
 - JVSC-0003-E2
 capabilities:
@@ -13,10 +15,14 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-16T01:20:05.616133811Z
-updated: 2026-05-16T01:20:09.210461311Z
+updated: 2026-05-16T02:16:58.272453796Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-16T01:20:09.210461311Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:13:26.599949024Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:16:58.272453796Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: |-
   Make the extension installable for early testers before any marketplace publishing.
@@ -27,3 +33,81 @@ description: |-
   - CLI: `code --install-extension joy-vscode-X.Y.Z.vsix`
 
   Scope is intentionally minimal: no publisher account, no marketplace metadata, no signing - just an installable VSIX asset on every tagged release so a small group of testers can try the extension and report back. Full marketplace + Open VSX publishing remains tracked under JVSC-0006-79.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T02:13:39.711098861Z
+  text: |-
+    Plan: one commit, two artifacts (workflow + rewritten root README), no marketplace touchpoints.
+
+    Workflow (.github/workflows/release.yml)
+    - Triggers on tag push matching 'v*'
+    - Single ubuntu-latest job; node 20 with npm cache
+    - Steps: checkout -> npm ci -> derive VERSION from GITHUB_REF_NAME (strip 'v') -> npm version --no-git-tag-version --allow-same-version -> npm run check (typecheck + lint + format + unit tests) -> npm run build -> npx --yes @vscode/vsce package --no-dependencies -> gh release create with the .vsix attached
+    - VSIX file name pattern is vsce default: joy-vscode-<version>.vsix
+    - Release notes embed the two install paths (code --install-extension + Command Palette flow)
+    - Permissions: contents:write so GITHUB_TOKEN can create the release
+    - Integration tests are deliberately NOT run on the release pipeline; they belong to a per-push CI workflow that JVSC-0006-79 will set up. Release just ships the bundle that 'check' already validated.
+
+    package.json
+    - Add @vscode/vsce as devDep so 'npx vsce' is deterministic across runs
+    - Add 'package' script: 'vsce package --no-dependencies'
+
+    justfile
+    - 'just package' calls 'npm run package'
+
+    Root README (user-facing rewrite)
+    - Tagline + one-line summary
+    - Install (preview): a 'Latest release' link to GitHub Releases, instructions for the two install paths (code --install-extension and 'Extensions: Install from VSIX...')
+    - Requirements: joy CLI, with a link to https://github.com/joyint/joy
+    - Features (bullet list mirroring joy/README.md style: backlog tree, lifecycle actions, auto-discovery, etc.)
+    - Documentation pointer (vision/architecture for users curious about scope)
+    - Status: pre-release
+    - License
+
+    CONTRIBUTING.md
+    - Move the 'Develop locally' block (just install/check/build/F5) here under a new 'Development setup' section, plus a one-liner about 'just package' building a local .vsix
+
+    Cross-platform: VSIX is platform-agnostic JS bundle; both install paths (code CLI + Command Palette) work on Linux/macOS/Windows. Workflow runs on linux only because the artifact doesn't depend on the runner platform.
+
+    Joy release flow integration note: joy-vscode's .joy/project.yaml currently does not declare version-files, so 'joy release bump' won't touch package.json. The workflow derives version from the git tag, sidestepping that. Configuring version-files belongs to a future bookkeeping task.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T02:16:57.400478651Z
+  text: |-
+    [x] One commit, two outward-facing artifacts.
+
+    .github/workflows/release.yml
+    - Triggers on push of tag matching v*
+    - ubuntu-latest, Node 20 with npm cache
+    - Steps: checkout -> npm ci -> derive VERSION from GITHUB_REF_NAME (strip v) -> npm version --no-git-tag-version --allow-same-version -> npm run check (typecheck + lint + format + unit) -> npm run build -> npm run package (vsce package --no-dependencies) -> gh release create with the .vsix attached
+    - Release notes embed the two install paths plus a pointer to the joy CLI
+    - contents:write permission only (single artifact upload, no marketplace token)
+
+    package.json
+    - @vscode/vsce ^3.2.1 added as devDep so 'npm run package' is deterministic
+    - New 'package' script: vsce package --no-dependencies
+
+    .vscodeignore tightened
+    - .github/**, .vscode-test.mjs, *.vsix excluded from the VSIX so packaged size stays minimal
+    - Local vsce smoke test produces a 9.72 KB / 7-file vsix containing only LICENSE.txt, package.json, readme.md, dist/extension.js, resources/joy.svg, and the two vsce metadata files
+
+    justfile
+    - Added 'just package' recipe that delegates to npm run package
+
+    Root README rebuilt for end-users
+    - One-line tagline first ('Your Joy backlog, right inside the editor.')
+    - Install (preview): link to GitHub Releases, both install commands (code --install-extension on all three platforms, and the Command Palette flow)
+    - Requirements: joy CLI with auto-discovery summary so users understand where the extension looks
+    - Features bullets that mirror joy/README.md tone (backlog tree, lifecycle actions, show details, live refresh, CLI status indicator, cross-platform)
+    - Documentation pointer (vision/architecture/contributing)
+    - Status / License
+
+    CONTRIBUTING.md picks up the developer-facing content that moved out of README
+    - New 'Development setup' section with just install/check/build/test-integration/package and the F5 launch tip
+    - New 'Releasing' section explaining the tag-driven workflow and version sync
+    - Testing section now actually documents the unit vs integration split, replacing the TBD stub
+    - Coding conventions filled in (TypeScript strict, ESLint flat, Prettier, .editorconfig)
+    - Commit-message section clarified that AI brand names are allowed in Co-Authored-By: trailer but nowhere else
+
+    Cross-platform check (per JVSC-0008-7C): VSIX is platform-agnostic JS, both install paths (code --install-extension, Command Palette) work on Linux, macOS, and Windows; release runs on linux only because the artifact is universal.
+
+    Verification: npm run check (32 unit) + npm run build (10.4 KB bundle) + npm run package locally produces a clean 9.72 KB joy-vscode-0.0.0.vsix with just runtime artifacts.

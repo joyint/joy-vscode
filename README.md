@@ -1,37 +1,47 @@
-# joy-vscode
+# Joy for VS Code
 
-Joy VS Code extension: tree view, item editor, and session indicator backed by the joy CLI.
+**Your Joy backlog, right inside the editor.**
 
-## Status
+A VS Code extension that surfaces the [Joy](https://github.com/joyint/joy) backlog of any repository you open: an activity-bar tree with parent/child nesting, lifecycle actions on each item, and auto-refresh when the underlying files change. Part of the [Joyint](https://github.com/joyint) ecosystem.
 
-Pre-release. Scaffold and backlog tree in place (`JVSC-0003-E2`); webview editor and status bar indicator follow in their own stories.
+## Install (preview)
 
-## Features
+The extension is not on the Marketplace yet. Grab the VSIX from the [latest GitHub release](https://github.com/joyint/joy-vscode/releases/latest) and install it one of two ways:
 
-- **Backlog tree** in a dedicated Joy activity-bar container. Items are grouped by parent, sorted by status (`in-progress`, `review`, `open`, `new`, `blocked`, `deferred`, `closed`) then priority.
-- **Context-menu lifecycle actions** on each item: `Start`, `Submit for Review`, `Close`, `Reopen` (visible only when the item's status allows the transition).
-- **`Show Details`** opens `joy show <ID>` output in a preview document.
-- **Automatic refresh** when files under `.joy/items/` change (debounced 250 ms).
+**Command line** (works on Linux, macOS, Windows):
+
+```sh
+code --install-extension joy-vscode-X.Y.Z.vsix
+```
+
+**VS Code UI**: open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`), run **Extensions: Install from VSIX...**, then pick the downloaded file.
+
+Updates ship as new GitHub releases - install the newer VSIX over the old one with the same command.
 
 ## Requirements
 
-The `joy` CLI must be installed on the system: https://github.com/joyint/joy. The extension shells out to it and does not bundle a binary.
+The [joy CLI](https://github.com/joyint/joy) must be installed on your system. The extension shells out to it for every read and write and does not bundle a binary.
 
-## Develop locally
+On first activation the extension auto-discovers `joy` via PATH, your login shell, and common install locations (`~/.local/bin`, `/usr/local/bin`, `/opt/homebrew/bin`, `~/go/bin`, `~/.cargo/bin`, plus the Windows equivalents). The resolved path appears in the status bar; click it to override via a guided dialog. The path can also be set explicitly via the `joy.executablePath` setting.
 
-```bash
-just install   # npm ci
-just check     # typecheck, lint, format, unit tests
-just build     # bundle dist/extension.js via esbuild
-```
+## Features
 
-Open the repo in VS Code and press `F5` to launch an Extension Development Host with the extension loaded.
+- **Backlog tree** in a dedicated Joy activity-bar container - items nested by parent, sorted by status then priority.
+- **Lifecycle actions** on each item via right-click context menu: Start, Submit for Review, Close, Reopen - visible only when the item's status allows the transition.
+- **Show Details** opens the full `joy show <ID>` output in a preview document.
+- **Live refresh** on changes under `.joy/items/` (debounced) so the tree stays in sync with terminal use, `git pull`, or AI edits.
+- **Status bar indicator** for the joy CLI: version when ok, install prompt when missing or too old.
+- **Cross-platform**: Linux, macOS, and Windows.
 
 ## Documentation
 
-- [Vision](docs/dev/vision/README.md)
-- [Architecture](docs/dev/architecture/README.md)
-- [Contributing](CONTRIBUTING.md)
+- [Vision](docs/dev/vision/README.md) - what's in and out of scope
+- [Architecture](docs/dev/architecture/README.md) - how the extension talks to the joy CLI
+- [Contributing](CONTRIBUTING.md) - coding conventions, development setup, commit messages
+
+## Status
+
+Pre-release. Tracked under [JVSC-0001-D4](https://github.com/joyint/joy-vscode) and the milestones beneath it. Marketplace + Open VSX publishing is on the roadmap (`JVSC-0006-79`).
 
 ## License
 
