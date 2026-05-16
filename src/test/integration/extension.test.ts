@@ -10,6 +10,7 @@ const EXPECTED_COMMANDS = [
   'joy.close',
   'joy.reopen',
   'joy.openInstallDocs',
+  'joy.configureExecutablePath',
 ] as const;
 
 describe('extension activation', () => {

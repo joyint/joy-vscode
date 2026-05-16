@@ -85,6 +85,11 @@
         "command": "joy.openInstallDocs",
         "title": "Open Install Docs",
         "category": "Joy"
+      },
+      {
+        "command": "joy.configureExecutablePath",
+        "title": "Configure CLI Path...",
+        "category": "Joy"
       }
     ],
     "viewsWelcome": [
@@ -136,7 +141,7 @@
         "joy.executablePath": {
           "type": "string",
           "default": "",
-          "description": "Absolute path to the joy executable. Leave empty to resolve via PATH."
+          "markdownDescription": "Absolute path to the joy executable. Leave empty to auto-resolve via PATH, login shell, and common install locations.\n\nUse [Joy: Configure CLI Path...](command:joy.configureExecutablePath) for a guided dialog showing the auto-detected path as a placeholder."
         }
       }
     }

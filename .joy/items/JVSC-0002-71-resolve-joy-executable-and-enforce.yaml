@@ -11,7 +11,7 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:18:55.544112342Z
-updated: 2026-05-16T01:59:50.708896490Z
+updated: 2026-05-16T02:08:49.815262720Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-16T01:46:15.002194416Z
@@ -21,6 +21,10 @@ history:
 - date: 2026-05-16T01:57:27.778564626Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-16T01:59:50.708896490Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:06:55.784705015Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:08:49.815262720Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Locate the joy binary at extension activation: read joy.executablePath setting, fall back to PATH lookup. If missing, show a clear status bar message and command palette entry pointing to install docs. On resolve, run joy --version --json and compare against a minimum version declared in package.json. If too old, surface a notification with a Run joy update action. The resolver is reused by all other extension features and any future companion modules.'
 comments:
@@ -128,3 +132,55 @@ comments:
     The motivating case (this maintainer's .bashrc with [[ $- != *i* ]] && return guarding the PATH export) is now covered by the common-paths tier: ~/.local/bin/joy is in the Unix list and gets picked up via fs.access before any shell invocation.
 
     Re-submitting.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T02:07:04.188097642Z
+  text: |-
+    Plan (third increment): A+B UX so the auto-detected path is visible and easy to override.
+
+    A) Status bar in the ok branch
+    - Show $(check) Joy CLI <version> (currently hidden when ok)
+    - Tooltip is a trusted MarkdownString with the full executable path plus a command link to the configure flow
+    - Click target switches from undefined (no action) to joy.configureExecutablePath
+
+    B) Dedicated configure command
+    - New command joy.configureExecutablePath registered in package.json
+    - Opens vscode.window.showInputBox with:
+      - value = current joy.executablePath setting (empty if unset)
+      - placeHolder = '<auto-detected-path> (auto-detected)' when last resolution succeeded, or 'Absolute path to joy' otherwise
+      - prompt explaining auto-resolve fallback
+      - ignoreFocusOut: true
+    - On submit: trims input, writes joy.executablePath to ConfigurationTarget.Global (binary paths are per-machine, not per-workspace, so global avoids the portability footgun that auto-writing to workspace would cause)
+    - After write, performResolve() runs again so the status bar reflects the new state
+    - On Esc (input === undefined): no change
+
+    joy.executablePath gets a markdownDescription with a [Configure...](command:joy.configureExecutablePath) link so the configure dialog is reachable directly from Settings UI.
+
+    Tests: 1 new integration test for joy.configureExecutablePath registration. The InputBox flow itself is not unit-testable without complex VS Code API mocking; the logic that prepares the placeholder string (auto-detected vs none) can be exercised through the integration test by inspecting the registered command exists.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T02:08:49.052064053Z
+  text: |-
+    [x] A+B implemented.
+
+    A) Status bar in ok branch
+    - Hidden state replaced by $(check) Joy CLI <version>
+    - Tooltip is a trusted MarkdownString with **Joy CLI <version>** + the absolute executable path in code-style + a [Configure path...] command link
+    - Click target on the item invokes joy.configureExecutablePath
+    - backgroundColor reset to undefined so we don't carry over the warning theme from a previous failed state
+
+    B) New command joy.configureExecutablePath
+    - Reads current joy.executablePath
+    - Pulls auto-detected path from the last resolution via a getLastResolution() closure
+    - Opens vscode.window.showInputBox with value=current and placeHolder='<auto-detected> (auto-detected)' (falls back to a generic prompt if no auto-detection happened); ignoreFocusOut=true
+    - On Esc (input === undefined), no change
+    - On Enter, trims input and writes to ConfigurationTarget.Global, then re-runs performResolve so the status bar reflects the change
+
+    package.json
+    - New command entry for joy.configureExecutablePath
+    - joy.executablePath description switched to markdownDescription with a [Joy: Configure CLI Path...](command:joy.configureExecutablePath) link so the dialog is reachable from the Settings UI itself
+
+    Tests
+    - 1 new integration test (joy.configureExecutablePath registration)
+    - 32 unit + 13 integration, all green
+    - Bundle 10.4 KB
+
+    Status to user: tooltip on the new status bar item lists the absolute path verbatim, click opens the configure dialog with that same path as placeholder text - placeholder UX preserved without trying to hack the Settings UI's input field.

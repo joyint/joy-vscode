@@ -57,8 +57,11 @@ export function activate(context: vscode.ExtensionContext): void {
 
   context.subscriptions.push(treeView, statusItem);
 
+  let lastResolution: JoyResolution | undefined;
+
   const performResolve = async (): Promise<void> => {
     const resolution = await resolver.resolve();
+    lastResolution = resolution;
     if (resolution.kind === 'ok') {
       resolvedExecutable = resolution.executable;
     }
@@ -66,7 +69,9 @@ export function activate(context: vscode.ExtensionContext): void {
     provider.refresh();
   };
 
-  registerCommands(context, client, provider, treeView, performResolve);
+  const getLastResolution = (): JoyResolution | undefined => lastResolution;
+
+  registerCommands(context, client, provider, treeView, performResolve, getLastResolution);
   registerWatcher(context, provider);
 
   context.subscriptions.push(
@@ -110,7 +115,15 @@ function applyResolution(item: vscode.StatusBarItem, resolution: JoyResolution):
   void vscode.commands.executeCommand('setContext', 'joy:cliMissing', setMissing);
 
   if (resolution.kind === 'ok') {
-    item.hide();
+    item.text = `$(check) Joy CLI ${resolution.version}`;
+    item.backgroundColor = undefined;
+    const tooltip = new vscode.MarkdownString(
+      `**Joy CLI ${resolution.version}**\n\n\`${resolution.executable}\`\n\n[Configure path...](command:joy.configureExecutablePath)`,
+    );
+    tooltip.isTrusted = true;
+    item.tooltip = tooltip;
+    item.command = 'joy.configureExecutablePath';
+    item.show();
     return;
   }
 
@@ -119,7 +132,7 @@ function applyResolution(item: vscode.StatusBarItem, resolution: JoyResolution):
     item.text = '$(warning) Joy CLI: not found';
     item.tooltip = resolution.configured
       ? `Configured path "${resolution.configured}" did not resolve. Adjust joy.executablePath or install joy.`
-      : 'joy was not found on PATH or via login shell. Install joy or set joy.executablePath.';
+      : 'joy was not found on PATH, via login shell, or in common install locations. Install joy or set joy.executablePath.';
     item.command = 'joy.openInstallDocs';
   } else if (resolution.kind === 'tooOld') {
     item.text = `$(warning) Joy CLI: ${resolution.version} < ${resolution.minimum}`;
@@ -139,6 +152,7 @@ function registerCommands(
   provider: BacklogProvider,
   treeView: vscode.TreeView<BacklogNode>,
   performResolve: () => Promise<void>,
+  getLastResolution: () => JoyResolution | undefined,
 ): void {
   const sub = (command: string, handler: (...args: unknown[]) => unknown): void => {
     context.subscriptions.push(vscode.commands.registerCommand(command, handler));
@@ -155,6 +169,26 @@ function registerCommands(
 
   sub('joy.openInstallDocs', () => {
     void vscode.env.openExternal(vscode.Uri.parse(INSTALL_DOCS_URL));
+  });
+
+  sub('joy.configureExecutablePath', async () => {
+    const config = vscode.workspace.getConfiguration('joy');
+    const current = config.get<string>('executablePath') ?? '';
+    const last = getLastResolution();
+    const autoDetected = last?.kind === 'ok' ? last.executable : undefined;
+
+    const input = await vscode.window.showInputBox({
+      title: 'Joy: Configure CLI Path',
+      prompt: 'Absolute path to the joy executable. Leave empty to auto-resolve.',
+      value: current,
+      placeHolder: autoDetected
+        ? `${autoDetected} (auto-detected)`
+        : 'Absolute path to the joy executable',
+      ignoreFocusOut: true,
+    });
+    if (input === undefined) return;
+    await config.update('executablePath', input.trim(), vscode.ConfigurationTarget.Global);
+    await performResolve();
   });
 
   sub('joy.refresh', async () => {
