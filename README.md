@@ -4,7 +4,14 @@ Joy VS Code extension: tree view, item editor, and session indicator backed by t
 
 ## Status
 
-Pre-release. Scaffold in place (`JVSC-0003-E2`); item tree, webview editor, and status bar indicator follow in their own stories.
+Pre-release. Scaffold and backlog tree in place (`JVSC-0003-E2`); webview editor and status bar indicator follow in their own stories.
+
+## Features
+
+- **Backlog tree** in a dedicated Joy activity-bar container. Items are grouped by parent, sorted by status (`in-progress`, `review`, `open`, `new`, `blocked`, `deferred`, `closed`) then priority.
+- **Context-menu lifecycle actions** on each item: `Start`, `Submit for Review`, `Close`, `Reopen` (visible only when the item's status allows the transition).
+- **`Show Details`** opens `joy show <ID>` output in a preview document.
+- **Automatic refresh** when files under `.joy/items/` change (debounced 250 ms).
 
 ## Requirements
 

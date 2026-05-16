@@ -1,7 +1,7 @@
 id: JVSC-0003-E2
 title: Extension scaffold with item tree panel
 type: story
-status: in-progress
+status: review
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -13,10 +13,12 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:19:02.039295940Z
-updated: 2026-05-16T01:23:07.415221876Z
+updated: 2026-05-16T01:34:03.174505504Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-16T01:22:51.659651953Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T01:34:03.174505504Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Set up the VS Code extension skeleton (package.json, activation events, command palette entries, TypeScript build, lint, test harness). Implement a TreeView in the activity bar showing items grouped/sorted (by status, priority, milestone, type) and nested under their parent epic or story. Data is fetched via joy --json ls and joy --json show. A file watcher on .joy/items/ refreshes the view on external changes. Includes context menu actions for start, submit, close, reopen via the joy shortcuts.
 comments:
@@ -47,3 +49,31 @@ comments:
     - One grouping mode only for this story (nested by parent, sorted by status then priority). Multi-grouping QuickPick (by status, priority, milestone, type) gets split out as a follow-up task after this scaffold lands.
     - Webview form editor stays in JVSC-0004-C8, status bar indicator in JVSC-0005-FD - no overlap here.
     - No publisher metadata or icon yet, those live with JVSC-0006-79 / JVSC-0007-95.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T01:33:59.952585909Z
+  text: |-
+    [x] Scaffold landed in two commits.
+
+    Commit 1 (b991041):
+    - package.json with engines.vscode ^1.92, single command joy.hello, joy.executablePath setting
+    - TypeScript ^5.6 strict + Node16, esbuild bundling, ESLint flat config, Prettier, .editorconfig
+    - mocha unit tests + @vscode/test-cli integration tests
+    - JoyClient (child_process.execFile wrapper) with typed errors for missing-binary, session-expired, capability-denied; resolveExecutable/resolveCwd injected so the client is unit-testable without a vscode stub
+    - justfile install/check delegate to npm scripts, architecture docs pin tool versions and describe repo layout
+
+    Commit 2 (this one):
+    - src/types.ts with JoyItem, JoyItemStatus, JoyItemPriority, JoyListResponse shapes derived from joy --json ls
+    - src/backlog.ts pure tree-building (buildBacklogTree) with sort: status (in-progress -> review -> open -> new -> blocked -> deferred -> closed) then priority (critical -> low) then id
+    - src/backlogProvider.ts implements vscode.TreeDataProvider, fetches via JoyClient.runJson(['ls', '--all']), one ThemeIcon per item type, status as contextValue for menu when-clauses
+    - activity bar container 'joy' with placeholder SVG icon, view 'joyBacklog'
+    - workspace.createFileSystemWatcher('**/.joy/items/**') with 250 ms debounce
+    - commands joy.start | submit | close | reopen | show | refresh, status-gated via menus.view/item/context
+    - joy.show opens joy show <ID> output in a preview text document
+    - README documents the backlog view and develop-locally flow
+
+    Tests: 6 unit (JoyClient) + 6 unit (buildBacklogTree) + 9 integration (command + view registration). All green.
+
+    Deferred to follow-up tasks:
+    - Multi-grouping QuickPick (by status / priority / milestone / type) - keeping current single mode (nested by parent, status+priority sort) for first cut.
+    - Custom activity bar icon - using a minimal placeholder SVG for now; final icon comes with JVSC-0006-79 marketplace polish.
+    - Minimum joy version enforcement at activation - tracked in JVSC-0002-71.

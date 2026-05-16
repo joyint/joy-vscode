@@ -23,13 +23,98 @@
   "main": "./dist/extension.js",
   "activationEvents": [],
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "joy",
+          "title": "Joy",
+          "icon": "resources/joy.svg"
+        }
+      ]
+    },
+    "views": {
+      "joy": [
+        {
+          "id": "joyBacklog",
+          "name": "Backlog",
+          "contextualTitle": "Joy"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "joy.hello",
         "title": "Hello",
         "category": "Joy"
+      },
+      {
+        "command": "joy.refresh",
+        "title": "Refresh Backlog",
+        "category": "Joy",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "joy.show",
+        "title": "Show Details",
+        "category": "Joy"
+      },
+      {
+        "command": "joy.start",
+        "title": "Start",
+        "category": "Joy"
+      },
+      {
+        "command": "joy.submit",
+        "title": "Submit for Review",
+        "category": "Joy"
+      },
+      {
+        "command": "joy.close",
+        "title": "Close",
+        "category": "Joy"
+      },
+      {
+        "command": "joy.reopen",
+        "title": "Reopen",
+        "category": "Joy"
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "joy.refresh",
+          "when": "view == joyBacklog",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "joy.show",
+          "when": "view == joyBacklog",
+          "group": "1_open@1"
+        },
+        {
+          "command": "joy.start",
+          "when": "view == joyBacklog && (viewItem == status:new || viewItem == status:open)",
+          "group": "2_lifecycle@1"
+        },
+        {
+          "command": "joy.submit",
+          "when": "view == joyBacklog && viewItem == status:in-progress",
+          "group": "2_lifecycle@2"
+        },
+        {
+          "command": "joy.close",
+          "when": "view == joyBacklog && viewItem == status:review",
+          "group": "2_lifecycle@3"
+        },
+        {
+          "command": "joy.reopen",
+          "when": "view == joyBacklog && (viewItem == status:closed || viewItem == status:deferred)",
+          "group": "2_lifecycle@4"
+        }
+      ]
+    },
     "configuration": {
       "title": "Joy",
       "properties": {

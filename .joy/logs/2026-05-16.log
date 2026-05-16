@@ -4,3 +4,5 @@
 2026-05-16T01:20:09.213Z JVSC-0007-95 dep.added "JVSC-0003-E2" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-16T01:22:51.663Z JVSC-0003-E2 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-16T01:23:07.419Z JVSC-0003-E2 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T01:33:59.956Z JVSC-0003-E2 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T01:34:03.178Z JVSC-0003-E2 item.status_changed "in-progress -> review" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
