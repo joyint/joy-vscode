@@ -33,3 +33,4 @@
 2026-05-16T02:21:41.335Z release guard.denied "AI member ai:claude@joy cannot perform manage actions" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-16T02:22:34.295Z JVSC-0007-95 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-16T02:22:35.297Z JVSC-0007-95 item.status_changed "in-progress -> review" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T02:26:11.025Z v0.1.0 release.created [horst.schwarz@joydev.com]

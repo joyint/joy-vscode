@@ -1,0 +1,19 @@
+version: v0.1.0
+date: 2026-05-16
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 22
+  items: 3
+- id: horst.schwarz@joydev.com
+  events: 2
+  items: 2
+items:
+  stories:
+  - id: JVSC-0003-E2
+    title: Extension scaffold with item tree panel
+  tasks:
+  - id: JVSC-0002-71
+    title: Resolve joy executable and enforce minimum version
+  decisions:
+  - id: JVSC-0008-7C
+    title: Support Linux, macOS, and Windows on equal footing
