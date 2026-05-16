@@ -68,3 +68,6 @@ members:
         delegation_salt: 7bd5bf9a4b89e6c637e989c14affe93fccb32f5fa8da3c0b929fc0dec51d7cd9
         created: 2026-05-15T10:15:02.037018859Z
 created: 2026-05-15T10:10:53.978494661Z
+release:
+  version-files:
+  - package.json

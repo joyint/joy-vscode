@@ -18,11 +18,18 @@ Open the repo in VS Code and press `F5` to launch an Extension Development Host 
 
 ## Releasing
 
-Releases are driven by git tags. Push a tag matching `v*` (e.g. `v0.1.0`); the [Release workflow](.github/workflows/release.yml) builds the extension on GitHub Actions, packages it with `vsce`, and attaches the `.vsix` to a new GitHub Release.
+Releases follow the standard Joy umbrella flow:
 
-Version numbering follows semantic versioning. The workflow rewrites `package.json` to match the tag before packaging, so the VSIX file name and metadata are always in sync with the tag.
+```sh
+just release patch   # or minor / major
+just publish
+```
 
-Marketplace + Open VSX publishing is set up under `JVSC-0006-79`.
+`just release patch` runs `joy release bump patch`, which rewrites the `version` field in `package.json` (declared under `release.version-files` in `.joy/project.yaml`), then `joy release record` commits the bump and creates a `v<version>` tag locally. `just publish` pushes the commit and tag.
+
+The pushed tag triggers the [Release workflow](.github/workflows/release.yml), which rebuilds on GitHub Actions, packages the extension with `vsce`, and attaches the `.vsix` to a fresh GitHub Release. The workflow also runs `npm version --allow-same-version` as a safety net in case the tag and `package.json` ever drift.
+
+Version numbering follows semantic versioning. Marketplace + Open VSX publishing is set up under `JVSC-0006-79`.
 
 ## Commit Messages
 

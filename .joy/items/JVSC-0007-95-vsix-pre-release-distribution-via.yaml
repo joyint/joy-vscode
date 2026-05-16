@@ -15,7 +15,7 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-16T01:20:05.616133811Z
-updated: 2026-05-16T02:16:58.272453796Z
+updated: 2026-05-16T02:22:35.293814080Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-16T01:20:09.210461311Z
@@ -23,6 +23,10 @@ history:
 - date: 2026-05-16T02:13:26.599949024Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-16T02:16:58.272453796Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:21:03.553739846Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T02:22:35.293814080Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: |-
   Make the extension installable for early testers before any marketplace publishing.
@@ -111,3 +115,32 @@ comments:
     Cross-platform check (per JVSC-0008-7C): VSIX is platform-agnostic JS, both install paths (code --install-extension, Command Palette) work on Linux, macOS, and Windows; release runs on linux only because the artifact is universal.
 
     Verification: npm run check (32 unit) + npm run build (10.4 KB bundle) + npm run package locally produces a clean 9.72 KB joy-vscode-0.0.0.vsix with just runtime artifacts.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T02:21:08.977493271Z
+  text: |-
+    Plan (follow-up): wire package.json into joy release bump.
+
+    Add release.version-files to .joy/project.yaml mirroring joy/.joy/project.yaml exactly (block placed right after the file-final 'created:' timestamp, indentation matches). User has explicitly authorized hand-editing under .joy/ for this one operation because the joy CLI currently has no subcommand for setting version-files.
+
+    After this:
+    - 'joy release bump patch' (called from 'just release patch') will rewrite package.json's version field
+    - the existing release.yml workflow's 'npm version --no-git-tag-version --allow-same-version' becomes a no-op safety net rather than the source of truth
+    - CONTRIBUTING.md 'Releasing' section gets updated to describe the canonical flow ('just release patch' then 'just publish')
+
+    Verification step: run 'joy release show' after the edit to confirm the YAML still parses cleanly and joy recognizes the version-files entry.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T02:22:34.290827624Z
+  text: |-
+    [x] joy-release integration wired up.
+
+    .joy/project.yaml gains release.version-files: package.json, mirroring joy/.joy/project.yaml structurally (release block placed right after the file-final 'created:' timestamp, two-space indent matching the rest of the file).
+
+    Verification:
+    - joy release show parses the file cleanly and shows the next-release preview with the 3 closed items (JVSC-0002-71, JVSC-0003-E2, JVSC-0008-7C) and contributors.
+    - joy release bump patch is correctly guarded by the manage capability (AI member ai:claude@joy is refused). Actual bump must be run by a human-with-manage; that is the right boundary and we will not test it from the AI session.
+
+    CONTRIBUTING.md Releasing section rewritten:
+    - Canonical flow is 'just release patch' (joy release bump + record) then 'just publish' (git push commits + tag)
+    - The release.yml workflow's 'npm version --allow-same-version' is now described as a safety net for tag/package.json drift, not the source of truth
+
+    Open verification step (for the human reviewer): the first 'just release patch' should be observed to rewrite package.json's '"version": "0.0.0"' to the bumped value. If joy's bumper only understands Cargo-style 'version = "x.y.z"' assignments and not the JSON quoted-key form, that would surface here. The release.yml safety net catches that case at workflow time, but the canonical flow would need a follow-up (e.g. a custom version-files format hint, or a pre-bump npm version step in the justfile).

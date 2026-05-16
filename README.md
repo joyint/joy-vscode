@@ -22,7 +22,7 @@ Updates ship as new GitHub releases - install the newer VSIX over the old one wi
 
 The [joy CLI](https://github.com/joyint/joy) must be installed on your system. The extension shells out to it for every read and write and does not bundle a binary.
 
-On first activation the extension auto-discovers `joy` via PATH, your login shell, and common install locations (`~/.local/bin`, `/usr/local/bin`, `/opt/homebrew/bin`, `~/go/bin`, `~/.cargo/bin`, plus the Windows equivalents). The resolved path appears in the status bar; click it to override via a guided dialog. The path can also be set explicitly via the `joy.executablePath` setting.
+On first activation the extension auto-discovers `joy` via PATH, your login shell, and common install locations (`~/.local/bin`, `/usr/local/bin`, `/opt/homebrew/bin`, `~/.cargo/bin`, plus the Windows equivalents). The resolved path appears in the status bar; click it to override via a guided dialog. The path can also be set explicitly via the `joy.executablePath` setting.
 
 ## Features
 

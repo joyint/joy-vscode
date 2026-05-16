@@ -28,3 +28,8 @@
 2026-05-16T02:13:39.715Z JVSC-0007-95 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-16T02:16:57.404Z JVSC-0007-95 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-16T02:16:58.276Z JVSC-0007-95 item.status_changed "in-progress -> review" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T02:21:03.557Z JVSC-0007-95 item.status_changed "review -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T02:21:08.981Z JVSC-0007-95 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T02:21:41.335Z release guard.denied "AI member ai:claude@joy cannot perform manage actions" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T02:22:34.295Z JVSC-0007-95 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-16T02:22:35.297Z JVSC-0007-95 item.status_changed "in-progress -> review" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
