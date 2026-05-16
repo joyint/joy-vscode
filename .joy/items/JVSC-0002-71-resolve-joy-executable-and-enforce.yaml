@@ -1,13 +1,69 @@
 id: JVSC-0002-71
 title: Resolve joy executable and enforce minimum version
 type: task
-status: new
+status: review
 priority: medium
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 capabilities:
 - implement
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:18:55.544112342Z
-updated: 2026-05-15T10:18:55.544112342Z
+updated: 2026-05-16T01:49:31.264942687Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-16T01:46:15.002194416Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-16T01:49:31.264942687Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Locate the joy binary at extension activation: read joy.executablePath setting, fall back to PATH lookup. If missing, show a clear status bar message and command palette entry pointing to install docs. On resolve, run joy --version --json and compare against a minimum version declared in package.json. If too old, surface a notification with a Run joy update action. The resolver is reused by all other extension features and any future companion modules.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T01:46:30.047538719Z
+  text: |-
+    Plan: one commit, single new module + extension wiring.
+
+    - src/joyResolver.ts: pure resolver class with three injection points (getConfiguredPath, run, shellLookup). resolve() returns a tagged union: ok | missing | tooOld | unreadable. Order of resolution:
+      1. configured path from joy.executablePath setting (probe directly, never fall back)
+      2. bare 'joy' on the extension-host PATH
+      3. login-shell lookup via bash -lc 'command -v joy' to pick up ~/.local/bin and other locations that Linux GUI launchers do not source
+    - parseVersion(stdout) and compareVersions(a, b) as pure exports so unit tests can hit them directly. compareVersions does dotted numeric compare; no semver dep.
+    - package.json gets a top-level joyCli.minimumVersion field (start at 0.15.0 to match joy 0.15.5 we are currently running against). Also adds command joy.openInstallDocs and contributes.viewsWelcome on joyBacklog with content gated by context key joy:cliMissing.
+    - extension.ts: on activate, await resolver.resolve(). Wire the resolved executable into JoyClient via a mutable holder. Status bar item (left-aligned, priority 100) hidden when ok, warning background when missing/tooOld/unreadable; clicking opens install docs. setContext joy:cliMissing drives the welcome view in the empty tree. onDidChangeConfiguration(joy.executablePath) and joy.refresh both trigger a re-resolve.
+    - BacklogProvider.getChildren swallows load failures so the welcome view can take over instead of the tree silently throwing - the error is still reported on the status bar item.
+
+    Tests:
+    - unit/joyResolver.test.ts: compareVersions ordering, parseVersion against real joy --version output shape, resolve flow for each branch (configured-ok, configured-missing, fallback-shell, all-missing, tooOld, unreadable)
+    - integration: joy.openInstallDocs is registered; viewsWelcome is contributed under joyBacklog.
+
+    Scope kept tight to this story: a dedicated CLI-presence status bar item, separate from the session-indicator status bar item in JVSC-0005-FD. Both can coexist.
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-16T01:49:27.707810278Z
+  text: |-
+    [x] One commit, one new module.
+
+    src/joyResolver.ts:
+    - JoyResolver class with injected deps (getConfiguredPath, run, shellLookup, minimumVersion)
+    - resolve() returns a tagged union: ok | missing | tooOld | unreadable
+    - Resolution order: configured path (probe directly, no fallback) -> bare 'joy' on PATH -> login-shell lookup via bash -lc 'command -v joy' (skipped on Windows)
+    - parseVersion(stdout) extracts the semver-like core from output like 'joy 0.15.5\n'; compareVersions(a, b) does numeric dotted compare (no semver dep)
+
+    package.json:
+    - joyCli.minimumVersion: '0.15.0' (matches joy 0.15.5 we run against)
+    - joy.openInstallDocs command opens https://github.com/joyint/joy
+    - contributes.viewsWelcome shows install + settings link in joyBacklog when context key joy:cliMissing is set
+
+    src/extension.ts:
+    - On activate: instantiate JoyResolver, await performResolve(), wire resolved path into JoyClient via mutable holder
+    - StatusBarItem (left, priority 100): hidden when ok; warning-background when missing/tooOld with click target joy.openInstallDocs; error-icon when unreadable
+    - onDidChangeConfiguration('joy.executablePath') and joy.refresh both trigger a re-resolve
+    - BacklogProvider.getChildren now swallows load failures so the empty array lets viewsWelcome take over (status bar surfaces the underlying error)
+
+    Tests:
+    - 13 new unit tests (compareVersions ordering and edge cases, parseVersion, every JoyResolver.resolve branch including configured-not-found, fallback-to-shell, all-missing, tooOld, unreadable, non-ENOENT errors)
+    - 3 new integration tests (joy.openInstallDocs registered, viewsWelcome contributed with joy:cliMissing gate, joyCli.minimumVersion declared)
+    - Totals: 25 unit + 12 integration, all green
+
+    Verification: in a fresh Extension Development Host on Linux without joy on PATH, the activity bar Backlog view should now show 'The joy CLI was not found. [Install joy] [Set executable path]' instead of erroring on first invocation. The status bar item displays 'Joy CLI: not found' with the install-docs click target.

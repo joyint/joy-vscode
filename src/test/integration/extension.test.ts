@@ -9,6 +9,7 @@ const EXPECTED_COMMANDS = [
   'joy.submit',
   'joy.close',
   'joy.reopen',
+  'joy.openInstallDocs',
 ] as const;
 
 describe('extension activation', () => {
@@ -41,5 +42,28 @@ describe('extension activation', () => {
       views.some((v) => v.id === 'joyBacklog'),
       'joyBacklog view should be contributed under the joy container',
     );
+  });
+
+  it('contributes a welcome view gated on joy:cliMissing', () => {
+    const extension = vscode.extensions.getExtension('joyint.joy-vscode');
+    assert.ok(extension);
+    const welcome = (extension.packageJSON.contributes?.viewsWelcome ?? []) as Array<{
+      view: string;
+      when: string;
+    }>;
+    const entry = welcome.find((w) => w.view === 'joyBacklog');
+    assert.ok(entry, 'joyBacklog welcome view should be contributed');
+    assert.ok(
+      entry.when?.includes('joy:cliMissing'),
+      'welcome view should be gated by joy:cliMissing',
+    );
+  });
+
+  it('declares a joyCli.minimumVersion', () => {
+    const extension = vscode.extensions.getExtension('joyint.joy-vscode');
+    assert.ok(extension);
+    const minimum = extension.packageJSON.joyCli?.minimumVersion;
+    assert.equal(typeof minimum, 'string');
+    assert.ok(/\d+\.\d+\.\d+/.test(minimum));
   });
 });

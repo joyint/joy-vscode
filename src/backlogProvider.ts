@@ -59,6 +59,8 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
       }
       try {
         this.cachedRoots = await this.pendingLoad;
+      } catch {
+        this.cachedRoots = [];
       } finally {
         this.pendingLoad = undefined;
       }

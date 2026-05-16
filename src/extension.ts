@@ -1,17 +1,37 @@
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import * as vscode from 'vscode';
 import type { BacklogNode } from './backlog';
 import { BacklogProvider } from './backlogProvider';
 import { JoyClient, JoyError, JoySessionExpiredError } from './joyClient';
+import { JoyResolver, type JoyResolution } from './joyResolver';
+
+const execFileAsync = promisify(execFile);
+
+const INSTALL_DOCS_URL = 'https://github.com/joyint/joy';
+const SHELL_LOOKUP_TIMEOUT_MS = 3000;
 
 type LifecycleAction = 'start' | 'submit' | 'close' | 'reopen';
 
 export function activate(context: vscode.ExtensionContext): void {
+  const minimumVersion = readMinimumVersion(context);
+
+  let resolvedExecutable = 'joy';
+
   const client = new JoyClient({
-    resolveExecutable: () => {
-      const configured = vscode.workspace.getConfiguration('joy').get<string>('executablePath');
-      return configured && configured.trim().length > 0 ? configured.trim() : 'joy';
-    },
+    resolveExecutable: () => resolvedExecutable,
     resolveCwd: () => vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
+  });
+
+  const resolver = new JoyResolver({
+    getConfiguredPath: () =>
+      vscode.workspace.getConfiguration('joy').get<string>('executablePath') ?? undefined,
+    minimumVersion,
+    run: async (executable, args) => {
+      const { stdout, stderr } = await execFileAsync(executable, args, { timeout: 5000 });
+      return { stdout, stderr };
+    },
+    shellLookup,
   });
 
   const provider = new BacklogProvider(client);
@@ -20,13 +40,84 @@ export function activate(context: vscode.ExtensionContext): void {
     showCollapseAll: true,
   });
 
-  context.subscriptions.push(treeView);
-  registerCommands(context, client, provider, treeView);
+  const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+  statusItem.name = 'Joy CLI';
+
+  context.subscriptions.push(treeView, statusItem);
+
+  const performResolve = async (): Promise<void> => {
+    const resolution = await resolver.resolve();
+    if (resolution.kind === 'ok') {
+      resolvedExecutable = resolution.executable;
+    }
+    applyResolution(statusItem, resolution);
+    provider.refresh();
+  };
+
+  registerCommands(context, client, provider, treeView, performResolve);
   registerWatcher(context, provider);
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration('joy.executablePath')) {
+        void performResolve();
+      }
+    }),
+  );
+
+  void performResolve();
 }
 
 export function deactivate(): void {
   // intentionally empty
+}
+
+function readMinimumVersion(context: vscode.ExtensionContext): string {
+  const pkg = context.extension.packageJSON as { joyCli?: { minimumVersion?: string } };
+  return pkg.joyCli?.minimumVersion ?? '0.0.0';
+}
+
+async function shellLookup(): Promise<string | undefined> {
+  if (process.platform === 'win32') {
+    return undefined;
+  }
+  try {
+    const { stdout } = await execFileAsync('bash', ['-lc', 'command -v joy 2>/dev/null'], {
+      timeout: SHELL_LOOKUP_TIMEOUT_MS,
+    });
+    const path = stdout.trim();
+    return path.length > 0 ? path : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function applyResolution(item: vscode.StatusBarItem, resolution: JoyResolution): void {
+  const setMissing = resolution.kind === 'missing';
+  void vscode.commands.executeCommand('setContext', 'joy:cliMissing', setMissing);
+
+  if (resolution.kind === 'ok') {
+    item.hide();
+    return;
+  }
+
+  item.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+  if (resolution.kind === 'missing') {
+    item.text = '$(warning) Joy CLI: not found';
+    item.tooltip = resolution.configured
+      ? `Configured path "${resolution.configured}" did not resolve. Adjust joy.executablePath or install joy.`
+      : 'joy was not found on PATH or via login shell. Install joy or set joy.executablePath.';
+    item.command = 'joy.openInstallDocs';
+  } else if (resolution.kind === 'tooOld') {
+    item.text = `$(warning) Joy CLI: ${resolution.version} < ${resolution.minimum}`;
+    item.tooltip = `Update joy to at least ${resolution.minimum}.`;
+    item.command = 'joy.openInstallDocs';
+  } else {
+    item.text = '$(error) Joy CLI: unreadable';
+    item.tooltip = resolution.error;
+    item.command = undefined;
+  }
+  item.show();
 }
 
 function registerCommands(
@@ -34,6 +125,7 @@ function registerCommands(
   client: JoyClient,
   provider: BacklogProvider,
   treeView: vscode.TreeView<BacklogNode>,
+  performResolve: () => Promise<void>,
 ): void {
   const sub = (command: string, handler: (...args: unknown[]) => unknown): void => {
     context.subscriptions.push(vscode.commands.registerCommand(command, handler));
@@ -48,7 +140,13 @@ function registerCommands(
     }
   });
 
-  sub('joy.refresh', () => provider.refresh());
+  sub('joy.openInstallDocs', () => {
+    void vscode.env.openExternal(vscode.Uri.parse(INSTALL_DOCS_URL));
+  });
+
+  sub('joy.refresh', async () => {
+    await performResolve();
+  });
 
   sub('joy.show', async (arg) => {
     const node = resolveNode(arg, treeView);

@@ -22,6 +22,9 @@
   },
   "main": "./dist/extension.js",
   "activationEvents": [],
+  "joyCli": {
+    "minimumVersion": "0.15.0"
+  },
   "contributes": {
     "viewsContainers": {
       "activitybar": [
@@ -77,6 +80,18 @@
         "command": "joy.reopen",
         "title": "Reopen",
         "category": "Joy"
+      },
+      {
+        "command": "joy.openInstallDocs",
+        "title": "Open Install Docs",
+        "category": "Joy"
+      }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "joyBacklog",
+        "contents": "The joy CLI was not found.\n[Install joy](https://github.com/joyint/joy)\n[Set executable path](command:workbench.action.openSettings?%22joy.executablePath%22)",
+        "when": "joy:cliMissing"
       }
     ],
     "menus": {
