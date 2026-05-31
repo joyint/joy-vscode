@@ -29,6 +29,18 @@ auto-commit:
 install:
     npm ci
 
+# Check tools and deps.
+doctor:
+    #!/usr/bin/env bash
+    red=$'\033[31m' orange=$'\033[38;5;208m' reset=$'\033[0m'
+    ok()   { local v; v=$("$1" --version 2>/dev/null) && echo "  $2: $v" || echo "  $2: ok"; }
+    miss() { printf "  %s%s: MISSING%s\n" "$red" "$1" "$reset"; }
+    opt()  { printf "  %s%s: MISSING (%s)%s\n" "$orange" "$1" "$2" "$reset"; }
+    command -v node >/dev/null && ok node node || miss node
+    command -v npm  >/dev/null && ok npm npm   || miss npm
+    test -x node_modules/.bin/tsc             && echo "  tsc (node_modules): ok" || opt "tsc (node_modules)" "run just joy-vscode install"
+    command -v gh   >/dev/null && ok gh "gh (GitHub CLI)" || opt "gh" "https://cli.github.com"
+
 # Typecheck, lint, format-check, and run unit tests.
 check:
     npm run check
