@@ -36,7 +36,18 @@ doctor:
     ok()   { local v; v=$("$1" --version 2>/dev/null) && echo "  $2: $v" || echo "  $2: ok"; }
     miss() { printf "  %s%s: MISSING%s\n" "$red" "$1" "$reset"; }
     opt()  { printf "  %s%s: MISSING (%s)%s\n" "$orange" "$1" "$2" "$reset"; }
+    # Warn if the active node major differs from the nearest .nvmrc (portable: nvm/fnm/asdf all read it).
+    nvmrc_check() {
+        local want have file
+        for file in ../.nvmrc .nvmrc; do [ -f "$file" ] && { want=$(tr -d '[:space:]' <"$file"); break; }; done
+        { [ -n "$want" ] && command -v node >/dev/null; } || return 0
+        want=${want#v}; want=${want%%.*}
+        case "$want" in ''|*[!0-9]*) return 0;; esac   # non-numeric alias (e.g. lts/jod): can't compare, skip
+        have=$(node --version | sed 's/^v//;s/\..*//')
+        [ "$want" = "$have" ] || printf "  %snode: v%s but .nvmrc wants %s (run 'nvm use')%s\n" "$orange" "$(node --version | sed s/^v//)" "$want" "$reset"
+    }
     command -v node >/dev/null && ok node node || miss node
+    nvmrc_check
     command -v npm  >/dev/null && ok npm npm   || miss npm
     test -x node_modules/.bin/tsc             && echo "  tsc (node_modules): ok" || opt "tsc (node_modules)" "run just joy-vscode install"
     command -v gh   >/dev/null && ok gh "gh (GitHub CLI)" || opt "gh" "https://cli.github.com"
