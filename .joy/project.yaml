@@ -1,6 +1,9 @@
 name: joy-vscode
 acronym: JVSC
 language: en
+docs:
+  architecture: ARCHITECTURE.md
+  vision: VISION.md
 members:
   ai:claude@joy:
     capabilities:
