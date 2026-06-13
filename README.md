@@ -35,8 +35,8 @@ On first activation the extension auto-discovers `joy` via PATH, your login shel
 
 ## Documentation
 
-- [Vision](docs/dev/vision/README.md) - what's in and out of scope
-- [Architecture](docs/dev/architecture/README.md) - how the extension talks to the joy CLI
+- [Vision](VISION.md) - what's in and out of scope
+- [Architecture](ARCHITECTURE.md) - how the extension talks to the joy CLI
 - [Contributing](CONTRIBUTING.md) - coding conventions, development setup, commit messages
 
 ## Status
