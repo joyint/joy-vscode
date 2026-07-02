@@ -1,0 +1,9 @@
+{
+  "participants": {
+    "ai:claude@joy": {
+      "mode": "plan",
+      "entrypoint": null,
+      "reach": null
+    }
+  }
+}
