@@ -5,5 +5,7 @@
       "entrypoint": null,
       "reach": null
     }
-  }
+  },
+  "selected_adapter": null,
+  "auto_sync": true
 }
