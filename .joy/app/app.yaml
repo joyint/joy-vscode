@@ -1,5 +1,10 @@
 {
   "participants": {
+    "ai:vibe@joy": {
+      "mode": "accept-edits",
+      "entrypoint": null,
+      "reach": null
+    },
     "ai:claude@joy": {
       "mode": "plan",
       "entrypoint": null,
