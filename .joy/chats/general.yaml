@@ -3,7 +3,7 @@ kind: general
 title: General
 subtitle: for all team members
 created: 2026-07-04T20:01:03.483912307Z
-updated: 2026-07-04T20:02:27.020754178Z
+updated: 2026-07-04T20:03:59.954348256Z
 participants: []
 messages:
 - at: 2026-07-04T20:01:03.485897443Z
@@ -15,3 +15,6 @@ messages:
 - at: 2026-07-04T20:02:27.020754178Z
   author: horst.schwarz@joydev.com
   text: ein kleiner Test
+- at: 2026-07-04T20:03:59.954348256Z
+  author: horst.schwarz@joydev.com
+  text: der hat funktioniert
