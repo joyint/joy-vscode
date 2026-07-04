@@ -3,7 +3,7 @@ item: JVSC-0009-60
 type: implement
 actor: ai:claude@joy
 delegated_by: horst.schwarz@joydev.com
-status: queued
+status: running
 budget:
   max_cents: 500
   currency: EUR
@@ -11,4 +11,4 @@ cost:
   spent_cents: 0
   tokens: 0
 created: 2026-07-04T14:44:40.195025814Z
-updated: 2026-07-04T14:44:40.195025814Z
+updated: 2026-07-04T14:44:41.424458508Z
