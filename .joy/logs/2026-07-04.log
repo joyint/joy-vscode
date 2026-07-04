@@ -4,3 +4,4 @@
 2026-07-04T14:45:38.516Z eb6899df59a4 job.delegated "implement on JVSC-0009-60" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-04T14:45:39.705Z eb6899df59a4 job.status_changed "running" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-04T14:45:42.351Z eb6899df59a4 job.status_changed "awaiting-approval" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-04T14:45:48.161Z 72ab4f502d16 job.reviewed "approve" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

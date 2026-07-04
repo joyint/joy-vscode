@@ -3,7 +3,7 @@ item: JVSC-0009-60
 type: implement
 actor: ai:claude@joy
 delegated_by: horst.schwarz@joydev.com
-status: awaiting-approval
+status: done
 branch: joy/claude/JVSC-0009-60-72ab4f502d16
 budget:
   max_cents: 500
@@ -12,5 +12,9 @@ cost:
   spent_cents: 1
   tokens: 223
 created: 2026-07-04T14:44:40.195025814Z
-updated: 2026-07-04T14:44:43.773709654Z
+updated: 2026-07-04T14:45:48.159561600Z
 result: created CONTRIBUTING.md -- proposal on branch joy/claude/JVSC-0009-60-72ab4f502d16 awaiting approval
+reviews:
+- at: 2026-07-04T14:45:48.159561600Z
+  by: horst.schwarz@joydev.com
+  decision: approve
