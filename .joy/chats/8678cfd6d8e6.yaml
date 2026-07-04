@@ -2,10 +2,13 @@ id: 8678cfd6d8e6
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-04T17:34:28.032713051Z
-updated: 2026-07-04T18:52:54.662322152Z
+updated: 2026-07-04T18:53:05.087769848Z
 participants:
 - horst.schwarz@joydev.com
 messages:
 - at: 2026-07-04T18:52:54.662322152Z
   author: horst.schwarz@joydev.com
   text: /joy ls --tree
+- at: 2026-07-04T18:53:05.087769848Z
+  author: horst.schwarz@joydev.com
+  text: /joy roadmap
