@@ -2,7 +2,10 @@ id: 04272b9899b3
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-04T21:02:57.684029520Z
-updated: 2026-07-04T21:02:57.684029520Z
+updated: 2026-07-04T21:33:37.891834204Z
 participants:
 - horst.schwarz@joydev.com
-messages: []
+messages:
+- at: 2026-07-04T21:33:37.891834204Z
+  author: horst.schwarz@joydev.com
+  text: /bi  velocity 2m
