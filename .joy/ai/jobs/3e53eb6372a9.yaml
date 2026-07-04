@@ -1,0 +1,14 @@
+id: 3e53eb6372a9
+item: JVSC-0006-79
+type: implement
+actor: ai:claude@joy
+delegated_by: horst.schwarz@joydev.com
+status: queued
+budget:
+  max_cents: 500
+  currency: EUR
+cost:
+  spent_cents: 0
+  tokens: 0
+created: 2026-07-04T17:28:45.618160766Z
+updated: 2026-07-04T17:28:45.618160766Z

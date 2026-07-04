@@ -5,3 +5,5 @@
 2026-07-04T14:45:39.705Z eb6899df59a4 job.status_changed "running" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-04T14:45:42.351Z eb6899df59a4 job.status_changed "awaiting-approval" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-04T14:45:48.161Z 72ab4f502d16 job.reviewed "approve" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-04T15:33:21.304Z JVSC-0001-D4 guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
+2026-07-04T17:28:45.619Z 3e53eb6372a9 job.delegated "implement on JVSC-0006-79" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
