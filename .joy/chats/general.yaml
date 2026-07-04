@@ -3,7 +3,7 @@ kind: general
 title: General
 subtitle: for all team members
 created: 2026-07-04T20:01:03.483912307Z
-updated: 2026-07-04T20:03:59.954348256Z
+updated: 2026-07-04T20:04:26.525426023Z
 participants: []
 messages:
 - at: 2026-07-04T20:01:03.485897443Z
@@ -18,3 +18,6 @@ messages:
 - at: 2026-07-04T20:03:59.954348256Z
   author: horst.schwarz@joydev.com
   text: der hat funktioniert
+- at: 2026-07-04T20:04:26.525426023Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls --tree
