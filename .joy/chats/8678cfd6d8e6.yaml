@@ -2,7 +2,7 @@ id: 8678cfd6d8e6
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-04T17:34:28.032713051Z
-updated: 2026-07-04T18:53:05.087769848Z
+updated: 2026-07-04T18:57:56.236787946Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -12,3 +12,6 @@ messages:
 - at: 2026-07-04T18:53:05.087769848Z
   author: horst.schwarz@joydev.com
   text: /joy roadmap
+- at: 2026-07-04T18:57:56.236787946Z
+  author: horst.schwarz@joydev.com
+  text: /bi velocity 6m
