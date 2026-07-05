@@ -3,7 +3,11 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T20:52:48.028166Z
-updated: 2026-07-05T20:52:48.028166Z
+updated: 2026-07-05T20:52:57.569540Z
 participants:
 - horst.schwarz@joydev.com
-messages: []
+messages:
+- id: d4f01952-c08c-4cd9-8422-da98fc016f42
+  at: 2026-07-05T20:52:57.569540Z
+  author: horst.schwarz@joydev.com
+  text: /joy board
