@@ -3,7 +3,7 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T15:27:52.990884427Z
-updated: 2026-07-05T15:27:56.899478891Z
+updated: 2026-07-05T15:28:17.183272828Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -22,3 +22,7 @@ messages:
 
     For more information, try '--help'.
   kind: error
+- id: 83696966-2c56-4446-9e9d-3ab4c696a509
+  at: 2026-07-05T15:28:17.183272828Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls --tree
