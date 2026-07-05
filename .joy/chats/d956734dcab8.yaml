@@ -2,10 +2,16 @@ id: d956734dcab8
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-04T21:02:47.997482734Z
-updated: 2026-07-04T21:02:55.395948627Z
+updated: 2026-07-05T13:36:31.716810Z
 participants:
 - horst.schwarz@joydev.com
 messages:
-- at: 2026-07-04T21:02:55.395948627Z
+- id: legacy-815ec00dd3af59f8b9fb3ff9
+  at: 2026-07-04T21:02:55.395948627Z
   author: horst.schwarz@joydev.com
   text: /joy ls --tree
+- id: c1828308-c861-4f37-b63b-143b451cf037
+  at: 2026-07-05T13:36:31.716810Z
+  author: horst.schwarz@joydev.com
+  text: Load failed
+  kind: error
