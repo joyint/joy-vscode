@@ -3,7 +3,7 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T15:27:52.990884427Z
-updated: 2026-07-05T15:29:29.462611659Z
+updated: 2026-07-05T15:29:29.718302099Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -46,3 +46,8 @@ messages:
   at: 2026-07-05T15:29:29.462611659Z
   author: horst.schwarz@joydev.com
   text: /joy milestone
+- id: a4b4e637-1b55-433a-804a-a41ce96eaf08
+  at: 2026-07-05T15:29:29.718302099Z
+  author: horst.schwarz@joydev.com
+  text: 'Unsupported: joy milestone (try ls, board, roadmap, sync, add, edit, comment, approve, start, submit, close, rework, defer, reopen)'
+  kind: error
