@@ -2,8 +2,14 @@ id: 60f360ed5824
 kind: direct
 title: Local Test
 created_by: horst.schwarz@joydev.com
+read_only: true
 created: 2026-07-05T13:12:58.411379632Z
-updated: 2026-07-05T13:37:15.014802Z
+updated: 2026-07-05T13:37:29.816925Z
 participants:
 - horst.schwarz@joydev.com
-messages: []
+messages:
+- id: 019f327f-94d8-7262-a295-cea44acc9078
+  at: 2026-07-05T13:37:29.816925Z
+  author: horst.schwarz@joydev.com
+  text: '@horst.schwarz@joydev.com deleted this chat'
+  kind: notice
