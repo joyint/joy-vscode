@@ -3,7 +3,7 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T15:27:52.990884427Z
-updated: 2026-07-05T15:28:17.183272828Z
+updated: 2026-07-05T15:29:23.229957223Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -26,3 +26,7 @@ messages:
   at: 2026-07-05T15:28:17.183272828Z
   author: horst.schwarz@joydev.com
   text: /joy ls --tree
+- id: d7571272-edad-48e6-929d-6f05e9aacf55
+  at: 2026-07-05T15:29:23.229957223Z
+  author: horst.schwarz@joydev.com
+  text: /bi velocity -m2
