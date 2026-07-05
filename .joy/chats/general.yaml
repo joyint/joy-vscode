@@ -3,7 +3,7 @@ kind: general
 title: General
 subtitle: for all team members
 created: 2026-07-04T20:01:03.483912307Z
-updated: 2026-07-05T13:36:29.418012Z
+updated: 2026-07-05T17:58:23.859019872Z
 participants: []
 messages:
 - id: legacy-1006571fb0e325403bf8ee68
@@ -41,3 +41,7 @@ messages:
   author: horst.schwarz@joydev.com
   text: Load failed
   kind: error
+- id: a0fba37d-61e2-4805-8f59-cba38779c0dc
+  at: 2026-07-05T17:58:23.859019872Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls
