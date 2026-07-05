@@ -1,0 +1,57 @@
+id: 56aad260d2ef
+kind: direct
+title: New chat
+created_by: horst.schwarz@joydev.com
+created: 2026-07-05T15:27:52.990884427Z
+updated: 2026-07-05T15:29:40.083603613Z
+participants:
+- horst.schwarz@joydev.com
+messages:
+- id: 1edb69c3-c48a-4f90-b80b-cf2a4531890c
+  at: 2026-07-05T15:27:56.662823063Z
+  author: horst.schwarz@joydev.com
+  text: /bi milestone
+- id: 50f7fe2e-1178-4db4-ba65-23b9a1cad29f
+  at: 2026-07-05T15:27:56.899478891Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: the following required arguments were not provided:
+      <ID>
+
+    Usage: joy-bi milestone <ID>
+
+    For more information, try '--help'.
+  kind: error
+- id: 83696966-2c56-4446-9e9d-3ab4c696a509
+  at: 2026-07-05T15:28:17.183272828Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls --tree
+- id: d7571272-edad-48e6-929d-6f05e9aacf55
+  at: 2026-07-05T15:29:23.229957223Z
+  author: horst.schwarz@joydev.com
+  text: /bi velocity -m2
+- id: 02ce9046-72d0-4c91-9b19-6303a77322ec
+  at: 2026-07-05T15:29:23.468904026Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
+- id: e1a04fa5-3c26-45bd-b24c-e509662af15b
+  at: 2026-07-05T15:29:29.462611659Z
+  author: horst.schwarz@joydev.com
+  text: /joy milestone
+- id: a4b4e637-1b55-433a-804a-a41ce96eaf08
+  at: 2026-07-05T15:29:29.718302099Z
+  author: horst.schwarz@joydev.com
+  text: 'Unsupported: joy milestone (try ls, board, roadmap, sync, add, edit, comment, approve, start, submit, close, rework, defer, reopen)'
+  kind: error
+- id: 84d2cb19-9841-4a9c-83a1-91d8c8ea1ba5
+  at: 2026-07-05T15:29:40.083603613Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls

@@ -109,3 +109,8 @@ messages:
   author: horst.schwarz@joydev.com
   text: '@horst.schwarz@joydev.com deleted this chat'
   kind: notice
+- id: 019f32e4-9ccb-7f52-93c1-d73ceda75517
+  at: 2026-07-05T15:27:50.987105284Z
+  author: horst.schwarz@joydev.com
+  text: '@horst.schwarz@joydev.com deleted this chat'
+  kind: notice
