@@ -1,10 +1,16 @@
 id: 93167ceef403
 title: New team chat
 created_by: horst.schwarz@joydev.com
+read_only: true
 created: 2026-07-05T12:21:19.800472446Z
-updated: 2026-07-05T12:21:19.800472446Z
+updated: 2026-07-05T12:21:28.768754114Z
 participants:
 - ai:claude@joy
 - ai:copilot@joy
 - horst.schwarz@joydev.com
-messages: []
+messages:
+- id: 019f3239-fc40-7f83-9aee-65bbd8089147
+  at: 2026-07-05T12:21:28.768754114Z
+  author: horst.schwarz@joydev.com
+  text: '@horst.schwarz@joydev.com deleted this chat'
+  kind: notice
