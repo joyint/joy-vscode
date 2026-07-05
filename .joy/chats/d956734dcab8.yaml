@@ -1,8 +1,9 @@
 id: d956734dcab8
 title: New chat
 created_by: horst.schwarz@joydev.com
+read_only: true
 created: 2026-07-04T21:02:47.997482734Z
-updated: 2026-07-05T13:36:31.716810Z
+updated: 2026-07-05T13:37:27.185700Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -15,3 +16,8 @@ messages:
   author: horst.schwarz@joydev.com
   text: Load failed
   kind: error
+- id: 019f327f-8a91-75b0-986a-705745b9cbff
+  at: 2026-07-05T13:37:27.185700Z
+  author: horst.schwarz@joydev.com
+  text: '@horst.schwarz@joydev.com deleted this chat'
+  kind: notice
