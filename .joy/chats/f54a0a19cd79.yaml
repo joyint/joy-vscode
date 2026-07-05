@@ -3,7 +3,7 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T20:52:48.028166Z
-updated: 2026-07-05T20:55:39.880726Z
+updated: 2026-07-05T20:55:40.242629Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -31,3 +31,8 @@ messages:
   at: 2026-07-05T20:55:39.880726Z
   author: horst.schwarz@joydev.com
   text: /joy auth
+- id: 45a39514-015c-4f64-86c3-6fbccb02fdda
+  at: 2026-07-05T20:55:40.242629Z
+  author: horst.schwarz@joydev.com
+  text: 'Unsupported: joy auth (try ls, board, roadmap, sync, add, edit, comment, approve, start, submit, close, rework, defer, reopen)'
+  kind: error
