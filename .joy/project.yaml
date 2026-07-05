@@ -59,6 +59,33 @@ members:
           assign: {}
       signed_at: 2026-05-15T10:11:56.652772262Z
       signature: 9890ba40cdb8efc44ca87409b8eb47ac9da53b4a1261488ac9575e2eeb9bcb9ca5b53b9844a7277ada0ec5253c18871faaa8000cff43fafa1093855967f80908
+  ai:vibe@joy:
+    capabilities:
+      conceive: {}
+      plan: {}
+      design: {}
+      implement: {}
+      test: {}
+      review: {}
+      document: {}
+      create: {}
+      assign: {}
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: ai:vibe@joy
+        capabilities:
+          conceive: {}
+          plan: {}
+          design: {}
+          implement: {}
+          test: {}
+          review: {}
+          document: {}
+          create: {}
+          assign: {}
+      signed_at: 2026-07-05T06:45:24.560608Z
+      signature: e61502571c879da40d631ff93186d5c8e87f79eded8ad65a0ca3dd265ccb9743cce1b89aecb4146e559b5eb8a478cb2a26e69dc4d6d6e4ba8e7e594a4466e205
   horst.schwarz@joydev.com:
     capabilities: all
     verify_key: 84004b374c74d2c4a6e1875cdd165714dc80359bc3582a0bf2969f047ca1d5d9

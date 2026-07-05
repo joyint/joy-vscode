@@ -1,0 +1,20 @@
+id: a9bb89ee4380
+title: joy auth
+created_by: horst.schwarz@joydev.com
+created: 2026-07-05T06:48:53.597909Z
+updated: 2026-07-05T06:49:13.995567Z
+participants:
+- ai:claude@joy
+- ai:copilot@joy
+- ai:vibe@joy
+- horst.schwarz@joydev.com
+messages:
+- id: ca3c17a3-86a1-4572-8b4d-77ddc7fa2b4d
+  at: 2026-07-05T06:49:13.955009Z
+  author: horst.schwarz@joydev.com
+  text: /joy auth
+- id: 1f519dfa-c12f-434c-8460-18d2fdae2a22
+  at: 2026-07-05T06:49:13.995567Z
+  author: horst.schwarz@joydev.com
+  text: 'Unsupported: joy auth (try ls, board, roadmap, sync, add, edit, comment, approve, start, submit, close, rework, defer, reopen)'
+  kind: error

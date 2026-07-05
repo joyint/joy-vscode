@@ -1,0 +1,23 @@
+id: 33f9a69fd970
+title: joy test
+created_by: horst.schwarz@joydev.com
+created: 2026-07-05T06:44:23.734991Z
+updated: 2026-07-05T10:19:00.586644Z
+participants:
+- ai:claude@joy
+- ai:copilot@joy
+- horst.schwarz@joydev.com
+messages:
+- id: a510e2ce-5722-4627-a713-869fc5661674
+  at: 2026-07-05T06:44:29.756248Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls --tree
+- id: 5cdc6e15-d621-43d8-af97-ea95b192f052
+  at: 2026-07-05T10:19:00.553470Z
+  author: horst.schwarz@joydev.com
+  text: /joy show JVSC-0001-D4
+- id: 7bbc0334-cd93-49e2-8a21-076833e0562a
+  at: 2026-07-05T10:19:00.586644Z
+  author: horst.schwarz@joydev.com
+  text: 'Unsupported: joy show (try ls, board, roadmap, sync, add, edit, comment, approve, start, submit, close, rework, defer, reopen)'
+  kind: error
