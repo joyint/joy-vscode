@@ -3,7 +3,7 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T15:27:52.990884427Z
-updated: 2026-07-05T15:27:56.662823063Z
+updated: 2026-07-05T15:27:56.899478891Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -11,3 +11,14 @@ messages:
   at: 2026-07-05T15:27:56.662823063Z
   author: horst.schwarz@joydev.com
   text: /bi milestone
+- id: 50f7fe2e-1178-4db4-ba65-23b9a1cad29f
+  at: 2026-07-05T15:27:56.899478891Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: the following required arguments were not provided:
+      <ID>
+
+    Usage: joy-bi milestone <ID>
+
+    For more information, try '--help'.
+  kind: error
