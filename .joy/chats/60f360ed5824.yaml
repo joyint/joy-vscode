@@ -1,0 +1,105 @@
+id: 60f360ed5824
+kind: direct
+title: New chat
+created_by: horst.schwarz@joydev.com
+created: 2026-07-05T13:12:58.411379632Z
+updated: 2026-07-05T15:08:47.518606510Z
+participants:
+- horst.schwarz@joydev.com
+messages:
+- id: 94f33d17-c79a-4bf3-bb1b-ebf4611f76c5
+  at: 2026-07-05T14:51:55.264237915Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls --tree
+- id: 6507dd40-1dda-425d-9a69-ddc32914bc5f
+  at: 2026-07-05T14:53:40.225737464Z
+  author: horst.schwarz@joydev.com
+  text: /bi velocity -m2
+- id: e24936e8-d4a7-4d62-9165-194f11e301f6
+  at: 2026-07-05T14:53:40.461813465Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
+- id: f1c11daa-ee5f-447b-acb9-cc5b88c265ec
+  at: 2026-07-05T14:53:50.325039196Z
+  author: horst.schwarz@joydev.com
+  text: /bi velocity 2m
+- id: 12ec81ee-3225-4f98-9b62-3cd25e05e202
+  at: 2026-07-05T14:54:56.957116392Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
+- id: 7b06df1b-0e00-4da1-b80c-4a739144775c
+  at: 2026-07-05T14:58:40.334752216Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
+- id: b2ac3b59-5ab8-4f6d-b90b-d9c6c8c88fea
+  at: 2026-07-05T15:03:38.144277635Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
+- id: 77ef5f9f-4e51-4e24-927f-c9263eac40a7
+  at: 2026-07-05T15:05:31.428227146Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
+- id: 12631c13-efca-43e0-bc4f-d2ae393c5c83
+  at: 2026-07-05T15:06:26.554990488Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
+- id: c6ff66ac-34a6-42b9-aa2b-e12f405c735c
+  at: 2026-07-05T15:08:47.518606510Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
