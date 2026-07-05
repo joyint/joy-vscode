@@ -2,8 +2,9 @@ id: 3511877fdebc
 kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
+read_only: true
 created: 2026-07-05T15:35:59.440850Z
-updated: 2026-07-05T15:36:05.880205Z
+updated: 2026-07-05T15:36:15.159920Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -11,3 +12,8 @@ messages:
   at: 2026-07-05T15:36:05.880205Z
   author: horst.schwarz@joydev.com
   text: /joy ls --tree
+- id: 019f32ec-4e37-7022-908f-664c99b742ce
+  at: 2026-07-05T15:36:15.159920Z
+  author: horst.schwarz@joydev.com
+  text: '@horst.schwarz@joydev.com deleted this chat'
+  kind: notice
