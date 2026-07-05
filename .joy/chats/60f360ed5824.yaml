@@ -3,7 +3,7 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T13:12:58.411379632Z
-updated: 2026-07-05T14:53:40.225737464Z
+updated: 2026-07-05T14:53:40.461813465Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -15,3 +15,15 @@ messages:
   at: 2026-07-05T14:53:40.225737464Z
   author: horst.schwarz@joydev.com
   text: /bi velocity -m2
+- id: e24936e8-d4a7-4d62-9165-194f11e301f6
+  at: 2026-07-05T14:53:40.461813465Z
+  author: horst.schwarz@joydev.com
+  text: |-
+    error: unexpected argument '-m' found
+
+      tip: to pass '-m' as a value, use '-- -m'
+
+    Usage: joy-bi velocity [OPTIONS] <WINDOW>
+
+    For more information, try '--help'.
+  kind: error
