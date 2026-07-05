@@ -3,7 +3,7 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T13:12:58.411379632Z
-updated: 2026-07-05T14:53:40.461813465Z
+updated: 2026-07-05T14:53:50.325039196Z
 participants:
 - horst.schwarz@joydev.com
 messages:
@@ -27,3 +27,7 @@ messages:
 
     For more information, try '--help'.
   kind: error
+- id: f1c11daa-ee5f-447b-acb9-cc5b88c265ec
+  at: 2026-07-05T14:53:50.325039196Z
+  author: horst.schwarz@joydev.com
+  text: /bi velocity 2m
