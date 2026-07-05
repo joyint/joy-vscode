@@ -3,7 +3,11 @@ kind: direct
 title: New chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T15:35:59.440850Z
-updated: 2026-07-05T15:35:59.440850Z
+updated: 2026-07-05T15:36:05.880205Z
 participants:
 - horst.schwarz@joydev.com
-messages: []
+messages:
+- id: 75dfc86f-aa16-4e87-9060-e4b984ab62bb
+  at: 2026-07-05T15:36:05.880205Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls --tree
