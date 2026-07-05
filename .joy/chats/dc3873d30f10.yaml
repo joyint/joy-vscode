@@ -2,6 +2,10 @@ id: dc3873d30f10
 title: New team chat
 created_by: horst.schwarz@joydev.com
 created: 2026-07-05T15:03:42.060282189Z
-updated: 2026-07-05T15:03:42.060282189Z
+updated: 2026-07-05T15:03:47.276860341Z
 participants: []
-messages: []
+messages:
+- id: 3e6a4e00-e91e-470d-b6f6-ac02d1fa4e09
+  at: 2026-07-05T15:03:47.276860341Z
+  author: horst.schwarz@joydev.com
+  text: /joy ls --tree
