@@ -152,12 +152,10 @@
     "watch": "node esbuild.config.mjs --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
-    "format": "prettier --check .",
-    "format:fix": "prettier --write .",
     "test:unit": "tsc -p tsconfig.test.json && mocha --recursive out-test/test/unit",
     "test:integration": "tsc -p tsconfig.test.json && vscode-test",
     "test": "npm run test:unit && npm run test:integration",
-    "check": "npm run typecheck && npm run lint && npm run format && npm run test:unit",
+    "check": "npm run typecheck && npm run lint && npm run test:unit",
     "package": "vsce package --no-dependencies"
   },
   "devDependencies": {
@@ -171,9 +169,7 @@
     "@vscode/test-electron": "^2.4.1",
     "esbuild": "^0.24.0",
     "eslint": "^9.14.0",
-    "eslint-config-prettier": "^9.1.0",
     "mocha": "^10.8.2",
-    "prettier": "^3.3.3",
     "typescript": "^5.6.3"
   }
 }

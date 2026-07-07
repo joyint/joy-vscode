@@ -5,6 +5,7 @@ Currently 'joy release publish' prints 'No forge configured; publish done.' and 
 joy and jyn both have 'forge: github' as a top-level field in .joy/project.yaml (next to 'language: en'). With that set, 'joy release publish' creates the GitHub release directly, populated with the item list and contributors that 'joy release record' captured.
 
 Steps:
+
 1. Add 'forge: github' to .joy/project.yaml. Try 'joy project set forge github' first; if that subcommand does not accept 'forge' as a key (the documented set keys are name|acronym|description|language), hand-edit the file with explicit user authorization (same carve-out we used for release.version-files).
 2. Update .github/workflows/release.yml: switch from 'gh release create' to 'gh release upload ${tag} ${vsix} --clobber'. The release will already exist by the time the workflow finishes (joy creates it during publish). Add a short retry loop (~5x with 3s sleep) on the upload step so the workflow does not race ahead of joy's release-creation API call.
 3. Update CONTRIBUTING.md Releasing section: clarify that 'just publish' (-> joy release publish) creates the release with the item changelog; the workflow's job is to attach the VSIX asset.
