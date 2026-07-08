@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
@@ -41,11 +41,14 @@ jobs:
       - name: Package VSIX
         run: npm run package
 
+      - name: Compute checksums
+        run: sha256sum "${{ steps.version.outputs.vsix }}" > SHA256SUMS
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" "${{ steps.version.outputs.vsix }}" \
+          gh release create "${GITHUB_REF_NAME}" "${{ steps.version.outputs.vsix }}" SHA256SUMS \
             --title "v${{ steps.version.outputs.version }}" \
             --notes "$(cat <<'EOF'
           Preview release. The Joy extension is not yet on the Marketplace; install the VSIX directly.
@@ -55,5 +58,7 @@ jobs:
           **CLI**: `code --install-extension joy-vscode-${{ steps.version.outputs.version }}.vsix`
 
           Requires the [joy CLI](https://github.com/joyint/joy) on PATH (auto-discovered via login shell and common install locations; configurable via the `joy.executablePath` setting).
+
+          Verify the download with `sha256sum -c SHA256SUMS`.
           EOF
           )"

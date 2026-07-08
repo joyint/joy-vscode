@@ -1,7 +1,7 @@
 id: JVSC-000D-49
 title: 'Board view: status columns with drag and drop and card actions'
 type: story
-status: in-progress
+status: review
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -13,10 +13,12 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.538574242Z
-updated: 2026-07-08T18:26:59.404126888Z
+updated: 2026-07-08T18:29:06.948654334Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-08T18:26:59.370959433Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-08T18:29:06.948654334Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
@@ -25,3 +27,6 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-08T18:26:59.404126359Z
   text: 'Plan: singleton WebviewPanel (joy.openBoard) with columns New (new+open), In progress, Review, Done (closed); deferred stays off the board like in the app. Card drop triggers the column verb (reopen/start/submit/close), double click opens the item detail view. Header: instant text filter on id and title, sort select (created, updated, id, title, effort, priority, type) with asc/desc toggle, applied within columns. Data via joy ls --all; refresh on .joy/items watcher and after every action.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:29:06.920956880Z
+  text: '[x] BoardPanel singleton webview with CSP nonce, DOM-built cards. [x] Columns New/In progress/Review/Done with drop verbs reopen/start/submit/close and same-column drop guard. [x] Instant filter on id+title, sort over updated/created/id/title/effort/priority/type with asc/desc toggle. [x] Double click opens item detail. [x] Watcher refresh wired. [x] check and build green. Manual UI verification pending, keep in review.'
