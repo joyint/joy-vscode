@@ -1,7 +1,7 @@
 id: JVSC-000E-0E
 title: Attach SHA256 checksums to release artifacts
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -11,8 +11,14 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.574227921Z
-updated: 2026-07-08T18:29:53.650575150Z
+updated: 2026-07-08T18:29:53.760447972Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-08T18:29:53.650575150Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-08T18:29:53.760447972Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:29:53.727399787Z
+  text: '[x] sha256sum step added, SHA256SUMS uploaded as release asset with verify hint in notes. [x] setup-node reads .nvmrc. Authenticode-style signing intentionally skipped: VS Code validates only Marketplace signatures, so checksums are the honest integrity offer for GitHub-distributed VSIX.'

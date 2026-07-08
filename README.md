@@ -26,11 +26,14 @@ On first activation the extension auto-discovers `joy` via PATH, your login shel
 
 ## Features
 
-- **Backlog tree** in a dedicated Joy activity-bar container - items nested by parent, sorted by status then priority.
-- **Lifecycle actions** on each item via right-click context menu: Start, Submit for Review, Close, Reopen - visible only when the item's status allows the transition.
-- **Show Details** opens the full `joy show <ID>` output in a preview document.
-- **Live refresh** on changes under `.joy/items/` (debounced) so the tree stays in sync with terminal use, `git pull`, or AI edits.
-- **Status bar indicator** for the joy CLI: version when ok, install prompt when missing or too old.
+- **Backlog tree** in a dedicated Joy activity-bar container - milestones as top-level groups, items nested by parent, sorted by status then priority.
+- **Structural drag and drop** in the tree: drop an item on another item to re-parent it, on the empty area to un-parent it, on a milestone to link it. No manual ordering.
+- **New Item / New Milestone** buttons in the view title.
+- **Item detail form** (movable to the secondary sidebar): edit title, type, priority, effort, milestone, and description, trigger lifecycle verbs, read and add comments.
+- **Board** with New, In progress, Review, and Done columns: drag cards between columns to change status, double-click to edit, instant filter on id and title, sortable by updated, created, id, title, effort, priority, or type.
+- **Authentication built in**: a modal passphrase prompt (with reveal toggle) appears when joy requires auth; the failed action retries automatically after login.
+- **Live refresh** on changes under `.joy/items/` (debounced) so tree, detail, and board stay in sync with terminal use, `git pull`, or AI edits.
+- **Compact status bar entry**: check when ready, key when unauthenticated, warning when the CLI is missing or too old - details in the tooltip.
 - **Cross-platform**: Linux, macOS, and Windows.
 
 ## Documentation

@@ -24,7 +24,7 @@
   "main": "./dist/extension.js",
   "activationEvents": [],
   "joyCli": {
-    "minimumVersion": "0.15.0"
+    "minimumVersion": "0.18.0"
   },
   "contributes": {
     "viewsContainers": {
