@@ -3,6 +3,7 @@ import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import { promisify } from 'node:util';
 import * as vscode from 'vscode';
+import { AuthService, type AuthState } from './auth';
 import type { BacklogNode, ItemNode } from './backlog';
 import { BacklogDragAndDropController } from './backlogDnd';
 import { BacklogProvider } from './backlogProvider';
@@ -22,10 +23,13 @@ export function activate(context: vscode.ExtensionContext): void {
 
   let resolvedExecutable = 'joy';
 
-  const client = new JoyClient({
+  const client: JoyClient = new JoyClient({
     resolveExecutable: () => resolvedExecutable,
     resolveCwd: () => vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
+    onAuthRequired: (): Promise<boolean> => authService.promptAndAuthenticate(),
   });
+
+  const authService: AuthService = new AuthService(client);
 
   const resolver = new JoyResolver({
     getConfiguredPath: () =>
@@ -69,7 +73,7 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-  statusItem.name = 'Joy CLI';
+  statusItem.name = 'Joy';
 
   context.subscriptions.push(treeView, statusItem);
 
@@ -80,14 +84,21 @@ export function activate(context: vscode.ExtensionContext): void {
     lastResolution = resolution;
     if (resolution.kind === 'ok') {
       resolvedExecutable = resolution.executable;
+      await authService.refreshStatus();
     }
-    applyResolution(statusItem, resolution);
+    updateStatusBar(statusItem, resolution, authService.currentState());
     provider.refresh();
   };
 
   const getLastResolution = (): JoyResolution | undefined => lastResolution;
 
-  registerCommands(context, client, provider, detailProvider, treeView, performResolve, getLastResolution);
+  context.subscriptions.push(
+    authService.onDidChangeState((state) => {
+      updateStatusBar(statusItem, lastResolution, state);
+    }),
+  );
+
+  registerCommands(context, client, provider, detailProvider, treeView, performResolve, getLastResolution, authService);
   registerWatcher(context, () => {
     provider.refresh();
     void detailProvider.refreshCurrent();
@@ -129,36 +140,52 @@ async function shellLookup(): Promise<string | undefined> {
   }
 }
 
-function applyResolution(item: vscode.StatusBarItem, resolution: JoyResolution): void {
-  const setMissing = resolution.kind === 'missing';
+function updateStatusBar(
+  item: vscode.StatusBarItem,
+  resolution: JoyResolution | undefined,
+  auth: AuthState,
+): void {
+  const setMissing = resolution?.kind === 'missing';
   void vscode.commands.executeCommand('setContext', 'joy:cliMissing', setMissing);
+  if (!resolution) return;
 
   if (resolution.kind === 'ok') {
-    item.text = `$(check) Joy CLI ${resolution.version}`;
     item.backgroundColor = undefined;
-    const tooltip = new vscode.MarkdownString(
-      `**Joy CLI ${resolution.version}**\n\n\`${resolution.executable}\`\n\n[Configure path...](command:joy.configureExecutablePath)`,
-    );
+    const lines = [`**Joy** CLI ${resolution.version}`, `\`${resolution.executable}\``];
+    if (auth.kind === 'authenticated') {
+      item.text = '$(check) joy';
+      const hours = auth.expiresInSeconds ? Math.round(auth.expiresInSeconds / 3600) : undefined;
+      lines.push(`Authenticated as ${auth.member}${hours ? ` (${hours}h left)` : ''}`);
+      item.command = 'joy.configureExecutablePath';
+    } else if (auth.kind === 'unauthenticated') {
+      item.text = '$(key) joy';
+      lines.push(`Not authenticated (${auth.member}). Click to enter your passphrase.`);
+      item.command = 'joy.authenticate';
+    } else {
+      item.text = '$(check) joy';
+      item.command = 'joy.configureExecutablePath';
+    }
+    lines.push('[Configure path...](command:joy.configureExecutablePath)');
+    const tooltip = new vscode.MarkdownString(lines.join('\n\n'));
     tooltip.isTrusted = true;
     item.tooltip = tooltip;
-    item.command = 'joy.configureExecutablePath';
     item.show();
     return;
   }
 
   item.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
   if (resolution.kind === 'missing') {
-    item.text = '$(warning) Joy CLI: not found';
+    item.text = '$(warning) joy';
     item.tooltip = resolution.configured
       ? `Configured path "${resolution.configured}" did not resolve. Adjust joy.executablePath or install joy.`
       : 'joy was not found on PATH, via login shell, or in common install locations. Install joy or set joy.executablePath.';
     item.command = 'joy.openInstallDocs';
   } else if (resolution.kind === 'tooOld') {
-    item.text = `$(warning) Joy CLI: ${resolution.version} < ${resolution.minimum}`;
-    item.tooltip = `Update joy to at least ${resolution.minimum}.`;
+    item.text = '$(warning) joy';
+    item.tooltip = `Joy CLI ${resolution.version} is older than the required ${resolution.minimum}. Update joy.`;
     item.command = 'joy.openInstallDocs';
   } else {
-    item.text = '$(error) Joy CLI: unreadable';
+    item.text = '$(error) joy';
     item.tooltip = resolution.error;
     item.command = undefined;
   }
@@ -173,10 +200,19 @@ function registerCommands(
   treeView: vscode.TreeView<BacklogNode>,
   performResolve: () => Promise<void>,
   getLastResolution: () => JoyResolution | undefined,
+  authService: AuthService,
 ): void {
   const sub = (command: string, handler: (...args: unknown[]) => unknown): void => {
     context.subscriptions.push(vscode.commands.registerCommand(command, handler));
   };
+
+  sub('joy.authenticate', async () => {
+    const authenticated = await authService.promptAndAuthenticate();
+    if (authenticated) {
+      vscode.window.showInformationMessage('Joy: authenticated.');
+      provider.refresh();
+    }
+  });
 
   sub('joy.openInstallDocs', () => {
     void vscode.env.openExternal(vscode.Uri.parse(INSTALL_DOCS_URL));
@@ -356,15 +392,10 @@ function isItemNode(value: unknown): value is ItemNode {
 function reportError(err: unknown): void {
   if (err instanceof JoySessionExpiredError) {
     vscode.window
-      .showErrorMessage(
-        'Joy session expired. Run "joy auth" in a terminal to re-authenticate.',
-        'Open Terminal',
-      )
+      .showWarningMessage('Joy: authentication required.', 'Authenticate')
       .then((choice) => {
-        if (choice === 'Open Terminal') {
-          const term = vscode.window.createTerminal('Joy');
-          term.show();
-          term.sendText('joy auth', false);
+        if (choice === 'Authenticate') {
+          void vscode.commands.executeCommand('joy.authenticate');
         }
       });
     return;

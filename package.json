@@ -109,6 +109,11 @@
         "command": "joy.configureExecutablePath",
         "title": "Configure CLI Path...",
         "category": "Joy"
+      },
+      {
+        "command": "joy.authenticate",
+        "title": "Authenticate...",
+        "category": "Joy"
       }
     ],
     "viewsWelcome": [

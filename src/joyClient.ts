@@ -47,22 +47,54 @@ export interface JoyRunResult {
 export interface JoyRunOptions {
   cwd?: string;
   timeoutMs?: number;
+  /** Written to the child's stdin and closed. Used for --passphrase-stdin. */
+  stdin?: string;
+  /** Skip the session-expired recovery hook for this call. */
+  noAuthRetry?: boolean;
 }
 
 export interface JoyClientOptions {
   resolveExecutable: () => string;
   resolveCwd: () => string | undefined;
+  /**
+   * Called when a command fails with a session-expired error. Return true
+   * once re-authentication succeeded; the failed command is retried once.
+   */
+  onAuthRequired?: () => Promise<boolean>;
 }
 
 export class JoyClient {
   constructor(private readonly options: JoyClientOptions) {}
 
-  run(args: readonly string[], options: JoyRunOptions = {}): Promise<JoyRunResult> {
+  async run(args: readonly string[], options: JoyRunOptions = {}): Promise<JoyRunResult> {
+    try {
+      return await this.runOnce(args, options);
+    } catch (err) {
+      if (
+        err instanceof JoySessionExpiredError &&
+        !options.noAuthRetry &&
+        this.options.onAuthRequired
+      ) {
+        const authenticated = await this.options.onAuthRequired();
+        if (authenticated) {
+          return this.runOnce(args, options);
+        }
+      }
+      throw err;
+    }
+  }
+
+  private runOnce(args: readonly string[], options: JoyRunOptions = {}): Promise<JoyRunResult> {
     const executable = this.options.resolveExecutable();
     const cwd = options.cwd ?? this.options.resolveCwd();
     const timeout = options.timeoutMs ?? 15_000;
 
-    return execFileAsync(executable, [...args], { cwd, timeout })
+    const pending = execFileAsync(executable, [...args], { cwd, timeout });
+    if (options.stdin !== undefined) {
+      pending.child.stdin?.write(options.stdin);
+      pending.child.stdin?.end();
+    }
+    return pending
       .then(({ stdout, stderr }) => ({ stdout, stderr }))
       .catch(
         (

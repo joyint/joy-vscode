@@ -76,6 +76,51 @@ describe('JoyClient', () => {
     assert.equal(parsed.data.hello, 'world');
   });
 
+  it('passes stdin content to the child process', async () => {
+    const fake = writeFakeJoy(tmp, '#!/usr/bin/env bash\nread -r line\necho "got: $line"\n');
+    const result = await makeClient(fake).run(['auth'], { stdin: 'secret\n' });
+    assert.equal(result.stdout.trim(), 'got: secret');
+  });
+
+  it('retries once after onAuthRequired resolves true', async () => {
+    const marker = join(tmp, 'authed');
+    const fake = writeFakeJoy(
+      tmp,
+      `#!/usr/bin/env bash\nif [ -f "${marker}" ]; then echo ok; else echo "must authenticate" 1>&2; exit 1; fi\n`,
+    );
+    let prompts = 0;
+    const client = new JoyClient({
+      resolveExecutable: () => fake,
+      resolveCwd: () => undefined,
+      onAuthRequired: () => {
+        prompts += 1;
+        writeFileSync(marker, '');
+        return Promise.resolve(true);
+      },
+    });
+    const result = await client.run(['ls']);
+    assert.equal(result.stdout.trim(), 'ok');
+    assert.equal(prompts, 1);
+  });
+
+  it('does not retry when noAuthRetry is set', async () => {
+    const fake = writeFakeJoy(
+      tmp,
+      '#!/usr/bin/env bash\necho "must authenticate" 1>&2\nexit 1\n',
+    );
+    let prompts = 0;
+    const client = new JoyClient({
+      resolveExecutable: () => fake,
+      resolveCwd: () => undefined,
+      onAuthRequired: () => {
+        prompts += 1;
+        return Promise.resolve(true);
+      },
+    });
+    await assert.rejects(client.run(['ls'], { noAuthRetry: true }));
+    assert.equal(prompts, 0);
+  });
+
   it('wraps non-zero exits without a known pattern as JoyError', async () => {
     const fake = writeFakeJoy(
       tmp,

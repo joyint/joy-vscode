@@ -1,7 +1,7 @@
 id: JVSC-0004-C8
 title: Webview form editor for item add and edit
 type: story
-status: in-progress
+status: review
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -13,13 +13,18 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:19:04.372543473Z
-updated: 2026-07-08T18:17:08.840881619Z
+updated: 2026-07-08T18:21:46.407368487Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-08T18:17:08.840881619Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-08T18:21:46.407368487Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Open an item in a webview-based form editor with fields for title, type, priority, effort, status, description, tags, milestone, dependencies, and assignment. Save writes back via joy edit; new-item form writes via joy add. Validation matches the CLI constraints (title length, allowed values). The form opens via TreeView double-click or command palette.
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-08T18:17:08.806296322Z
   text: 'Plan: WebviewView joyItemDetail in the joy container (draggable to the secondary sidebar), modeled on the app ItemDetail: inline title edit, status verb buttons per current status, dropdowns for type, priority, effort, milestone, markdown description editor, comment list with add box. All writes via joy CLI (edit, status verbs, comment, milestone link). Tree click selects into the detail view; the raw markdown show stays as context menu entry.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:21:46.378580816Z
+  text: '[x] joyItemDetail WebviewView with CSP nonce, DOM-built UI (no HTML injection). [x] Title inline edit, status verbs, type/priority/effort/milestone selects, description save, comments with add box. [x] Item add lives on the tree title button (JVSC-000C). [x] Tree click opens detail; markdown show moved to context menu. [x] check and build green. Manual UI verification in the Extension Host still pending; keep in review until then.'

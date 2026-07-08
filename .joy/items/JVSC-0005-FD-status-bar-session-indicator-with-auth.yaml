@@ -1,9 +1,11 @@
 id: JVSC-0005-FD
 title: Status bar session indicator with auth prompt on expiry
 type: story
-status: new
+status: in-progress
 priority: high
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -11,10 +13,16 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:19:09.960064275Z
-updated: 2026-07-08T18:20:08.814577558Z
+updated: 2026-07-08T18:23:07.722696849Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-08T18:23:07.690371197Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Add a status bar item (VS Code footer) showing the current Joy member identity and remaining session time, with color/icon for authenticated, expiring-soon, and unauthenticated states. Clicking it opens a graphical passphrase InputBox; on success the extension runs joy auth and refreshes. When a joy command fails with a session-expired error, the same InputBox appears automatically before retrying the command. Depends on the joy-cli --passphrase-stdin flag (tracked separately in the joy repo) so the passphrase never appears in process listings.
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-08T18:20:08.814576888Z
   text: 'Requirements from operator: on the first write that demands auth, show a modal passphrase prompt (VS Code InputBox with password masking, an eye button to toggle reveal, inline validation error on wrong passphrase, stays open for retry). Redeemed session is kept in SecretStorage and passed via --session or JOY_SESSION to subsequent CLI calls. Status bar shows auth state compactly; all joy status bar items must stay short and non-dominant.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:23:07.722696306Z
+  text: 'Plan: (1) JoyClient gains stdin support; (2) AuthService wraps joy auth status --json and a modal InputBox (password masked, eye button toggles reveal, validation error shown inline on wrong passphrase, retry stays open) feeding joy auth --passphrase-stdin --json; (3) JoyClient auth hook: on session-expired errors the modal opens, on success the failed command retries once; (4) single compact status bar entry: check=ready, key=unauthenticated (click opens modal), warning=CLI problem, details in tooltip only.'
