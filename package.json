@@ -20,6 +20,7 @@
   "bugs": {
     "url": "https://github.com/joyint/joy-vscode/issues"
   },
+  "icon": "resources/icon.png",
   "main": "./dist/extension.js",
   "activationEvents": [],
   "joyCli": {

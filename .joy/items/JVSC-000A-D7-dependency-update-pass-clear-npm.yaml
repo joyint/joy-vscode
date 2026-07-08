@@ -1,7 +1,7 @@
 id: JVSC-000A-D7
 title: 'Dependency update pass: clear npm install deprecations, bump majors'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -11,12 +11,17 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.437743422Z
-updated: 2026-07-08T18:04:20.604401646Z
+updated: 2026-07-08T18:07:45.641283350Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-08T18:04:20.604401646Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-08T18:07:45.641283350Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-08T18:04:20.574008896Z
   text: 'Plan: bump mocha 10->11 and @vscode/test-cli 0.0.10->0.0.15 (removes deprecated glob/inflight chains), esbuild 0.24->0.28, eslint 9->10, @vscode/test-electron 2->3, typescript 5->7, @vscode/vsce and typescript-eslint minors. Keep @types/node on 20.x and @types/vscode aligned with engines. Verify with npm run check and npm run build; confirm npm install is deprecation-free.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:07:45.609900186Z
+  text: '[x] mocha 11, @vscode/test-cli 0.0.15: npm install now free of deprecation warnings. [x] esbuild 0.28, eslint 10, test-electron 3, vsce 3.9.2, typescript-eslint 8.63. [x] typescript 6.0.3 (typescript-eslint caps ts below 6.1, ts 7 not possible yet). [x] tsconfigs list @types explicitly (ts 6 change). [x] engines.node >=20.19 and .nvmrc added; local node must be updated to 20.19+ to clear EBADENGINE. [x] npm run check (32 tests) and build green.'

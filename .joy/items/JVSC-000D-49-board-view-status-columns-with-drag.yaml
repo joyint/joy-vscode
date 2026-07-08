@@ -11,6 +11,10 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.538574242Z
-updated: 2026-07-08T18:04:00.538574242Z
+updated: 2026-07-08T18:07:45.672965707Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history: []
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:07:45.672965157Z
+  text: 'Additional requirement from operator: board header gets a text filter (instant, matches item id and title) and a sort control with ascending/descending toggle over created, updated, id, title, effort, priority, type.'
