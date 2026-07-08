@@ -17,10 +17,23 @@ export interface JoyItem {
   type: JoyItemType;
   status: JoyItemStatus;
   priority: JoyItemPriority;
-  parent?: string;
-  deps?: string[];
-  effort?: number;
-  description?: string;
+  parent?: string | null;
+  milestone?: string | null;
+  deps?: string[] | null;
+  tags?: string[] | null;
+  assignees?: string[] | null;
+  effort?: number | null;
+  description?: string | null;
+  created?: string;
+  updated?: string;
+}
+
+export interface JoyMilestone {
+  id: string;
+  title: string;
+  date?: string | null;
+  total?: number;
+  closed?: number;
 }
 
 export interface JoyEnvelope<T> {
@@ -34,3 +47,10 @@ export interface JoyListData {
 }
 
 export type JoyListResponse = JoyEnvelope<JoyListData>;
+
+export interface JoyMilestoneListData {
+  milestones: JoyMilestone[];
+  total: number;
+}
+
+export type JoyMilestoneListResponse = JoyEnvelope<JoyMilestoneListData>;

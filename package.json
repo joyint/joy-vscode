@@ -47,9 +47,16 @@
     },
     "commands": [
       {
-        "command": "joy.hello",
-        "title": "Hello",
-        "category": "Joy"
+        "command": "joy.addItem",
+        "title": "New Item...",
+        "category": "Joy",
+        "icon": "$(add)"
+      },
+      {
+        "command": "joy.addMilestone",
+        "title": "New Milestone...",
+        "category": "Joy",
+        "icon": "$(milestone)"
       },
       {
         "command": "joy.refresh",
@@ -103,36 +110,26 @@
     "menus": {
       "view/title": [
         {
+          "command": "joy.addItem",
+          "when": "view == joyBacklog",
+          "group": "navigation@1"
+        },
+        {
+          "command": "joy.addMilestone",
+          "when": "view == joyBacklog",
+          "group": "navigation@2"
+        },
+        {
           "command": "joy.refresh",
           "when": "view == joyBacklog",
-          "group": "navigation"
+          "group": "navigation@3"
         }
       ],
       "view/item/context": [
         {
           "command": "joy.show",
-          "when": "view == joyBacklog",
+          "when": "view == joyBacklog && viewItem =~ /^status:/",
           "group": "1_open@1"
-        },
-        {
-          "command": "joy.start",
-          "when": "view == joyBacklog && (viewItem == status:new || viewItem == status:open)",
-          "group": "2_lifecycle@1"
-        },
-        {
-          "command": "joy.submit",
-          "when": "view == joyBacklog && viewItem == status:in-progress",
-          "group": "2_lifecycle@2"
-        },
-        {
-          "command": "joy.close",
-          "when": "view == joyBacklog && viewItem == status:review",
-          "group": "2_lifecycle@3"
-        },
-        {
-          "command": "joy.reopen",
-          "when": "view == joyBacklog && (viewItem == status:closed || viewItem == status:deferred)",
-          "group": "2_lifecycle@4"
         }
       ]
     },

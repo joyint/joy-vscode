@@ -1,7 +1,13 @@
 import * as vscode from 'vscode';
-import { buildBacklogTree, type BacklogNode } from './backlog';
+import { buildBacklogView, type BacklogNode } from './backlog';
 import type { JoyClient } from './joyClient';
-import type { JoyItem, JoyItemType, JoyListResponse } from './types';
+import type {
+  JoyItem,
+  JoyItemType,
+  JoyListResponse,
+  JoyMilestone,
+  JoyMilestoneListResponse,
+} from './types';
 
 const TYPE_ICONS: Record<JoyItemType, string> = {
   epic: 'rocket',
@@ -19,6 +25,7 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
 
   private cachedRoots: BacklogNode[] | undefined;
   private pendingLoad: Promise<BacklogNode[]> | undefined;
+  private items: JoyItem[] = [];
 
   constructor(private readonly client: JoyClient) {}
 
@@ -28,7 +35,14 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
     this.emitter.fire();
   }
 
+  currentItems(): readonly JoyItem[] {
+    return this.items;
+  }
+
   getTreeItem(node: BacklogNode): vscode.TreeItem {
+    if (node.kind === 'milestone') {
+      return milestoneTreeItem(node.milestone, node.children.length > 0);
+    }
     const item = node.item;
     const treeItem = new vscode.TreeItem(
       item.title,
@@ -69,9 +83,37 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
   }
 
   private async load(): Promise<BacklogNode[]> {
-    const response = await this.client.runJson<JoyListResponse>(['ls', '--all']);
-    return buildBacklogTree(response.data.items);
+    const [list, milestones] = await Promise.all([
+      this.client.runJson<JoyListResponse>(['ls', '--all']),
+      this.loadMilestones(),
+    ]);
+    this.items = list.data.items;
+    return buildBacklogView(list.data.items, milestones);
   }
+
+  private async loadMilestones(): Promise<JoyMilestone[]> {
+    try {
+      const response = await this.client.runJson<JoyMilestoneListResponse>(['milestone', 'ls']);
+      return response.data.milestones;
+    } catch {
+      return [];
+    }
+  }
+}
+
+function milestoneTreeItem(milestone: JoyMilestone, hasChildren: boolean): vscode.TreeItem {
+  const treeItem = new vscode.TreeItem(
+    milestone.title,
+    hasChildren ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None,
+  );
+  treeItem.id = milestone.id;
+  const progress =
+    milestone.total !== undefined ? ` · ${milestone.closed ?? 0}/${milestone.total}` : '';
+  const date = milestone.date ? ` · ${milestone.date}` : '';
+  treeItem.description = `${milestone.id}${progress}${date}`;
+  treeItem.iconPath = new vscode.ThemeIcon('milestone');
+  treeItem.contextValue = 'milestone';
+  return treeItem;
 }
 
 function buildTooltip(item: JoyItem): vscode.MarkdownString {
@@ -80,11 +122,14 @@ function buildTooltip(item: JoyItem): vscode.MarkdownString {
   md.appendMarkdown(`- Type: ${item.type}\n`);
   md.appendMarkdown(`- Status: ${item.status}\n`);
   md.appendMarkdown(`- Priority: ${item.priority}\n`);
-  if (item.effort !== undefined) {
+  if (item.effort !== undefined && item.effort !== null) {
     md.appendMarkdown(`- Effort: ${item.effort}\n`);
   }
   if (item.parent) {
     md.appendMarkdown(`- Parent: ${item.parent}\n`);
+  }
+  if (item.milestone) {
+    md.appendMarkdown(`- Milestone: ${item.milestone}\n`);
   }
   if (item.deps && item.deps.length > 0) {
     md.appendMarkdown(`- Depends on: ${item.deps.join(', ')}\n`);

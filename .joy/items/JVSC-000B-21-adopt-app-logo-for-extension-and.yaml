@@ -1,7 +1,7 @@
 id: JVSC-000B-21
 title: Adopt app logo for extension and marketplace icons
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -11,8 +11,14 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.471441705Z
-updated: 2026-07-08T18:07:59.014070366Z
+updated: 2026-07-08T18:09:01.862409651Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-08T18:07:59.014070366Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-08T18:09:01.862409651Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:09:01.755759705Z
+  text: '[x] resources/icon.png copied from app 128x128.png, wired as package icon. [x] resources/joy.svg replaced with monochrome smiley strokes derived from the app icon geometry (activity bar requires currentColor single-tone SVG).'

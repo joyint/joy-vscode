@@ -1,9 +1,11 @@
 id: JVSC-000C-8C
 title: 'Tree view: drag and drop re-parenting, add buttons, drop lifecycle actions'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -11,6 +13,12 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.504828648Z
-updated: 2026-07-08T18:04:00.504828648Z
+updated: 2026-07-08T18:09:51.166222063Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-history: []
+history:
+- date: 2026-07-08T18:09:51.166222063Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:09:51.132278365Z
+  text: 'Plan: (1) remove lifecycle verbs from tree context menu, lifecycle moves to board and item detail; (2) TreeDragAndDropController: drop item on item sets parent via joy edit --parent, drop on empty view area clears parent, drop on milestone node links via joy milestone link; no manual sorting; (3) milestones shown as top-level group nodes above root items; (4) view title plus buttons: new item (type pick + title input) and new milestone (title + optional date).'

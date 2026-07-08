@@ -2,7 +2,8 @@ import * as assert from 'node:assert/strict';
 import * as vscode from 'vscode';
 
 const EXPECTED_COMMANDS = [
-  'joy.hello',
+  'joy.addItem',
+  'joy.addMilestone',
   'joy.refresh',
   'joy.show',
   'joy.start',

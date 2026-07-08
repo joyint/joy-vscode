@@ -3,7 +3,8 @@ import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import { promisify } from 'node:util';
 import * as vscode from 'vscode';
-import type { BacklogNode } from './backlog';
+import type { BacklogNode, ItemNode } from './backlog';
+import { BacklogDragAndDropController } from './backlogDnd';
 import { BacklogProvider } from './backlogProvider';
 import { JoyClient, JoyError, JoySessionExpiredError } from './joyClient';
 import { JoyResolver, buildCommonJoyPaths, type JoyResolution } from './joyResolver';
@@ -50,6 +51,8 @@ export function activate(context: vscode.ExtensionContext): void {
   const treeView = vscode.window.createTreeView('joyBacklog', {
     treeDataProvider: provider,
     showCollapseAll: true,
+    canSelectMany: true,
+    dragAndDropController: new BacklogDragAndDropController(client, provider, reportError),
   });
 
   const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -158,15 +161,6 @@ function registerCommands(
     context.subscriptions.push(vscode.commands.registerCommand(command, handler));
   };
 
-  sub('joy.hello', async () => {
-    try {
-      const result = await client.run(['--version']);
-      vscode.window.showInformationMessage(`Joy CLI: ${result.stdout.trim()}`);
-    } catch (err) {
-      reportError(err);
-    }
-  });
-
   sub('joy.openInstallDocs', () => {
     void vscode.env.openExternal(vscode.Uri.parse(INSTALL_DOCS_URL));
   });
@@ -212,20 +206,73 @@ function registerCommands(
 
   for (const action of ['start', 'submit', 'close', 'reopen'] as LifecycleAction[]) {
     sub(`joy.${action}`, async (arg) => {
-      const node = resolveNode(arg, treeView);
-      if (!node) {
-        vscode.window.showWarningMessage(`Joy: select an item in the Backlog view to ${action}.`);
+      const id = resolveItemId(arg, treeView);
+      if (!id) {
+        vscode.window.showWarningMessage(`Joy: no item selected to ${action}.`);
         return;
       }
       try {
-        await client.run([action, node.item.id]);
-        vscode.window.showInformationMessage(`Joy: ${action} ${node.item.id}`);
+        await client.run([action, id]);
+        vscode.window.showInformationMessage(`Joy: ${action} ${id}`);
         provider.refresh();
       } catch (err) {
         reportError(err);
       }
     });
   }
+
+  sub('joy.addItem', async () => {
+    const typePick = await vscode.window.showQuickPick(
+      ['task', 'story', 'bug', 'epic', 'rework', 'decision', 'idea'],
+      { title: 'Joy: New Item', placeHolder: 'Item type' },
+    );
+    if (!typePick) return;
+    const title = await vscode.window.showInputBox({
+      title: 'Joy: New Item',
+      prompt: `Title for the new ${typePick}`,
+      ignoreFocusOut: true,
+      validateInput: (value) => (value.trim().length === 0 ? 'Title must not be empty' : undefined),
+    });
+    if (!title) return;
+    try {
+      const result = await client.run(['add', typePick, title.trim()]);
+      vscode.window.showInformationMessage(`Joy: ${result.stdout.trim().split('\n')[0]}`);
+      provider.refresh();
+    } catch (err) {
+      reportError(err);
+    }
+  });
+
+  sub('joy.addMilestone', async () => {
+    const title = await vscode.window.showInputBox({
+      title: 'Joy: New Milestone',
+      prompt: 'Milestone title',
+      ignoreFocusOut: true,
+      validateInput: (value) => (value.trim().length === 0 ? 'Title must not be empty' : undefined),
+    });
+    if (!title) return;
+    const date = await vscode.window.showInputBox({
+      title: 'Joy: New Milestone',
+      prompt: 'Target date (YYYY-MM-DD), leave empty for none',
+      ignoreFocusOut: true,
+      validateInput: (value) =>
+        value.trim().length === 0 || /^\d{4}-\d{2}-\d{2}$/.test(value.trim())
+          ? undefined
+          : 'Use YYYY-MM-DD or leave empty',
+    });
+    if (date === undefined) return;
+    const args = ['milestone', 'add', title.trim()];
+    if (date.trim().length > 0) {
+      args.push('--date', date.trim());
+    }
+    try {
+      const result = await client.run(args);
+      vscode.window.showInformationMessage(`Joy: ${result.stdout.trim().split('\n')[0]}`);
+      provider.refresh();
+    } catch (err) {
+      reportError(err);
+    }
+  });
 }
 
 function registerWatcher(context: vscode.ExtensionContext, provider: BacklogProvider): void {
@@ -252,23 +299,27 @@ function registerWatcher(context: vscode.ExtensionContext, provider: BacklogProv
   });
 }
 
-function resolveNode(
-  arg: unknown,
-  treeView: vscode.TreeView<BacklogNode>,
-): BacklogNode | undefined {
-  if (isBacklogNode(arg)) {
+function resolveNode(arg: unknown, treeView: vscode.TreeView<BacklogNode>): ItemNode | undefined {
+  if (isItemNode(arg)) {
     return arg;
   }
-  return treeView.selection[0];
+  const selected = treeView.selection[0];
+  return selected && isItemNode(selected) ? selected : undefined;
 }
 
-function isBacklogNode(value: unknown): value is BacklogNode {
+function resolveItemId(arg: unknown, treeView: vscode.TreeView<BacklogNode>): string | undefined {
+  if (typeof arg === 'string' && arg.length > 0) {
+    return arg;
+  }
+  return resolveNode(arg, treeView)?.item.id;
+}
+
+function isItemNode(value: unknown): value is ItemNode {
   return (
     typeof value === 'object' &&
     value !== null &&
-    'item' in value &&
-    'children' in value &&
-    typeof (value as BacklogNode).item.id === 'string'
+    (value as ItemNode).kind === 'item' &&
+    typeof (value as ItemNode).item?.id === 'string'
   );
 }
 
