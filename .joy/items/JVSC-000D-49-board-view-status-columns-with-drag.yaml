@@ -1,0 +1,16 @@
+id: JVSC-000D-49
+title: 'Board view: status columns with drag and drop and card actions'
+type: story
+status: new
+priority: medium
+parent: JVSC-0001-D4
+capabilities:
+- plan
+- implement
+- review
+effort: 5
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-08T18:04:00.538574242Z
+updated: 2026-07-08T18:04:00.538574242Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []

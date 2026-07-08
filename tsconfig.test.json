@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "types": ["node", "mocha", "vscode"],
     "outDir": "out-test",
     "rootDir": "src",
     "sourceMap": true,

@@ -1,0 +1,14 @@
+id: JVSC-000B-21
+title: Adopt app logo for extension and marketplace icons
+type: task
+status: new
+priority: medium
+parent: JVSC-0001-D4
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-08T18:04:00.471441705Z
+updated: 2026-07-08T18:04:00.471441705Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []

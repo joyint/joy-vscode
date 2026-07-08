@@ -1,0 +1,14 @@
+id: JVSC-000E-0E
+title: Attach SHA256 checksums to release artifacts
+type: task
+status: new
+priority: medium
+parent: JVSC-0001-D4
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-08T18:04:00.574227921Z
+updated: 2026-07-08T18:04:00.574227921Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []

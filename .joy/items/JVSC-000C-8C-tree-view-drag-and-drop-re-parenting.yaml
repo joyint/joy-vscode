@@ -1,0 +1,16 @@
+id: JVSC-000C-8C
+title: 'Tree view: drag and drop re-parenting, add buttons, drop lifecycle actions'
+type: story
+status: new
+priority: medium
+parent: JVSC-0001-D4
+capabilities:
+- plan
+- implement
+- review
+effort: 4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-08T18:04:00.504828648Z
+updated: 2026-07-08T18:04:00.504828648Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
