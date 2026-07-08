@@ -56,8 +56,8 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
     treeItem.iconPath = new vscode.ThemeIcon(TYPE_ICONS[item.type] ?? 'circle-outline');
     treeItem.contextValue = `status:${item.status}`;
     treeItem.command = {
-      command: 'joy.show',
-      title: 'Show Details',
+      command: 'joy.openDetail',
+      title: 'Open Item Detail',
       arguments: [node],
     };
     return treeItem;

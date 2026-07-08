@@ -54,3 +54,17 @@ export interface JoyMilestoneListData {
 }
 
 export type JoyMilestoneListResponse = JoyEnvelope<JoyMilestoneListData>;
+
+export interface JoyComment {
+  author: string;
+  date: string;
+  text: string;
+}
+
+export interface JoyItemDetail extends JoyItem {
+  comments?: JoyComment[];
+  created_by?: string;
+  updated_by?: string;
+}
+
+export type JoyShowResponse = JoyEnvelope<JoyItemDetail>;

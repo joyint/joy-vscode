@@ -1,0 +1,161 @@
+import * as vscode from 'vscode';
+import { STATUS_VERBS, buildEditArgs, type DetailEditField } from './itemDetail';
+import type { JoyClient } from './joyClient';
+import type { JoyMilestone, JoyMilestoneListResponse, JoyShowResponse } from './types';
+
+type DetailMessage =
+  | { type: 'verb'; id: string; verb: string }
+  | { type: 'edit'; id: string; field: DetailEditField; value: string }
+  | { type: 'comment'; id: string; text: string }
+  | { type: 'refresh' };
+
+const EDIT_FIELDS: readonly DetailEditField[] = [
+  'title',
+  'type',
+  'priority',
+  'effort',
+  'milestone',
+  'description',
+];
+
+export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
+  static readonly viewId = 'joyItemDetail';
+
+  private view: vscode.WebviewView | undefined;
+  private currentId: string | undefined;
+
+  constructor(
+    private readonly extensionUri: vscode.Uri,
+    private readonly client: JoyClient,
+    private readonly onDataChanged: () => void,
+    private readonly onError: (err: unknown) => void,
+  ) {}
+
+  resolveWebviewView(view: vscode.WebviewView): void {
+    this.view = view;
+    view.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [vscode.Uri.joinPath(this.extensionUri, 'media')],
+    };
+    view.webview.html = renderHtml(view.webview, this.extensionUri);
+    view.webview.onDidReceiveMessage((message: DetailMessage) => {
+      void this.handleMessage(message);
+    });
+    view.onDidDispose(() => {
+      if (this.view === view) {
+        this.view = undefined;
+      }
+    });
+    if (this.currentId) {
+      void this.pushItem();
+    }
+  }
+
+  async showItem(id: string): Promise<void> {
+    this.currentId = id;
+    if (this.view) {
+      this.view.show(true);
+      await this.pushItem();
+    } else {
+      await vscode.commands.executeCommand(`${ItemDetailViewProvider.viewId}.focus`);
+    }
+  }
+
+  /** Re-load the current item, e.g. after an external .joy/ change. */
+  async refreshCurrent(): Promise<void> {
+    if (this.currentId && this.view) {
+      await this.pushItem();
+    }
+  }
+
+  private async pushItem(): Promise<void> {
+    if (!this.view || !this.currentId) return;
+    try {
+      const [shown, milestones] = await Promise.all([
+        this.client.runJson<JoyShowResponse>(['show', this.currentId]),
+        this.loadMilestones(),
+      ]);
+      await this.view.webview.postMessage({
+        type: 'item',
+        item: shown.data,
+        milestones,
+        verbs: STATUS_VERBS[shown.data.status] ?? [],
+      });
+    } catch (err) {
+      await this.view.webview.postMessage({
+        type: 'loadError',
+        message: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+
+  private async loadMilestones(): Promise<JoyMilestone[]> {
+    try {
+      const response = await this.client.runJson<JoyMilestoneListResponse>(['milestone', 'ls']);
+      return response.data.milestones;
+    } catch {
+      return [];
+    }
+  }
+
+  private async handleMessage(message: DetailMessage): Promise<void> {
+    try {
+      switch (message.type) {
+        case 'verb': {
+          await this.client.run([message.verb, message.id]);
+          break;
+        }
+        case 'edit': {
+          if (!EDIT_FIELDS.includes(message.field)) return;
+          await this.client.run(buildEditArgs(message.id, message.field, message.value));
+          break;
+        }
+        case 'comment': {
+          const text = message.text.trim();
+          if (text.length === 0) return;
+          await this.client.run(['comment', message.id, text]);
+          break;
+        }
+        case 'refresh': {
+          await this.pushItem();
+          return;
+        }
+      }
+      this.onDataChanged();
+    } catch (err) {
+      this.onError(err);
+    } finally {
+      await this.pushItem();
+    }
+  }
+}
+
+function renderHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
+  const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'detail.js'));
+  const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'detail.css'));
+  const nonce = createNonce();
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="${styleUri.toString()}" rel="stylesheet">
+  <title>Joy Item</title>
+</head>
+<body>
+  <div id="app" class="empty">Select an item in the Backlog view.</div>
+  <script nonce="${nonce}" src="${scriptUri.toString()}"></script>
+</body>
+</html>`;
+}
+
+function createNonce(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let nonce = '';
+  for (let i = 0; i < 32; i += 1) {
+    nonce += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return nonce;
+}

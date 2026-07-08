@@ -15,3 +15,8 @@
 2026-07-08T18:09:01.876Z JVSC-000B-21 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-08T18:09:51.136Z JVSC-000C-8C comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-08T18:09:51.170Z JVSC-000C-8C item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-08T18:15:50.109Z JVSC-000C-8C comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-08T18:15:50.140Z JVSC-000C-8C item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-08T18:17:08.811Z JVSC-0004-C8 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-08T18:17:08.845Z JVSC-0004-C8 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-08T18:20:08.818Z JVSC-0005-FD comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

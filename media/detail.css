@@ -1,0 +1,150 @@
+body {
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  padding: 0 12px 12px;
+}
+
+.empty {
+  opacity: 0.7;
+  padding-top: 12px;
+}
+
+.item-id {
+  font-family: var(--vscode-editor-font-family);
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+.title-row {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  margin: 4px 0 10px;
+}
+
+.title-row h2 {
+  margin: 0;
+  font-size: 1.15em;
+  flex: 1;
+  cursor: text;
+}
+
+.title-row input {
+  flex: 1;
+  font-size: 1.05em;
+}
+
+.verbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.status-badge {
+  align-self: center;
+  padding: 1px 8px;
+  border-radius: 9px;
+  font-size: 0.85em;
+  background: var(--vscode-badge-background);
+  color: var(--vscode-badge-foreground);
+}
+
+button {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+  border: none;
+  border-radius: 3px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--vscode-button-secondaryHoverBackground);
+}
+
+button.primary {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+
+button.primary:hover {
+  background: var(--vscode-button-hoverBackground);
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.field-grid label {
+  opacity: 0.8;
+}
+
+select,
+input,
+textarea {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  outline: 1px solid var(--vscode-focusBorder);
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: var(--vscode-editor-font-family);
+}
+
+.section {
+  margin-bottom: 12px;
+}
+
+.section > .section-label {
+  display: block;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.section-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.comment {
+  border-top: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+  padding: 6px 0;
+}
+
+.comment-meta {
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+.comment-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.load-error {
+  color: var(--vscode-errorForeground);
+  padding-top: 12px;
+}

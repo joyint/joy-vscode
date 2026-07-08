@@ -1,7 +1,7 @@
 id: JVSC-000C-8C
 title: 'Tree view: drag and drop re-parenting, add buttons, drop lifecycle actions'
 type: story
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -13,12 +13,17 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.504828648Z
-updated: 2026-07-08T18:09:51.166222063Z
+updated: 2026-07-08T18:15:50.135753055Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-08T18:09:51.166222063Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-08T18:15:50.135753055Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-08T18:09:51.132278365Z
   text: 'Plan: (1) remove lifecycle verbs from tree context menu, lifecycle moves to board and item detail; (2) TreeDragAndDropController: drop item on item sets parent via joy edit --parent, drop on empty view area clears parent, drop on milestone node links via joy milestone link; no manual sorting; (3) milestones shown as top-level group nodes above root items; (4) view title plus buttons: new item (type pick + title input) and new milestone (title + optional date).'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:15:50.105447977Z
+  text: '[x] TreeDragAndDropController with pure planDrop logic (reparent, clear parent, milestone link; cycle and no-op guards). [x] Milestone group nodes in tree, dated first. [x] New Item and New Milestone title buttons. [x] Lifecycle verbs removed from tree context menu, commands kept for board/detail. [x] joy.hello removed. [x] 40 unit tests green, build green.'

@@ -42,6 +42,12 @@
           "id": "joyBacklog",
           "name": "Backlog",
           "contextualTitle": "Joy"
+        },
+        {
+          "id": "joyItemDetail",
+          "name": "Item",
+          "type": "webview",
+          "contextualTitle": "Joy Item"
         }
       ]
     },
@@ -65,8 +71,13 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "joy.openDetail",
+        "title": "Open Item Detail",
+        "category": "Joy"
+      },
+      {
         "command": "joy.show",
-        "title": "Show Details",
+        "title": "Show Details (Markdown)",
         "category": "Joy"
       },
       {

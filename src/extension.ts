@@ -6,6 +6,7 @@ import * as vscode from 'vscode';
 import type { BacklogNode, ItemNode } from './backlog';
 import { BacklogDragAndDropController } from './backlogDnd';
 import { BacklogProvider } from './backlogProvider';
+import { ItemDetailViewProvider } from './itemDetailView';
 import { JoyClient, JoyError, JoySessionExpiredError } from './joyClient';
 import { JoyResolver, buildCommonJoyPaths, type JoyResolution } from './joyResolver';
 
@@ -55,6 +56,18 @@ export function activate(context: vscode.ExtensionContext): void {
     dragAndDropController: new BacklogDragAndDropController(client, provider, reportError),
   });
 
+  const detailProvider = new ItemDetailViewProvider(
+    context.extensionUri,
+    client,
+    () => provider.refresh(),
+    reportError,
+  );
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(ItemDetailViewProvider.viewId, detailProvider, {
+      webviewOptions: { retainContextWhenHidden: true },
+    }),
+  );
+
   const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   statusItem.name = 'Joy CLI';
 
@@ -74,8 +87,11 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const getLastResolution = (): JoyResolution | undefined => lastResolution;
 
-  registerCommands(context, client, provider, treeView, performResolve, getLastResolution);
-  registerWatcher(context, provider);
+  registerCommands(context, client, provider, detailProvider, treeView, performResolve, getLastResolution);
+  registerWatcher(context, () => {
+    provider.refresh();
+    void detailProvider.refreshCurrent();
+  });
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
@@ -153,6 +169,7 @@ function registerCommands(
   context: vscode.ExtensionContext,
   client: JoyClient,
   provider: BacklogProvider,
+  detailProvider: ItemDetailViewProvider,
   treeView: vscode.TreeView<BacklogNode>,
   performResolve: () => Promise<void>,
   getLastResolution: () => JoyResolution | undefined,
@@ -187,6 +204,19 @@ function registerCommands(
 
   sub('joy.refresh', async () => {
     await performResolve();
+  });
+
+  sub('joy.openDetail', async (arg) => {
+    const id = resolveItemId(arg, treeView);
+    if (!id) {
+      vscode.window.showWarningMessage('Joy: no item selected.');
+      return;
+    }
+    try {
+      await detailProvider.showItem(id);
+    } catch (err) {
+      reportError(err);
+    }
   });
 
   sub('joy.show', async (arg) => {
@@ -275,7 +305,7 @@ function registerCommands(
   });
 }
 
-function registerWatcher(context: vscode.ExtensionContext, provider: BacklogProvider): void {
+function registerWatcher(context: vscode.ExtensionContext, onChange: () => void): void {
   const watcher = vscode.workspace.createFileSystemWatcher('**/.joy/items/**');
   let debounce: NodeJS.Timeout | undefined;
   const schedule = (): void => {
@@ -284,7 +314,7 @@ function registerWatcher(context: vscode.ExtensionContext, provider: BacklogProv
     }
     debounce = setTimeout(() => {
       debounce = undefined;
-      provider.refresh();
+      onChange();
     }, 250);
   };
   watcher.onDidCreate(schedule);
