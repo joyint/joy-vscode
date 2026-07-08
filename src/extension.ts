@@ -7,6 +7,7 @@ import { AuthService, type AuthState } from './auth';
 import type { BacklogNode, ItemNode } from './backlog';
 import { BacklogDragAndDropController } from './backlogDnd';
 import { BacklogProvider } from './backlogProvider';
+import { BoardPanel } from './boardView';
 import { ItemDetailViewProvider } from './itemDetailView';
 import { JoyClient, JoyError, JoySessionExpiredError } from './joyClient';
 import { JoyResolver, buildCommonJoyPaths, type JoyResolution } from './joyResolver';
@@ -102,7 +103,14 @@ export function activate(context: vscode.ExtensionContext): void {
   registerWatcher(context, () => {
     provider.refresh();
     void detailProvider.refreshCurrent();
+    BoardPanel.refreshIfOpen();
   });
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('joy.openBoard', () => {
+      BoardPanel.show(context.extensionUri, client, () => provider.refresh(), reportError);
+    }),
+  );
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {

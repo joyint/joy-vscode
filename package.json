@@ -65,6 +65,12 @@
         "icon": "$(milestone)"
       },
       {
+        "command": "joy.openBoard",
+        "title": "Open Board",
+        "category": "Joy",
+        "icon": "$(layout)"
+      },
+      {
         "command": "joy.refresh",
         "title": "Refresh Backlog",
         "category": "Joy",
@@ -136,9 +142,14 @@
           "group": "navigation@2"
         },
         {
-          "command": "joy.refresh",
+          "command": "joy.openBoard",
           "when": "view == joyBacklog",
           "group": "navigation@3"
+        },
+        {
+          "command": "joy.refresh",
+          "when": "view == joyBacklog",
+          "group": "navigation@4"
         }
       ],
       "view/item/context": [

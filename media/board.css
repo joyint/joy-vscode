@@ -1,0 +1,155 @@
+body {
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  margin: 0;
+  padding: 0 12px 12px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+#toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 0;
+}
+
+#toolbar label {
+  opacity: 0.8;
+}
+
+#filter {
+  flex: 1;
+  max-width: 340px;
+}
+
+input,
+select {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input:focus,
+select:focus {
+  outline: 1px solid var(--vscode-focusBorder);
+}
+
+button {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+  border: none;
+  border-radius: 3px;
+  padding: 3px 10px;
+  cursor: pointer;
+  min-width: 48px;
+}
+
+button:hover {
+  background: var(--vscode-button-secondaryHoverBackground);
+}
+
+#board {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+}
+
+#board.empty {
+  opacity: 0.7;
+  display: block;
+}
+
+.column {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  background: var(--vscode-sideBar-background, rgba(128, 128, 128, 0.08));
+  border: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.2));
+  border-radius: 5px;
+  min-height: 0;
+}
+
+.column.drop-target {
+  outline: 2px solid var(--vscode-focusBorder);
+  outline-offset: -2px;
+}
+
+.column-header {
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.2));
+  display: flex;
+  justify-content: space-between;
+}
+
+.column-count {
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.column-body {
+  padding: 8px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card {
+  background: var(--vscode-editor-background);
+  border: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: grab;
+  user-select: none;
+}
+
+.card.dragging {
+  opacity: 0.5;
+}
+
+.card-title {
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.card-meta {
+  display: flex;
+  gap: 6px;
+  font-size: 0.85em;
+  opacity: 0.75;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: var(--vscode-badge-background);
+  color: var(--vscode-badge-foreground);
+  border-radius: 3px;
+  padding: 0 5px;
+}
+
+.prio-critical {
+  color: var(--vscode-errorForeground);
+  opacity: 1;
+}
+
+.prio-high {
+  color: var(--vscode-editorWarning-foreground, orange);
+  opacity: 1;
+}
+
+.load-error {
+  color: var(--vscode-errorForeground);
+}

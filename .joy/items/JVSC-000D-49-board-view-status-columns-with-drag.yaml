@@ -1,9 +1,11 @@
 id: JVSC-000D-49
 title: 'Board view: status columns with drag and drop and card actions'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -11,10 +13,15 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-08T18:04:00.538574242Z
-updated: 2026-07-08T18:07:45.672965707Z
+updated: 2026-07-08T18:26:59.404126888Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-history: []
+history:
+- date: 2026-07-08T18:26:59.370959433Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-08T18:07:45.672965157Z
   text: 'Additional requirement from operator: board header gets a text filter (instant, matches item id and title) and a sort control with ascending/descending toggle over created, updated, id, title, effort, priority, type.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-08T18:26:59.404126359Z
+  text: 'Plan: singleton WebviewPanel (joy.openBoard) with columns New (new+open), In progress, Review, Done (closed); deferred stays off the board like in the app. Card drop triggers the column verb (reopen/start/submit/close), double click opens the item detail view. Header: instant text filter on id and title, sort select (created, updated, id, title, effort, priority, type) with asc/desc toggle, applied within columns. Data via joy ls --all; refresh on .joy/items watcher and after every action.'

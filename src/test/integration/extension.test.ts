@@ -5,6 +5,7 @@ const EXPECTED_COMMANDS = [
   'joy.addItem',
   'joy.addMilestone',
   'joy.refresh',
+  'joy.openBoard',
   'joy.openDetail',
   'joy.show',
   'joy.start',
