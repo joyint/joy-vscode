@@ -3,11 +3,19 @@ import type { JoyClient } from './joyClient';
 import type { JoyListResponse } from './types';
 
 type BoardMessage =
-  | { type: 'move'; id: string; verb: string }
+  | { type: 'move'; id: string; column: string }
   | { type: 'open'; id: string }
   | { type: 'refresh' };
 
-const COLUMN_VERBS = new Set(['reopen', 'start', 'submit', 'close']);
+/** CLI invocation per drop target column; id is inserted after the verb. */
+const COLUMN_MOVES: Record<string, (id: string) => string[]> = {
+  new: (id) => ['status', id, 'new'],
+  open: (id) => ['approve', id],
+  'in-progress': (id) => ['start', id],
+  review: (id) => ['submit', id],
+  closed: (id) => ['close', id],
+  deferred: (id) => ['defer', id],
+};
 
 /** Singleton editor panel showing the status-column board. */
 export class BoardPanel {
@@ -74,9 +82,10 @@ export class BoardPanel {
   private async handleMessage(message: BoardMessage): Promise<void> {
     switch (message.type) {
       case 'move': {
-        if (!COLUMN_VERBS.has(message.verb)) return;
+        const buildArgs = COLUMN_MOVES[message.column];
+        if (!buildArgs) return;
         try {
-          await this.client.run([message.verb, message.id]);
+          await this.client.run(buildArgs(message.id));
           this.onDataChanged();
         } catch (err) {
           this.onError(err);

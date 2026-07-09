@@ -3,10 +3,12 @@
   const vscode = acquireVsCodeApi();
 
   const COLUMNS = [
-    { key: 'new', label: 'New', statuses: ['new', 'open'], verb: 'reopen' },
-    { key: 'in-progress', label: 'In progress', statuses: ['in-progress'], verb: 'start' },
-    { key: 'review', label: 'Review', statuses: ['review'], verb: 'submit' },
-    { key: 'done', label: 'Done', statuses: ['closed'], verb: 'close' },
+    { key: 'new', label: 'New', statuses: ['new'] },
+    { key: 'open', label: 'Open', statuses: ['open', 'blocked'] },
+    { key: 'in-progress', label: 'In progress', statuses: ['in-progress'] },
+    { key: 'review', label: 'Review', statuses: ['review'] },
+    { key: 'closed', label: 'Closed', statuses: ['closed'] },
+    { key: 'deferred', label: 'Deferred', statuses: ['deferred'] },
   ];
   const PRIORITY_RANK = { critical: 0, high: 1, medium: 2, low: 3 };
   const EFFORT_LABELS = ['xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl'];
@@ -100,21 +102,21 @@
   }
 
   function renderColumn(column, columnItems) {
-    const body = el('div', { className: 'column-body' });
-    for (const item of columnItems) {
-      body.append(renderCard(item));
+    const slim = columnItems.length === 0;
+    const title = `${column.label} (${columnItems.length})`;
+    const node = el('div', { className: slim ? 'column slim' : 'column' });
+    if (slim) {
+      node.append(el('div', { className: 'slim-title' }, document.createTextNode(title)));
+    } else {
+      const body = el('div', { className: 'column-body' });
+      for (const item of columnItems) {
+        body.append(renderCard(item));
+      }
+      node.append(
+        el('div', { className: 'column-header' }, document.createTextNode(title)),
+        body,
+      );
     }
-    const node = el(
-      'div',
-      { className: 'column' },
-      el(
-        'div',
-        { className: 'column-header' },
-        el('span', {}, document.createTextNode(column.label)),
-        el('span', { className: 'column-count' }, document.createTextNode(String(columnItems.length))),
-      ),
-      body,
-    );
 
     node.addEventListener('dragover', (event) => {
       event.preventDefault();
@@ -128,7 +130,7 @@
       if (!id) return;
       const item = items.find((entry) => entry.id === id);
       if (!item || column.statuses.includes(item.status)) return;
-      vscode.postMessage({ type: 'move', id, verb: column.verb });
+      vscode.postMessage({ type: 'move', id, column: column.key });
     });
     return node;
   }

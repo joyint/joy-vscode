@@ -85,17 +85,24 @@ button:hover {
   outline-offset: -2px;
 }
 
+.column.slim {
+  flex: 0 0 34px;
+  min-width: 34px;
+  align-items: center;
+}
+
+.slim-title {
+  writing-mode: vertical-rl;
+  padding: 10px 0;
+  font-weight: 600;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
 .column-header {
   padding: 8px 10px;
   font-weight: 600;
   border-bottom: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.2));
-  display: flex;
-  justify-content: space-between;
-}
-
-.column-count {
-  opacity: 0.6;
-  font-weight: 400;
 }
 
 .column-body {
