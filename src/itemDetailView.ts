@@ -1,10 +1,16 @@
 import * as vscode from 'vscode';
-import { STATUS_VERBS, buildEditArgs, type DetailEditField } from './itemDetail';
+import { buildEditArgs, type DetailEditField } from './itemDetail';
 import type { JoyClient } from './joyClient';
-import type { JoyMilestone, JoyMilestoneListResponse, JoyShowResponse } from './types';
+import { STATUSES, moveArgs } from './status';
+import type {
+  JoyItemStatus,
+  JoyMilestone,
+  JoyMilestoneListResponse,
+  JoyShowResponse,
+} from './types';
 
 type DetailMessage =
-  | { type: 'verb'; id: string; verb: string }
+  | { type: 'setStatus'; id: string; current: JoyItemStatus; target: JoyItemStatus }
   | { type: 'edit'; id: string; field: DetailEditField; value: string }
   | { type: 'comment'; id: string; text: string }
   | { type: 'refresh' };
@@ -79,7 +85,7 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
         type: 'item',
         item: shown.data,
         milestones,
-        verbs: STATUS_VERBS[shown.data.status] ?? [],
+        statuses: STATUSES,
       });
     } catch (err) {
       await this.view.webview.postMessage({
@@ -101,8 +107,10 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
   private async handleMessage(message: DetailMessage): Promise<void> {
     try {
       switch (message.type) {
-        case 'verb': {
-          await this.client.run([message.verb, message.id]);
+        case 'setStatus': {
+          const args = moveArgs(message.id, message.current, message.target);
+          if (!args) return;
+          await this.client.run(args);
           break;
         }
         case 'edit': {

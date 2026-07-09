@@ -1,16 +1,3 @@
-import type { JoyItemStatus } from './types';
-
-/** Governed lifecycle verbs offered per current status, mirroring the app. */
-export const STATUS_VERBS: Record<JoyItemStatus, readonly string[]> = {
-  new: ['approve', 'start', 'defer'],
-  open: ['start', 'defer'],
-  'in-progress': ['submit', 'close', 'defer'],
-  review: ['close', 'rework', 'defer'],
-  closed: ['reopen'],
-  deferred: ['reopen'],
-  blocked: [],
-};
-
 export const EFFORT_LABELS = ['xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl'] as const;
 
 export function effortLabel(effort: number | null | undefined): string | undefined {

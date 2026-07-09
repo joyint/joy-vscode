@@ -13,7 +13,7 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:19:04.372543473Z
-updated: 2026-07-08T18:21:46.407368487Z
+updated: 2026-07-09T05:16:55.940716714Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-08T18:17:08.840881619Z
@@ -28,3 +28,6 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-08T18:21:46.378580816Z
   text: '[x] joyItemDetail WebviewView with CSP nonce, DOM-built UI (no HTML injection). [x] Title inline edit, status verbs, type/priority/effort/milestone selects, description save, comments with add box. [x] Item add lives on the tree title button (JVSC-000C). [x] Tree click opens detail; markdown show moved to context menu. [x] check and build green. Manual UI verification in the Extension Host still pending; keep in review until then.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-09T05:16:55.940716291Z
+  text: 'Rework per operator: the detail status control now offers all six workflow statuses as a segmented control (current one highlighted and disabled). Transition mapping centralized in src/status.ts and shared with the board: approve, reopen, start, rework, submit, close, defer, plus direct status set for a move back to new.'

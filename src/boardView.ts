@@ -1,21 +1,12 @@
 import * as vscode from 'vscode';
 import type { JoyClient } from './joyClient';
-import type { JoyListResponse } from './types';
+import { STATUSES, moveArgs } from './status';
+import type { JoyItemStatus, JoyListResponse } from './types';
 
 type BoardMessage =
-  | { type: 'move'; id: string; column: string }
+  | { type: 'move'; id: string; current: JoyItemStatus; target: JoyItemStatus }
   | { type: 'open'; id: string }
   | { type: 'refresh' };
-
-/** CLI invocation per drop target column; id is inserted after the verb. */
-const COLUMN_MOVES: Record<string, (id: string) => string[]> = {
-  new: (id) => ['status', id, 'new'],
-  open: (id) => ['approve', id],
-  'in-progress': (id) => ['start', id],
-  review: (id) => ['submit', id],
-  closed: (id) => ['close', id],
-  deferred: (id) => ['defer', id],
-};
 
 /** Singleton editor panel showing the status-column board. */
 export class BoardPanel {
@@ -82,10 +73,11 @@ export class BoardPanel {
   private async handleMessage(message: BoardMessage): Promise<void> {
     switch (message.type) {
       case 'move': {
-        const buildArgs = COLUMN_MOVES[message.column];
-        if (!buildArgs) return;
+        if (!STATUSES.includes(message.target)) return;
+        const args = moveArgs(message.id, message.current, message.target);
+        if (!args) return;
         try {
-          await this.client.run(buildArgs(message.id));
+          await this.client.run(args);
           this.onDataChanged();
         } catch (err) {
           this.onError(err);

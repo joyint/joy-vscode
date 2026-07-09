@@ -36,20 +36,31 @@ body {
   font-size: 1.05em;
 }
 
-.verbs {
+.status-control {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
   margin-bottom: 12px;
+  border: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+  border-radius: 4px;
+  overflow: hidden;
+  width: fit-content;
 }
 
-.status-badge {
-  align-self: center;
-  padding: 1px 8px;
-  border-radius: 9px;
-  font-size: 0.85em;
-  background: var(--vscode-badge-background);
-  color: var(--vscode-badge-foreground);
+.status-segment {
+  border-radius: 0;
+  background: transparent;
+  color: var(--vscode-foreground);
+  padding: 3px 9px;
+}
+
+.status-segment:not(:first-child) {
+  border-left: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+}
+
+.status-segment.current {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  cursor: default;
 }
 
 button {

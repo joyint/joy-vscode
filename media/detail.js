@@ -11,7 +11,7 @@
   window.addEventListener('message', (event) => {
     const message = event.data;
     if (message.type === 'item') {
-      render(message.item, message.milestones, message.verbs);
+      render(message.item, message.milestones, message.statuses);
     } else if (message.type === 'loadError') {
       app.className = 'load-error';
       app.replaceChildren(text(message.message));
@@ -29,13 +29,13 @@
     return node;
   }
 
-  function render(item, milestones, verbs) {
+  function render(item, milestones, statuses) {
     app.className = '';
     const children = [];
 
     children.push(el('div', { className: 'item-id' }, text(item.id)));
     children.push(renderTitle(item));
-    children.push(renderVerbs(item, verbs));
+    children.push(renderStatusControl(item, statuses));
     children.push(renderFields(item, milestones));
     children.push(renderDescription(item));
     children.push(renderComments(item));
@@ -69,12 +69,18 @@
     return row;
   }
 
-  function renderVerbs(item, verbs) {
-    const bar = el('div', { className: 'verbs' });
-    bar.append(el('span', { className: 'status-badge' }, text(item.status)));
-    for (const verb of verbs) {
-      const button = el('button', { className: verb === 'close' ? 'primary' : '' }, text(verb));
-      button.addEventListener('click', () => post({ type: 'verb', id: item.id, verb }));
+  function renderStatusControl(item, statuses) {
+    const bar = el('div', { className: 'status-control' });
+    for (const status of statuses) {
+      const current = status === item.status;
+      const button = el(
+        'button',
+        { className: current ? 'status-segment current' : 'status-segment', disabled: current },
+        text(status),
+      );
+      button.addEventListener('click', () =>
+        post({ type: 'setStatus', id: item.id, current: item.status, target: status }),
+      );
       bar.append(button);
     }
     return bar;

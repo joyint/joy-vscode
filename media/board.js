@@ -130,7 +130,7 @@
       if (!id) return;
       const item = items.find((entry) => entry.id === id);
       if (!item || column.statuses.includes(item.status)) return;
-      vscode.postMessage({ type: 'move', id, column: column.key });
+      vscode.postMessage({ type: 'move', id, current: item.status, target: column.key });
     });
     return node;
   }
