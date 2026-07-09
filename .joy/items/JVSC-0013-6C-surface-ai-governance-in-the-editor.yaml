@@ -1,0 +1,12 @@
+id: JVSC-0013-6C
+title: 'Surface AI governance in the editor: dispatch, jobs, gates, costs'
+type: idea
+status: new
+priority: medium
+parent: JVSC-0001-D4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-09T05:27:16.035109421Z
+updated: 2026-07-09T05:27:16.035109421Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: Item detail gains AI delegation (dispatch an item to joy ai, watch job status), shows gates and capabilities, and cost per item. Joy's differentiator; no competitor offers this inside the editor.

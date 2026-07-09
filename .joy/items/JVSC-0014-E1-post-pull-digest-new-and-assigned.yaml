@@ -1,0 +1,12 @@
+id: JVSC-0014-E1
+title: 'Post-pull digest: new and assigned items after git pull'
+type: idea
+status: new
+priority: medium
+parent: JVSC-0001-D4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-09T05:27:16.068142404Z
+updated: 2026-07-09T05:27:16.068142404Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: 'After a git pull touches .joy/items, show a short notification like: 3 new items, 1 assigned to you. The pull is the natural sync moment in a git-native tool.'

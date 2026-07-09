@@ -1,0 +1,12 @@
+id: JVSC-0015-83
+title: 'Simplify: drop markdown show, make description todos clickable'
+type: idea
+status: new
+priority: medium
+parent: JVSC-0001-D4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-09T05:27:16.101483925Z
+updated: 2026-07-09T05:27:16.101483925Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: Show Details (Markdown) is redundant next to the detail panel and can go. Todo checkboxes in the description become clickable in the detail view and toggle the underlying markdown. Keep the extension focused on the loop pick, start, code, commit, submit; management UI stays in the app.

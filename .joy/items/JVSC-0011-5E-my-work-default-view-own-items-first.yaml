@@ -1,0 +1,12 @@
+id: JVSC-0011-5E
+title: 'My Work default view: own items first, in-progress on top'
+type: idea
+status: new
+priority: medium
+parent: JVSC-0001-D4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-09T05:27:15.969697173Z
+updated: 2026-07-09T05:27:15.969697173Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: The backlog view starts with the user's assigned items, in-progress first, everything else collapsed. Mirrors Jira Your Work and Linear My Issues as the real entry point instead of the full backlog.

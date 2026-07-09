@@ -1,0 +1,12 @@
+id: JVSC-0012-2F
+title: Create item from TODO comment, item id hover and CodeLens
+type: idea
+status: new
+priority: medium
+parent: JVSC-0001-D4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-09T05:27:16.002336896Z
+updated: 2026-07-09T05:27:16.002336896Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: Code action on TODO/FIXME comments creates an item carrying the file and line reference and rewrites the comment to TODO(ID). Hover and CodeLens on item ids in code and commit messages open the item detail.

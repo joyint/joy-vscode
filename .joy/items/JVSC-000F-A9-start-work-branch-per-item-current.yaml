@@ -1,0 +1,12 @@
+id: JVSC-000F-A9
+title: 'Start work: branch per item, current item in status bar, commit id autofill'
+type: idea
+status: new
+priority: medium
+parent: JVSC-0001-D4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-09T05:27:15.903891218Z
+updated: 2026-07-09T05:27:15.903891218Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: Start work on an item creates a branch named after the item id plus short title, runs joy start, and assigns the user. The status bar shows the current item derived from the branch name. The SCM commit input gets the item id appended automatically so the commit-msg hook always passes. Modeled on Jira's Start work and Linear's branch-name convention.
