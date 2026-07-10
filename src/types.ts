@@ -11,6 +11,11 @@ export type JoyItemStatus =
 
 export type JoyItemPriority = 'critical' | 'high' | 'medium' | 'low';
 
+export interface JoyAssignee {
+  member: string;
+  capabilities?: string[] | null;
+}
+
 export interface JoyItem {
   id: string;
   title: string;
@@ -21,7 +26,7 @@ export interface JoyItem {
   milestone?: string | null;
   deps?: string[] | null;
   tags?: string[] | null;
-  assignees?: string[] | null;
+  assignees?: JoyAssignee[] | null;
   effort?: number | null;
   description?: string | null;
   created?: string;

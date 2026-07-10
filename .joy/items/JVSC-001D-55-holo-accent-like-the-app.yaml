@@ -1,0 +1,21 @@
+id: JVSC-001D-55
+title: Holo accent like the app
+type: story
+status: in-progress
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-10T09:42:50.037623286Z
+updated: 2026-07-10T09:48:01.233682259Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-10T09:48:01.233682259Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Adopt the app's animated accent gradient (holo-text-sweep, accent-gradient tokens) for member @names in the detail view, honoring prefers-reduced-motion.

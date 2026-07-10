@@ -13,6 +13,8 @@ type DetailMessage =
   | { type: 'setStatus'; id: string; current: JoyItemStatus; target: JoyItemStatus }
   | { type: 'edit'; id: string; field: DetailEditField; value: string }
   | { type: 'comment'; id: string; text: string }
+  | { type: 'assign'; id: string; member: string }
+  | { type: 'unassign'; id: string; member: string }
   | { type: 'refresh' };
 
 const EDIT_FIELDS: readonly DetailEditField[] = [
@@ -77,14 +79,16 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
   private async pushItem(): Promise<void> {
     if (!this.view || !this.currentId) return;
     try {
-      const [shown, milestones] = await Promise.all([
+      const [shown, milestones, members] = await Promise.all([
         this.client.runJson<JoyShowResponse>(['show', this.currentId]),
         this.loadMilestones(),
+        this.loadMembers(),
       ]);
       await this.view.webview.postMessage({
         type: 'item',
         item: shown.data,
         milestones,
+        members,
         statuses: STATUSES,
       });
     } catch (err) {
@@ -99,6 +103,18 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
     try {
       const response = await this.client.runJson<JoyMilestoneListResponse>(['milestone', 'ls']);
       return response.data.milestones;
+    } catch {
+      return [];
+    }
+  }
+
+  private async loadMembers(): Promise<string[]> {
+    try {
+      const response = await this.client.runJson<{ data: Record<string, unknown> }>([
+        'project',
+        'member',
+      ]);
+      return Object.keys(response.data);
     } catch {
       return [];
     }
@@ -124,6 +140,14 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
           await this.client.run(['comment', message.id, text]);
           break;
         }
+        case 'assign': {
+          await this.client.run(['assign', message.id, message.member]);
+          break;
+        }
+        case 'unassign': {
+          await this.client.run(['assign', message.id, message.member, '--unassign']);
+          break;
+        }
         case 'refresh': {
           await this.pushItem();
           return;
@@ -140,6 +164,9 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
 
 function renderHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
   const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'detail.js'));
+  const markdownUri = webview.asWebviewUri(
+    vscode.Uri.joinPath(extensionUri, 'media', 'markdown.js'),
+  );
   const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'detail.css'));
   const nonce = createNonce();
   return `<!DOCTYPE html>
@@ -154,6 +181,7 @@ function renderHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
 </head>
 <body>
   <div id="app" class="empty">Select an item in the Backlog view.</div>
+  <script nonce="${nonce}" src="${markdownUri.toString()}"></script>
   <script nonce="${nonce}" src="${scriptUri.toString()}"></script>
 </body>
 </html>`;

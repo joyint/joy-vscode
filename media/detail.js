@@ -8,10 +8,28 @@
 
   const app = /** @type {HTMLElement} */ (document.getElementById('app'));
 
+  /**
+   * Unsaved edits per item id: { comment, description, editingDescription }.
+   * Kept across item switches and external refreshes; also mirrored into
+   * webview state so a hidden/restored view keeps them.
+   */
+  const drafts = new Map(Object.entries(vscode.getState()?.drafts ?? {}));
+
+  function saveDrafts() {
+    vscode.setState({ drafts: Object.fromEntries(drafts) });
+  }
+
+  function draftFor(id) {
+    if (!drafts.has(id)) {
+      drafts.set(id, { comment: '', description: undefined, editingDescription: false });
+    }
+    return drafts.get(id);
+  }
+
   window.addEventListener('message', (event) => {
     const message = event.data;
     if (message.type === 'item') {
-      render(message.item, message.milestones, message.statuses);
+      render(message.item, message.milestones, message.members, message.statuses);
     } else if (message.type === 'loadError') {
       app.className = 'load-error';
       app.replaceChildren(text(message.message));
@@ -29,18 +47,21 @@
     return node;
   }
 
-  function render(item, milestones, statuses) {
+  function memberName(entry) {
+    return typeof entry === 'string' ? entry : entry && entry.member ? entry.member : '';
+  }
+
+  function render(item, milestones, members, statuses) {
     app.className = '';
-    const children = [];
-
-    children.push(el('div', { className: 'item-id' }, text(item.id)));
-    children.push(renderTitle(item));
-    children.push(renderStatusControl(item, statuses));
-    children.push(renderFields(item, milestones));
-    children.push(renderDescription(item));
-    children.push(renderComments(item));
-
-    app.replaceChildren(...children);
+    app.replaceChildren(
+      el('div', { className: 'item-id' }, text(item.id)),
+      renderTitle(item),
+      renderStatusControl(item, statuses),
+      renderFields(item, milestones),
+      renderAssignees(item, members),
+      renderDescription(item),
+      renderComments(item),
+    );
   }
 
   function renderTitle(item) {
@@ -117,10 +138,48 @@
     if (item.parent) {
       grid.append(fieldLabel('Parent'), el('span', {}, text(item.parent)));
     }
-    if (Array.isArray(item.assignees) && item.assignees.length > 0) {
-      grid.append(fieldLabel('Assignees'), el('span', {}, text(item.assignees.join(', '))));
-    }
     return grid;
+  }
+
+  function renderAssignees(item, members) {
+    const section = el('div', { className: 'section' });
+    section.append(el('span', { className: 'section-label' }, text('Assignees')));
+
+    const assigned = (Array.isArray(item.assignees) ? item.assignees : [])
+      .map(memberName)
+      .filter(Boolean);
+
+    const chips = el('div', { className: 'assignee-chips' });
+    for (const member of assigned) {
+      const remove = el('button', { className: 'chip-remove', title: `Unassign ${member}` }, text('×'));
+      remove.addEventListener('click', () => post({ type: 'unassign', id: item.id, member }));
+      chips.append(
+        el(
+          'span',
+          { className: 'assignee-chip' },
+          el('span', { className: 'holo-token' }, text(`@${member}`)),
+          remove,
+        ),
+      );
+    }
+
+    const addable = (members || []).filter((member) => !assigned.includes(member));
+    if (addable.length > 0) {
+      const picker = el('select', { className: 'assignee-add' });
+      picker.append(el('option', { value: '', selected: true }, text('Add assignee...')));
+      for (const member of addable) {
+        picker.append(el('option', { value: member }, text(member)));
+      }
+      picker.addEventListener('change', () => {
+        if (picker.value) {
+          post({ type: 'assign', id: item.id, member: picker.value });
+        }
+      });
+      chips.append(picker);
+    }
+
+    section.append(chips);
+    return section;
   }
 
   function fieldLabel(name) {
@@ -144,42 +203,89 @@
 
   function renderDescription(item) {
     const section = el('div', { className: 'section' });
-    section.append(el('span', { className: 'section-label' }, text('Description')));
-    const textarea = el('textarea', { rows: 8, value: item.description || '' });
+    const draft = draftFor(item.id);
+    const header = el('span', { className: 'section-label' }, text('Description'));
+    section.append(header);
+
+    if (!draft.editingDescription) {
+      // @ts-ignore provided by markdown.js
+      const rendered = window.joyRenderMarkdown(item.description || '');
+      if (!item.description) {
+        rendered.append(el('p', { className: 'placeholder' }, text('No description.')));
+      }
+      const actions = el('div', { className: 'section-actions' });
+      const editButton = el('button', {}, text('Edit'));
+      editButton.addEventListener('click', () => {
+        draft.editingDescription = true;
+        draft.description = draft.description ?? item.description ?? '';
+        saveDrafts();
+        section.replaceWith(renderDescription(item));
+      });
+      actions.append(editButton);
+      section.append(rendered, actions);
+      return section;
+    }
+
+    const textarea = el('textarea', { rows: 10, value: draft.description ?? item.description ?? '' });
+    textarea.addEventListener('input', () => {
+      draft.description = textarea.value;
+      saveDrafts();
+    });
     const actions = el('div', { className: 'section-actions' });
-    const save = el('button', { className: 'primary' }, text('Save description'));
+    const cancel = el('button', {}, text('Cancel'));
+    cancel.addEventListener('click', () => {
+      draft.editingDescription = false;
+      draft.description = undefined;
+      saveDrafts();
+      section.replaceWith(renderDescription(item));
+    });
+    const save = el('button', { className: 'primary' }, text('Save'));
     save.addEventListener('click', () => {
+      draft.editingDescription = false;
+      draft.description = undefined;
+      saveDrafts();
       post({ type: 'edit', id: item.id, field: 'description', value: textarea.value });
     });
-    actions.append(save);
+    actions.append(cancel, save);
     section.append(textarea, actions);
     return section;
   }
 
   function renderComments(item) {
     const section = el('div', { className: 'section' });
+    const draft = draftFor(item.id);
     const comments = Array.isArray(item.comments) ? item.comments : [];
     section.append(
       el('span', { className: 'section-label' }, text(`Comments (${comments.length})`)),
     );
     for (const comment of comments) {
       const date = comment.date ? comment.date.slice(0, 16).replace('T', ' ') : '';
-      section.append(
-        el(
-          'div',
-          { className: 'comment' },
-          el('div', { className: 'comment-meta' }, text(`${comment.author} · ${date}`)),
-          el('div', { className: 'comment-text' }, text(comment.text)),
-        ),
+      const meta = el('div', { className: 'comment-meta' });
+      meta.append(
+        el('span', { className: 'holo-token' }, text(`@${comment.author.split(' ')[0]}`)),
+        text(` · ${date}`),
       );
+      // @ts-ignore provided by markdown.js
+      const body = window.joyRenderMarkdown(comment.text || '');
+      body.classList.add('comment-text');
+      section.append(el('div', { className: 'comment' }, meta, body));
     }
-    const textarea = el('textarea', { rows: 3, placeholder: 'Add a comment...' });
+    const textarea = el('textarea', {
+      rows: 3,
+      placeholder: 'Add a comment... (markdown)',
+      value: draft.comment || '',
+    });
+    textarea.addEventListener('input', () => {
+      draft.comment = textarea.value;
+      saveDrafts();
+    });
     const actions = el('div', { className: 'section-actions' });
     const add = el('button', {}, text('Comment'));
     add.addEventListener('click', () => {
       if (textarea.value.trim()) {
         post({ type: 'comment', id: item.id, text: textarea.value });
-        textarea.value = '';
+        draft.comment = '';
+        saveDrafts();
       }
     });
     actions.append(add);

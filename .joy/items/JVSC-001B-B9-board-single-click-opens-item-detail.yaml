@@ -1,0 +1,20 @@
+id: JVSC-001B-B9
+title: Board single click opens item detail; detail keeps unsaved drafts per item
+type: rework
+status: in-progress
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-10T09:42:49.963055603Z
+updated: 2026-07-10T09:48:01.194845660Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-10T09:48:01.194845660Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Single click on a card shows the item in the detail view (double click stays). The detail view keeps unsaved edits (comment box, description) per item across item switches and external refreshes.
