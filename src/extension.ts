@@ -161,12 +161,12 @@ function updateStatusBar(
     item.backgroundColor = undefined;
     const lines = [`**Joy** CLI ${resolution.version}`, `\`${resolution.executable}\``];
     if (auth.kind === 'authenticated') {
-      item.text = '$(check) joy';
+      item.text = '$(check)$(unlock) joy';
       const hours = auth.expiresInSeconds ? Math.round(auth.expiresInSeconds / 3600) : undefined;
       lines.push(`Authenticated as ${auth.member}${hours ? ` (${hours}h left)` : ''}`);
       item.command = 'joy.configureExecutablePath';
     } else if (auth.kind === 'unauthenticated') {
-      item.text = '$(key) joy';
+      item.text = '$(check)$(lock) joy';
       lines.push(`Not authenticated (${auth.member}). Click to enter your passphrase.`);
       item.command = 'joy.authenticate';
     } else {

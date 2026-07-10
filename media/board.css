@@ -160,3 +160,67 @@ button:hover {
 .load-error {
   color: var(--vscode-errorForeground);
 }
+
+#mine.active {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+
+/* Item type colors, matching the app's tag palette. */
+.tag {
+  background: transparent;
+  border: 1px solid currentColor;
+  opacity: 1;
+}
+
+.type-epic { color: #8a5cc8; }
+.type-story { color: #4a76b8; }
+.type-task { color: #5f7596; }
+.type-idea { color: #9a7420; }
+.type-decision { color: #b8527e; }
+.type-bug { color: #c04545; }
+.type-rework { color: #b06a2c; }
+
+body.vscode-dark .type-epic,
+body.vscode-high-contrast .type-epic { color: #c39bff; }
+body.vscode-dark .type-story,
+body.vscode-high-contrast .type-story { color: #7db4ff; }
+body.vscode-dark .type-task,
+body.vscode-high-contrast .type-task { color: #9fb1cc; }
+body.vscode-dark .type-idea,
+body.vscode-high-contrast .type-idea { color: #e6cf94; }
+body.vscode-dark .type-decision,
+body.vscode-high-contrast .type-decision { color: #ff8fd2; }
+body.vscode-dark .type-bug,
+body.vscode-high-contrast .type-bug { color: #ff9b9b; }
+body.vscode-dark .type-rework,
+body.vscode-high-contrast .type-rework { color: #f0b380; }
+
+/* Effort scale, blue (xxs) to red (xxl). */
+.effort {
+  font-weight: 600;
+  opacity: 1;
+}
+
+.effort-1 { color: #3b82f6; }
+.effort-2 { color: #06a6c4; }
+.effort-3 { color: #10a981; }
+.effort-4 { color: #b0a308; }
+.effort-5 { color: #d59e0b; }
+.effort-6 { color: #ee7316; }
+.effort-7 { color: #ef4444; }
+
+body.vscode-dark .effort-1,
+body.vscode-high-contrast .effort-1 { color: #7db4ff; }
+body.vscode-dark .effort-2,
+body.vscode-high-contrast .effort-2 { color: #67d9ec; }
+body.vscode-dark .effort-3,
+body.vscode-high-contrast .effort-3 { color: #6fd9b2; }
+body.vscode-dark .effort-4,
+body.vscode-high-contrast .effort-4 { color: #d9cf6e; }
+body.vscode-dark .effort-5,
+body.vscode-high-contrast .effort-5 { color: #f2c464; }
+body.vscode-dark .effort-6,
+body.vscode-high-contrast .effort-6 { color: #ffa15e; }
+body.vscode-dark .effort-7,
+body.vscode-high-contrast .effort-7 { color: #ff8383; }

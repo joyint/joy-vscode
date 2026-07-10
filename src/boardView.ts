@@ -45,7 +45,10 @@ export class BoardPanel {
       retainContextWhenHidden: true,
       localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')],
     });
-    this.panel.iconPath = vscode.Uri.joinPath(extensionUri, 'resources', 'joy.svg');
+    this.panel.iconPath = {
+      light: vscode.Uri.joinPath(extensionUri, 'resources', 'joy-light.svg'),
+      dark: vscode.Uri.joinPath(extensionUri, 'resources', 'joy-dark.svg'),
+    };
     this.panel.webview.html = renderHtml(this.panel.webview, extensionUri);
     this.panel.webview.onDidReceiveMessage((message: BoardMessage) => {
       void this.handleMessage(message);
@@ -60,13 +63,28 @@ export class BoardPanel {
 
   async refresh(): Promise<void> {
     try {
-      const response = await this.client.runJson<JoyListResponse>(['ls', '--all']);
-      await this.panel.webview.postMessage({ type: 'board', items: response.data.items });
+      const [response, member] = await Promise.all([
+        this.client.runJson<JoyListResponse>(['ls', '--all']),
+        this.loadMember(),
+      ]);
+      await this.panel.webview.postMessage({ type: 'board', items: response.data.items, member });
     } catch (err) {
       await this.panel.webview.postMessage({
         type: 'loadError',
         message: err instanceof Error ? err.message : String(err),
       });
+    }
+  }
+
+  private async loadMember(): Promise<string | undefined> {
+    try {
+      const response = await this.client.runJson<{ data: { member?: string } }>(
+        ['auth', 'status'],
+        { noAuthRetry: true },
+      );
+      return response.data.member;
+    } catch {
+      return undefined;
     }
   }
 
@@ -115,6 +133,7 @@ function renderHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
 <body>
   <header id="toolbar">
     <input id="filter" type="text" placeholder="Filter by id or title..." spellcheck="false">
+    <button id="mine" title="Show only items assigned to me">Mine</button>
     <label for="sort">Sort</label>
     <select id="sort">
       <option value="updated" selected>updated</option>

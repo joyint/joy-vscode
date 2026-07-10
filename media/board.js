@@ -15,16 +15,21 @@
 
   const board = /** @type {HTMLElement} */ (document.getElementById('board'));
   const filterInput = /** @type {HTMLInputElement} */ (document.getElementById('filter'));
+  const mineButton = /** @type {HTMLButtonElement} */ (document.getElementById('mine'));
   const sortSelect = /** @type {HTMLSelectElement} */ (document.getElementById('sort'));
   const directionButton = /** @type {HTMLButtonElement} */ (document.getElementById('direction'));
 
   let items = [];
+  let member;
+  let mineOnly = false;
   let descending = true;
 
   window.addEventListener('message', (event) => {
     const message = event.data;
     if (message.type === 'board') {
       items = message.items;
+      member = message.member;
+      mineButton.style.display = member ? '' : 'none';
       render();
     } else if (message.type === 'loadError') {
       board.className = 'empty load-error';
@@ -34,11 +39,24 @@
 
   filterInput.addEventListener('input', render);
   sortSelect.addEventListener('change', render);
+  mineButton.addEventListener('click', () => {
+    mineOnly = !mineOnly;
+    mineButton.classList.toggle('active', mineOnly);
+    render();
+  });
   directionButton.addEventListener('click', () => {
     descending = !descending;
     directionButton.textContent = descending ? 'desc' : 'asc';
     render();
   });
+
+  function assignedToMe(item) {
+    if (!member || !Array.isArray(item.assignees)) return false;
+    return item.assignees.some((entry) => {
+      const name = typeof entry === 'string' ? entry : entry && entry.member;
+      return name === member;
+    });
+  }
 
   function el(tag, props, ...children) {
     const node = document.createElement(tag);
@@ -95,6 +113,7 @@
       const columnItems = items
         .filter((item) => column.statuses.includes(item.status))
         .filter((item) => matchesFilter(item, needle))
+        .filter((item) => !mineOnly || assignedToMe(item))
         .sort(compare);
       return renderColumn(column, columnItems);
     });
@@ -137,7 +156,7 @@
 
   function renderCard(item) {
     const meta = el('div', { className: 'card-meta' });
-    meta.append(el('span', { className: 'tag' }, document.createTextNode(item.type)));
+    meta.append(el('span', { className: `tag type-${item.type}` }, document.createTextNode(item.type)));
     meta.append(el('span', {}, document.createTextNode(item.id)));
     meta.append(
       el(
@@ -150,7 +169,7 @@
       meta.append(
         el(
           'span',
-          {},
+          { className: `effort effort-${item.effort}` },
           document.createTextNode(EFFORT_LABELS[item.effort - 1] ?? String(item.effort)),
         ),
       );
@@ -158,7 +177,7 @@
 
     const card = el(
       'div',
-      { className: 'card', draggable: true, title: 'Drag to move, double-click to edit' },
+      { className: 'card', draggable: true, title: 'Drag to move, click to open' },
       el('div', { className: 'card-title' }, document.createTextNode(item.title)),
       meta,
     );
@@ -167,7 +186,7 @@
       event.dataTransfer?.setData('text/plain', item.id);
     });
     card.addEventListener('dragend', () => card.classList.remove('dragging'));
-    card.addEventListener('dblclick', () => {
+    card.addEventListener('click', () => {
       vscode.postMessage({ type: 'open', id: item.id });
     });
     return card;

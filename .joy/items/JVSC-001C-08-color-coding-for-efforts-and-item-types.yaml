@@ -1,15 +1,19 @@
 id: JVSC-001C-08
 title: Color coding for efforts and item types
 type: task
-status: new
+status: in-progress
 priority: medium
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 capabilities:
 - implement
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-10T09:42:50.000813040Z
-updated: 2026-07-10T09:42:50.000813040Z
+updated: 2026-07-10T09:48:25.637329103Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-history: []
+history:
+- date: 2026-07-10T09:48:25.637329103Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Effort badge colored on a blue (xxs) to red (xxl) scale; item type tags colored like the app (epic purple, story blue, task slate, idea gold, decision pink, bug red, rework orange), light and dark variants.
