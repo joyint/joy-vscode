@@ -1,7 +1,7 @@
 id: JVSC-0018-3D
 title: Board tab icon is black in dark themes
 type: bug
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -12,9 +12,15 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-10T09:42:49.854703454Z
-updated: 2026-07-10T09:48:25.528401340Z
+updated: 2026-07-10T09:48:25.899975840Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-10T09:48:25.528401340Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-10T09:48:25.899975840Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: The webview panel icon uses the currentColor SVG which renders black outside theme context. Ship explicit light and dark icon variants and pass both to iconPath.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-10T09:48:25.864066422Z
+  text: '[x] resources/joy-light.svg (#424242) and joy-dark.svg (#C5C5C5), panel iconPath uses the pair.'

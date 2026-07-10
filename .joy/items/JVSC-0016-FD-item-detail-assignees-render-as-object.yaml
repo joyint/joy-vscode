@@ -1,7 +1,7 @@
 id: JVSC-0016-FD
 title: 'Item detail: assignees render as [object Object]'
 type: bug
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -12,9 +12,15 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-10T09:42:49.783391115Z
-updated: 2026-07-10T09:42:50.076072981Z
+updated: 2026-07-10T09:48:25.756368873Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-10T09:42:50.076072981Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-10T09:48:25.756368873Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Assignees in show --json are objects ({member, capabilities}), the detail view joined them as strings. Render as chip list with per-assignee remove (joy assign --unassign) and an add dropdown fed from joy project member --json.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-10T09:48:25.720380720Z
+  text: '[x] Assignee chips with remove button and add dropdown from joy project member --json; assign/unassign via CLI. Root cause: assignees are {member} objects, old code joined them raw.'

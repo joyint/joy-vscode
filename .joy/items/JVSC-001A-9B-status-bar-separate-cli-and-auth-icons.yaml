@@ -1,7 +1,7 @@
 id: JVSC-001A-9B
 title: 'Status bar: separate CLI and auth icons'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -11,9 +11,15 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-10T09:42:49.926750367Z
-updated: 2026-07-10T09:48:25.601278890Z
+updated: 2026-07-10T09:48:26.045955101Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-10T09:48:25.601278890Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-10T09:48:26.045955101Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'One compact entry with two glyphs: check when the CLI is fine (warning/error otherwise) plus an unlocked padlock when authenticated, locked when not.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-10T09:48:26.008223236Z
+  text: '[x] Status bar shows check/warning for CLI plus lock/unlock for auth in one compact entry; click on locked opens the passphrase modal.'

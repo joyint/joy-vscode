@@ -1,7 +1,7 @@
 id: JVSC-0017-AB
 title: 'Item detail: render description and comments as markdown'
 type: rework
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -12,9 +12,15 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-10T09:42:49.819090926Z
-updated: 2026-07-10T09:48:01.156732161Z
+updated: 2026-07-10T09:48:25.827977491Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-10T09:48:01.156732161Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-10T09:48:25.827977491Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Description and comments show raw text. Add a minimal safe markdown renderer (headings, emphasis, code, lists, task lists, links) for view mode; description gets an explicit edit mode with save/cancel.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-10T09:48:25.792125170Z
+  text: '[x] media/markdown.js: minimal renderer (escape first, then headings, emphasis, code, lists, task lists, links, blockquote, @mention holo tokens). [x] Description view mode rendered, edit mode with save/cancel. [x] Comments rendered as markdown.'

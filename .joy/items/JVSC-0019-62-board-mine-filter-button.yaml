@@ -1,7 +1,7 @@
 id: JVSC-0019-62
 title: 'Board: Mine filter button'
 type: story
-status: in-progress
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -13,9 +13,15 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-10T09:42:49.890409125Z
-updated: 2026-07-10T09:48:25.565236087Z
+updated: 2026-07-10T09:48:25.972096763Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-10T09:48:25.565236087Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-10T09:48:25.972096763Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Toolbar toggle filtering to items assigned to the current member (from joy auth status --json).
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-10T09:48:25.936221421Z
+  text: '[x] Mine toggle in board toolbar, member from joy auth status --json, hidden when no member; matches assignee objects and strings.'
