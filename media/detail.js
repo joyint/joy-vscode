@@ -29,7 +29,17 @@
   window.addEventListener('message', (event) => {
     const message = event.data;
     if (message.type === 'item') {
-      render(message.item, message.milestones, message.members, message.items, message.statuses);
+      render(
+        message.item,
+        message.milestones,
+        message.members,
+        message.items,
+        message.statuses,
+        message.canDelete,
+      );
+    } else if (message.type === 'cleared') {
+      app.className = 'empty';
+      app.replaceChildren(text('Select an item in the Backlog view.'));
     } else if (message.type === 'loadError') {
       app.className = 'load-error';
       app.replaceChildren(text(message.message));
@@ -51,9 +61,9 @@
     return typeof entry === 'string' ? entry : entry && entry.member ? entry.member : '';
   }
 
-  function render(item, milestones, members, items, statuses) {
+  function render(item, milestones, members, items, statuses, canDelete) {
     app.className = '';
-    app.replaceChildren(
+    const children = [
       el('div', { className: 'item-id' }, text(item.id)),
       renderTitle(item),
       renderStatusControl(item, statuses),
@@ -62,7 +72,21 @@
       renderDependencies(item, items),
       renderDescription(item),
       renderComments(item),
+    ];
+    if (canDelete) {
+      children.push(renderDelete(item));
+    }
+    app.replaceChildren(...children);
+  }
+
+  function renderDelete(item) {
+    const section = el('div', { className: 'section danger-zone' });
+    const button = el('button', { className: 'delete-button' }, text('Delete item'));
+    button.addEventListener('click', () =>
+      post({ type: 'delete', id: item.id, title: item.title }),
     );
+    section.append(button);
+    return section;
   }
 
   function renderTitle(item) {

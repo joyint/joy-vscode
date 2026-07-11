@@ -257,6 +257,21 @@ body.vscode-high-contrast {
   opacity: 0.6;
 }
 
+.danger-zone {
+  border-top: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+  padding-top: 10px;
+}
+
+.delete-button {
+  background: var(--vscode-errorForeground, #f14c4c);
+  color: #ffffff;
+}
+
+.delete-button:hover {
+  background: var(--vscode-errorForeground, #f14c4c);
+  opacity: 0.85;
+}
+
 .md p {
   margin: 4px 0;
 }

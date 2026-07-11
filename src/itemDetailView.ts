@@ -18,6 +18,7 @@ type DetailMessage =
   | { type: 'unassign'; id: string; member: string }
   | { type: 'depAdd'; id: string; dep: string }
   | { type: 'depRemove'; id: string; dep: string }
+  | { type: 'delete'; id: string; title: string }
   | { type: 'refresh' };
 
 interface ItemRef {
@@ -40,6 +41,7 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
 
   private view: vscode.WebviewView | undefined;
   private currentId: string | undefined;
+  private canDelete: boolean | undefined;
 
   constructor(
     private readonly extensionUri: vscode.Uri,
@@ -88,11 +90,12 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
   private async pushItem(): Promise<void> {
     if (!this.view || !this.currentId) return;
     try {
-      const [shown, milestones, members, items] = await Promise.all([
+      const [shown, milestones, members, items, canDelete] = await Promise.all([
         this.client.runJson<JoyShowResponse>(['show', this.currentId]),
         this.loadMilestones(),
         this.loadMembers(),
         this.loadItems(),
+        this.loadCanDelete(),
       ]);
       await this.view.webview.postMessage({
         type: 'item',
@@ -101,6 +104,7 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
         members,
         items,
         statuses: STATUSES,
+        canDelete,
       });
     } catch (err) {
       await this.view.webview.postMessage({
@@ -141,7 +145,57 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
+  /**
+   * Whether the current user may delete items. `joy rm` enforces the `delete`
+   * capability, which the "all" role grants. Cached: it does not change between
+   * items.
+   */
+  private async loadCanDelete(): Promise<boolean> {
+    if (this.canDelete !== undefined) return this.canDelete;
+    try {
+      const [status, project] = await Promise.all([
+        this.client.runJsonAllowFailure<{ data: { member?: string } }>(['auth', 'status'], {
+          noAuthRetry: true,
+        }),
+        this.client.runJson<{ data: { members?: Record<string, { capabilities?: unknown }> } }>([
+          'project',
+        ]),
+      ]);
+      const me = status.data.member;
+      const caps = me ? project.data.members?.[me]?.capabilities : undefined;
+      this.canDelete =
+        caps === 'all' || (typeof caps === 'object' && caps !== null && 'delete' in caps);
+    } catch {
+      this.canDelete = false;
+    }
+    return this.canDelete;
+  }
+
+  /** Confirm with a VS Code modal, then `joy rm --force` and clear the view. */
+  private async deleteItem(id: string, title: string): Promise<void> {
+    const confirmed = await vscode.window.showWarningMessage(
+      `Delete ${id} "${title}"? This permanently removes the item and cannot be undone.`,
+      { modal: true },
+      'Delete',
+    );
+    if (confirmed !== 'Delete') return;
+    try {
+      await this.client.run(['rm', id, '--force']);
+      if (this.currentId === id) {
+        this.currentId = undefined;
+        await this.view?.webview.postMessage({ type: 'cleared' });
+      }
+      this.onDataChanged();
+    } catch (err) {
+      this.onError(err);
+    }
+  }
+
   private async handleMessage(message: DetailMessage): Promise<void> {
+    if (message.type === 'delete') {
+      await this.deleteItem(message.id, message.title);
+      return;
+    }
     try {
       switch (message.type) {
         case 'setStatus': {

@@ -1,0 +1,27 @@
+id: JVSC-0026-6C
+title: Delete item from the item detail view for users with the delete capability
+type: story
+status: closed
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T16:31:18.142994Z
+updated: 2026-07-11T16:34:28.014622Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T16:31:18.226215Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T16:34:28.014622Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Add a red Delete button in the item detail webview, shown only when the current user has the delete capability (project members[me].capabilities is 'all' or contains 'delete'). Clicking shows a VS Code modal confirmation; on confirm run joy rm <id> --force and refresh. joy rm enforces Capability::Delete (guard Action::DeleteItem).
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T16:34:27.933735Z
+  text: '[x] Implemented. Red ''Delete item'' button in the item detail webview, shown only when the current user has the delete capability (project members[me].capabilities is ''all'' or contains ''delete''; cached). Click -> VS Code modal confirmation -> joy rm <id> --force -> backlog refresh, detail view cleared. npm run check green (60 tests).'
