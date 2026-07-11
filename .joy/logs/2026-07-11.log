@@ -56,3 +56,4 @@
 2026-07-11T18:16:18.000Z JVSC-0028-4D item.status_changed "closed -> open" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-11T18:16:18.075Z JVSC-0028-4D comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-11T18:16:18.151Z JVSC-0028-4D item.status_changed "open -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-11T18:24:05.718Z v0.2.5 release.created [horst.schwarz@joydev.com]

@@ -1,0 +1,14 @@
+version: v0.2.5
+date: 2026-07-11
+previous: v0.2.4
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 11
+  items: 2
+items:
+  stories:
+  - id: JVSC-0027-25
+    title: Board dimension filter (Type/Effort/Assignee) with a context-sensitive value dropdown
+  tasks:
+  - id: JVSC-0028-4D
+    title: Show created/updated by and when in the item detail footer
