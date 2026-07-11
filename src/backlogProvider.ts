@@ -52,6 +52,16 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
     return this.items;
   }
 
+  /**
+   * Ensure the backlog has been loaded at least once and return the flat item
+   * list. Lets consumers (e.g. the editor link provider) work even when the
+   * backlog tree view has never been rendered.
+   */
+  async ensureItems(): Promise<readonly JoyItem[]> {
+    await this.getChildren();
+    return this.items;
+  }
+
   getTreeItem(node: BacklogNode): vscode.TreeItem {
     if (node.kind === 'milestone') {
       return milestoneTreeItem(node.milestone, node.children.length > 0);

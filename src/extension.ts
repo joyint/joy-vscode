@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext): void {
   // Turn Joy item ids (ACRONYM-XXXX[-YY]) in any text document into links that
   // open the item detail view, with a hover showing the item's title/status.
   const linkSelector: vscode.DocumentSelector = [{ scheme: 'file' }, { scheme: 'untitled' }];
-  const getItems = () => provider.currentItems();
+  const getItems = () => provider.ensureItems();
   context.subscriptions.push(
     vscode.languages.registerDocumentLinkProvider(linkSelector, new JoyLinkProvider(getItems)),
     vscode.languages.registerHoverProvider(linkSelector, new JoyHoverProvider(getItems)),
