@@ -276,37 +276,24 @@ function registerCommands(
     // The operator issues a delegation token for one of the AI members they
     // have delegated to (auth status -> delegated_sessions), then pastes it to
     // the AI, which redeems it with `joy auth --token <token> --json`.
-    let status: { data: { member?: string; delegated_sessions?: { member: string }[] } };
+    // Every AI member of the project. `joy auth token add` itself checks that
+    // the current operator may issue a token for the chosen one (and creates the
+    // delegation on first use), so no extra filtering is needed here.
+    let members: string[];
     try {
-      status = await client.runJsonAllowFailure(['auth', 'status'], { noAuthRetry: true });
+      const project = await client.runJson<{ data: { members?: Record<string, unknown> } }>([
+        'project',
+      ]);
+      members = Object.keys(project.data.members ?? {})
+        .filter((id) => id.startsWith('ai:'))
+        .sort();
     } catch (err) {
       reportError(err);
       return;
     }
-    const currentMember = status.data.member;
-    // AIs the current user can issue a token for: ones already delegated, plus
-    // ones the user attested (e.g. a freshly `joy ai init`-ed copilot, whose
-    // operator delegation is only created on the first `joy auth token add`).
-    const delegated = (status.data.delegated_sessions ?? [])
-      .map((session) => session.member)
-      .filter((member): member is string => Boolean(member));
-    let attested: string[] = [];
-    if (currentMember) {
-      try {
-        const project = await client.runJson<{
-          data: { members?: Record<string, { attestation?: { attester?: string } }> };
-        }>(['project']);
-        attested = Object.entries(project.data.members ?? {})
-          .filter(([id, entry]) => id.startsWith('ai:') && entry.attestation?.attester === currentMember)
-          .map(([id]) => id);
-      } catch {
-        // project read failed; the delegated list still covers the common case.
-      }
-    }
-    const members = [...new Set([...delegated, ...attested])].sort();
     if (members.length === 0) {
       vscode.window.showWarningMessage(
-        'Joy: no delegated AI members. Set one up with "Joy: Init Copilot" or `joy project member add ai:<name>@joy`.',
+        'Joy: no AI members in this project. Add one with "Joy: Init Copilot" or `joy project member add ai:<name>@joy`.',
       );
       return;
     }
