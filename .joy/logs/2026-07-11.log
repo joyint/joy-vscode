@@ -20,3 +20,8 @@
 2026-07-11T09:40:37.576Z JVSC-0006-79 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-11T10:16:48.662Z release guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
 2026-07-11T10:18:05.829Z v0.2.0 release.created [horst.schwarz@joydev.com]
+2026-07-11T13:05:31.112Z JVSC-0022-27 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-11T13:05:31.193Z JVSC-0022-27 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-11T13:05:31.269Z JVSC-0022-27 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-11T13:06:11.473Z JVSC-0022-27 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-11T13:06:11.549Z JVSC-0022-27 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

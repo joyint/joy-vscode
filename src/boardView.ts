@@ -79,7 +79,7 @@ export class BoardPanel {
 
   private async loadMember(): Promise<string | undefined> {
     try {
-      const response = await this.client.runJson<{ data: { member?: string } }>(
+      const response = await this.client.runJsonAllowFailure<{ data: { member?: string } }>(
         ['auth', 'status'],
         { noAuthRetry: true },
       );

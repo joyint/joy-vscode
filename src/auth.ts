@@ -34,9 +34,10 @@ export class AuthService {
 
   async refreshStatus(): Promise<AuthState> {
     try {
-      const response = await this.client.runJson<JoyEnvelope<JoyAuthStatus>>(['auth', 'status'], {
-        noAuthRetry: true,
-      });
+      const response = await this.client.runJsonAllowFailure<JoyEnvelope<JoyAuthStatus>>(
+        ['auth', 'status'],
+        { noAuthRetry: true },
+      );
       const status = response.data;
       this.setState(
         status.authenticated

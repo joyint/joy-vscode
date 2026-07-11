@@ -1,0 +1,29 @@
+id: JVSC-0022-27
+title: Board Mine filter stays disabled when unauthenticated (auth status exits 1)
+type: bug
+status: closed
+priority: high
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T13:05:31.098772Z
+updated: 2026-07-11T13:06:11.538603Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T13:05:31.181808Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T13:06:11.538603Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'joy auth status exits 1 when unauthenticated but still prints the status JSON (with the member) on stdout. joyClient.runOnce treats any non-zero exit as an error, so runJson throws and the member is discarded. The board''s loadMember (and AuthService.refreshStatus) then get no member, so the Mine button stays disabled until the user authenticates. Fix: read the JSON payload from stdout even on a non-zero exit for status queries, and tolerate a non-JSON prefix (joy''s one-time auto-sync summary) before the payload.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T13:05:31.258197Z
+  text: 'Plan: JoyError carries stdout; add parseJoyJson (tolerates a non-JSON prefix) and runJsonAllowFailure (returns stdout JSON even on non-zero exit); use runJsonAllowFailure for auth status in boardView.loadMember and AuthService.refreshStatus. Add joyClient unit tests for both paths.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T13:06:11.461509Z
+  text: '[x] Fixed. JoyError now carries stdout; parseJoyJson tolerates a non-JSON prefix; runJsonAllowFailure returns the stdout payload even on a non-zero exit; loadMember and refreshStatus use it for auth status. Root cause confirmed against the real CLI: joy --json auth status exits 1 unauthenticated with the member on stdout. npm run check green (54 unit tests incl. 2 new joyClient tests, typecheck, lint).'

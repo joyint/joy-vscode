@@ -8,9 +8,29 @@ export class JoyError extends Error {
     message: string,
     public readonly stderr: string,
     public readonly exitCode: number | null,
+    public readonly stdout: string = '',
   ) {
     super(message);
     this.name = 'JoyError';
+  }
+}
+
+/**
+ * Parse the JSON payload of a `joy --json` invocation. Tolerates a non-JSON
+ * prefix on stdout: on the first invocation after a joy upgrade, joy prints a
+ * one-time auto-sync summary before the payload. The payload is the final JSON
+ * value on stdout, so we fall back to parsing from its first bracket.
+ */
+export function parseJoyJson<T>(stdout: string): T {
+  const text = stdout.trim();
+  try {
+    return JSON.parse(text) as T;
+  } catch (err) {
+    const start = text.search(/[{[]/);
+    if (start > 0) {
+      return JSON.parse(text.slice(start)) as T;
+    }
+    throw err;
   }
 }
 
@@ -108,6 +128,7 @@ export class JoyClient {
             throw new JoyExecutableNotFoundError(executable);
           }
           const stderr = err.stderr ?? '';
+          const stdout = err.stdout ?? '';
           const exitCode = typeof err.code === 'number' ? err.code : null;
           if (/must authenticate|session/i.test(stderr)) {
             throw new JoySessionExpiredError(stderr, exitCode);
@@ -115,13 +136,37 @@ export class JoyClient {
           if (/guard denied|capability/i.test(stderr)) {
             throw new JoyCapabilityDeniedError(stderr, exitCode);
           }
-          throw new JoyError(stderr.trim() || err.message, stderr, exitCode);
+          throw new JoyError(stderr.trim() || err.message, stderr, exitCode, stdout);
         },
       );
   }
 
   async runJson<T = unknown>(args: readonly string[], options: JoyRunOptions = {}): Promise<T> {
     const result = await this.run(['--json', ...args], options);
-    return JSON.parse(result.stdout) as T;
+    return parseJoyJson<T>(result.stdout);
+  }
+
+  /**
+   * Like {@link runJson}, but returns the parsed stdout even when joy exits
+   * non-zero, as long as stdout carries a JSON payload. `joy auth status`
+   * exits 1 when unauthenticated yet still prints the status object (with the
+   * member) on stdout, so status queries must not treat that exit as fatal.
+   */
+  async runJsonAllowFailure<T = unknown>(
+    args: readonly string[],
+    options: JoyRunOptions = {},
+  ): Promise<T> {
+    try {
+      return await this.runJson<T>(args, options);
+    } catch (err) {
+      if (err instanceof JoyError && err.stdout.trim()) {
+        try {
+          return parseJoyJson<T>(err.stdout);
+        } catch {
+          // stdout was not JSON either; surface the original failure.
+        }
+      }
+      throw err;
+    }
   }
 }
