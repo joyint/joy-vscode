@@ -37,11 +37,11 @@ export class JoyHoverProvider implements vscode.HoverProvider {
     const item = items.find((candidate) => candidate.id === match.id);
     if (!item) return undefined;
 
+    // Metadata only; the document link itself provides the "Open Joy item"
+    // action, so a second open link here would be redundant.
     const md = new vscode.MarkdownString();
     md.appendMarkdown(`**${item.id}** — ${item.title}\n\n`);
-    md.appendMarkdown(`${item.type} · ${item.status} · ${item.priority}\n\n`);
-    md.appendMarkdown(`[Open item](${openItemUri(item.id).toString()})`);
-    md.isTrusted = true;
+    md.appendMarkdown(`${item.type} · ${item.status} · ${item.priority}`);
     const range = new vscode.Range(
       document.positionAt(match.start),
       document.positionAt(match.end),
