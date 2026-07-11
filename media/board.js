@@ -18,11 +18,15 @@
   const mineButton = /** @type {HTMLButtonElement} */ (document.getElementById('mine'));
   const sortSelect = /** @type {HTMLSelectElement} */ (document.getElementById('sort'));
   const directionButton = /** @type {HTMLButtonElement} */ (document.getElementById('direction'));
+  const filterDimSelect = /** @type {HTMLSelectElement} */ (document.getElementById('filter-dim'));
+  const filterValSelect = /** @type {HTMLSelectElement} */ (document.getElementById('filter-val'));
 
   let items = [];
   let member;
   let mineOnly = false;
   let descending = true;
+  let filterDim = 'none';
+  let filterVal = '';
 
   window.addEventListener('message', (event) => {
     const message = event.data;
@@ -30,6 +34,7 @@
       items = message.items;
       member = message.member;
       updateMineButton();
+      rebuildFilterValues();
       render();
     } else if (message.type === 'loadError') {
       board.className = 'empty load-error';
@@ -65,6 +70,16 @@
     directionButton.textContent = descending ? 'Desc' : 'Asc';
     render();
   });
+  filterDimSelect.addEventListener('change', () => {
+    filterDim = filterDimSelect.value;
+    filterVal = '';
+    rebuildFilterValues();
+    render();
+  });
+  filterValSelect.addEventListener('change', () => {
+    filterVal = filterValSelect.value;
+    render();
+  });
 
   function assignedToMe(item) {
     if (!member || !Array.isArray(item.assignees)) return false;
@@ -86,6 +101,66 @@
     return (
       item.id.toLowerCase().includes(needle) || item.title.toLowerCase().includes(needle)
     );
+  }
+
+  function effortLabel(effort) {
+    return effort ? (EFFORT_LABELS[effort - 1] ?? String(effort)) : '';
+  }
+
+  function distinctFilterValues(dim) {
+    const set = new Set();
+    for (const item of items) {
+      if (dim === 'type') {
+        if (item.type) set.add(item.type);
+      } else if (dim === 'effort') {
+        const label = effortLabel(item.effort);
+        if (label) set.add(label);
+      } else if (dim === 'assignee') {
+        (Array.isArray(item.assignees) ? item.assignees : []).forEach((entry) => {
+          const name = typeof entry === 'string' ? entry : entry && entry.member;
+          if (name) set.add(name);
+        });
+      }
+    }
+    const values = [...set];
+    if (dim === 'effort') {
+      values.sort((a, b) => EFFORT_LABELS.indexOf(a) - EFFORT_LABELS.indexOf(b));
+    } else {
+      values.sort();
+    }
+    return values;
+  }
+
+  // Repopulate the value dropdown from the values present on the board, keeping
+  // the current selection when it still exists.
+  function rebuildFilterValues() {
+    if (filterDim === 'none') {
+      filterVal = '';
+      filterValSelect.disabled = true;
+      filterValSelect.replaceChildren();
+      return;
+    }
+    const values = distinctFilterValues(filterDim);
+    if (!values.includes(filterVal)) filterVal = '';
+    filterValSelect.disabled = false;
+    filterValSelect.replaceChildren(
+      el('option', { value: '' }, document.createTextNode('(all)')),
+      ...values.map((value) => el('option', { value }, document.createTextNode(value))),
+    );
+    filterValSelect.value = filterVal;
+  }
+
+  function matchesDimensionFilter(item) {
+    if (filterDim === 'none' || !filterVal) return true;
+    if (filterDim === 'type') return item.type === filterVal;
+    if (filterDim === 'effort') return effortLabel(item.effort) === filterVal;
+    if (filterDim === 'assignee') {
+      return (Array.isArray(item.assignees) ? item.assignees : []).some((entry) => {
+        const name = typeof entry === 'string' ? entry : entry && entry.member;
+        return name === filterVal;
+      });
+    }
+    return true;
   }
 
   function sortValue(item, field) {
@@ -130,6 +205,7 @@
         .filter((item) => column.statuses.includes(item.status))
         .filter((item) => matchesFilter(item, needle))
         .filter((item) => !mineOnly || assignedToMe(item))
+        .filter(matchesDimensionFilter)
         .sort(compare);
       return renderColumn(column, columnItems);
     });

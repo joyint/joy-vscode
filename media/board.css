@@ -12,6 +12,7 @@ body {
 
 #toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   padding: 10px 0;
@@ -23,7 +24,16 @@ body {
 
 #filter {
   flex: 1;
-  max-width: 340px;
+  max-width: 220px;
+}
+
+#filter-val {
+  min-width: 120px;
+}
+
+select:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 input,

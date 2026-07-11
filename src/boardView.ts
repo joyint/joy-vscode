@@ -149,6 +149,14 @@ function renderHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
       <option value="type">Type</option>
     </select>
     <button id="direction" title="Toggle sort direction">Desc</button>
+    <label for="filter-dim">Filter</label>
+    <select id="filter-dim" title="Filter by a dimension">
+      <option value="none" selected>None</option>
+      <option value="type">Type</option>
+      <option value="effort">Effort</option>
+      <option value="assignee">Assignee</option>
+    </select>
+    <select id="filter-val" title="Filter value" disabled></select>
   </header>
   <main id="board" class="empty">Loading...</main>
   <script nonce="${nonce}" src="${scriptUri.toString()}"></script>

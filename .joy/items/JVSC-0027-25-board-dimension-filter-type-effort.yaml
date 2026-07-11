@@ -1,0 +1,27 @@
+id: JVSC-0027-25
+title: Board dimension filter (Type/Effort/Assignee) with a context-sensitive value dropdown
+type: story
+status: closed
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T17:50:05.487979Z
+updated: 2026-07-11T17:52:41.779208Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T17:50:05.572075Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T17:52:41.779208Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'Add a Filter control to the board toolbar right of the sort direction: a dimension dropdown (None|Type|Effort|Assignee) and a second, context-sensitive value dropdown populated from the values present in the board (disabled/empty when None). Selecting a value filters the columns; composes with the text search and Mine. Shorten the search input to make room; wrap the toolbar on narrow panels.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T17:52:41.697301Z
+  text: '[x] Implemented. Board toolbar: Filter label + dimension dropdown (None|Type|Effort|Assignee) right of the sort direction, plus a context-sensitive value dropdown populated from the values present on the board (disabled/empty when None, ''(all)'' = no filter). The dimension filter composes with the text search and Mine. Search input shortened to 220px, toolbar wraps on narrow panels. board.js node --check ok, npm run check green.'
