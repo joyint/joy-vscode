@@ -1,0 +1,11 @@
+version: v0.2.1
+date: 2026-07-11
+previous: v0.2.0
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 5
+  items: 1
+items:
+  bugs:
+  - id: JVSC-0022-27
+    title: Board Mine filter stays disabled when unauthenticated (auth status exits 1)
