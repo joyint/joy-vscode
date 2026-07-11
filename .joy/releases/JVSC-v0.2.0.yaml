@@ -1,0 +1,46 @@
+version: v0.2.0
+date: 2026-07-11
+previous: v0.1.0
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 70
+  items: 17
+items:
+  stories:
+  - id: JVSC-000C-8C
+    title: 'Tree view: drag and drop re-parenting, add buttons, drop lifecycle actions'
+  - id: JVSC-0019-62
+    title: 'Board: Mine filter button'
+  - id: JVSC-001D-55
+    title: Holo accent like the app
+  - id: JVSC-0020-F9
+    title: 'Backlog: oldest/newest ordering toggle and No Milestone group'
+  - id: JVSC-0006-79
+    title: Marketplace and Open VSX publishing setup
+  tasks:
+  - id: JVSC-000A-D7
+    title: 'Dependency update pass: clear npm install deprecations, bump majors'
+  - id: JVSC-000B-21
+    title: Adopt app logo for extension and marketplace icons
+  - id: JVSC-000E-0E
+    title: Attach SHA256 checksums to release artifacts
+  - id: JVSC-001A-9B
+    title: 'Status bar: separate CLI and auth icons'
+  - id: JVSC-001C-08
+    title: Color coding for efforts and item types
+  - id: JVSC-001E-09
+    title: Item detail panel defaults to the Secondary Side Bar
+  - id: JVSC-0021-2B
+    title: 'Backlog and item detail: remove parent and manage dependencies'
+  bugs:
+  - id: JVSC-0016-FD
+    title: 'Item detail: assignees render as [object Object]'
+  - id: JVSC-0018-3D
+    title: Board tab icon is black in dark themes
+  - id: JVSC-001F-E4
+    title: 'Board: keep the Mine filter visible before the member resolves'
+  reworks:
+  - id: JVSC-0017-AB
+    title: 'Item detail: render description and comments as markdown'
+  - id: JVSC-001B-B9
+    title: Board single click opens item detail; detail keeps unsaved drafts per item
