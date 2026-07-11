@@ -62,7 +62,7 @@
   updateMineButton();
   directionButton.addEventListener('click', () => {
     descending = !descending;
-    directionButton.textContent = descending ? 'desc' : 'asc';
+    directionButton.textContent = descending ? 'Desc' : 'Asc';
     render();
   });
 

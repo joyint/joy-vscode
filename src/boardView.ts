@@ -140,15 +140,15 @@ function renderHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
     <button id="mine" title="Show only items assigned to me">Mine</button>
     <label for="sort">Sort</label>
     <select id="sort">
-      <option value="updated" selected>updated</option>
-      <option value="created">created</option>
-      <option value="id">id</option>
-      <option value="title">title</option>
-      <option value="effort">effort</option>
-      <option value="priority">priority</option>
-      <option value="type">type</option>
+      <option value="updated" selected>Updated</option>
+      <option value="created">Created</option>
+      <option value="id">ID</option>
+      <option value="title">Title</option>
+      <option value="effort">Effort</option>
+      <option value="priority">Priority</option>
+      <option value="type">Type</option>
     </select>
-    <button id="direction" title="Toggle sort direction">desc</button>
+    <button id="direction" title="Toggle sort direction">Desc</button>
   </header>
   <main id="board" class="empty">Loading...</main>
   <script nonce="${nonce}" src="${scriptUri.toString()}"></script>
