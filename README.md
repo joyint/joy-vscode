@@ -30,11 +30,23 @@ On first activation the extension auto-discovers `joy` via PATH, your login shel
 - **Structural drag and drop** in the tree: drop an item on another item to re-parent it, on the "No Milestone" group or empty area to un-parent / unlink it, on a milestone to link it. Right-click an item to remove its parent. No manual ordering.
 - **New Item / New Milestone** buttons in the view title.
 - **Item detail form**, in the secondary side bar by default: edit title, type, priority, effort, milestone, and description; add and remove parent, assignees, and dependencies; trigger lifecycle verbs; read and add comments.
-- **Board** with New, In progress, Review, and Done columns: drag cards between columns to change status, double-click to edit, instant filter on id and title, sortable by updated, created, id, title, effort, priority, or type.
+- **Board** with status columns and a Mine filter: drag cards between columns to change status, click a card to open it, filter by id or title, and sort by updated, created, id, title, effort, priority, or type.
+- **Editor links**: Joy item ids (`ACRONYM-XXXX`) in code, Markdown, or commit messages become links that open the item, with a hover showing its title and status.
+- **GitHub Copilot integration**: the **Joy: Init Copilot** command teaches Copilot the Joy workflow and adds a `/joy` prompt to Copilot Chat — see [GitHub Copilot integration](#github-copilot-integration).
 - **Authentication built in**: a modal passphrase prompt (with reveal toggle) appears when joy requires auth; the failed action retries automatically after login.
 - **Live refresh** on changes under `.joy/items/` (debounced) so tree, detail, and board stay in sync with terminal use, `git pull`, or AI edits.
 - **Compact status bar entry**: check when ready, key when unauthenticated, warning when the CLI is missing or too old - details in the tooltip.
 - **Cross-platform**: Linux, macOS, and Windows.
+
+## GitHub Copilot integration
+
+Run **Joy: Init Copilot** from the Command Palette to wire Copilot into this repo. It runs `joy ai init --tool copilot` (prompting once for your Joy passphrase) and:
+
+- writes `.github/copilot-instructions.md`, so Copilot Chat knows to drive the backlog through the `joy` CLI instead of reading or editing `.joy/` files directly;
+- adds a **`/joy`** prompt (`.github/prompts/joy.prompt.md`) — type `/joy` in Copilot Chat to get the Joy-aware assistant;
+- registers the `ai:copilot@joy` member so Copilot's commits are attributed.
+
+Pick a capable Copilot model (for example a full GPT-5 or a Claude model). Smaller models such as GPT-5 mini tend to ignore custom instructions and count `.joy/` files by hand instead of running `joy ls`.
 
 ## Documentation
 
