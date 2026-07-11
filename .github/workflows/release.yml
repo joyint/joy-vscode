@@ -1,5 +1,9 @@
 name: Release
 
+# Local-first release (mirrors the joy subproject / ADR-032): `just publish`
+# runs `joy release publish`, which pushes the commits and the vX.Y.Z tag. That
+# tag push triggers this workflow, which builds the VSIX, creates or updates the
+# GitHub release, and uploads to the VS Code Marketplace and Open VSX.
 on:
   push:
     tags:
@@ -7,6 +11,11 @@ on:
 
 permissions:
   contents: write
+
+env:
+  # Present only when the Open VSX upload is configured. The ovsx step self-skips
+  # while this is empty, so Open VSX stays optional.
+  OVSX_PAT: ${{ secrets.OVSX_PAT }}
 
 jobs:
   release:
@@ -27,7 +36,12 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "vsix=joy-vscode-${VERSION}.vsix" >> "$GITHUB_OUTPUT"
+          echo "vsix=package/joy-vscode-${VERSION}.vsix" >> "$GITHUB_OUTPUT"
+          if [[ "$VERSION" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Sync package.json version
         run: npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
@@ -42,23 +56,49 @@ jobs:
         run: npm run package
 
       - name: Compute checksums
-        run: sha256sum "${{ steps.version.outputs.vsix }}" > SHA256SUMS
+        working-directory: package
+        run: sha256sum "joy-vscode-${{ steps.version.outputs.version }}.vsix" > SHA256SUMS
 
-      - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare release notes
         run: |
-          gh release create "${GITHUB_REF_NAME}" "${{ steps.version.outputs.vsix }}" SHA256SUMS \
-            --title "v${{ steps.version.outputs.version }}" \
-            --notes "$(cat <<'EOF'
-          Preview release. The Joy extension is not yet on the Marketplace; install the VSIX directly.
+          cat > "$RUNNER_TEMP/notes.md" <<'EOF'
+          Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=joyint.joy-vscode) (search "Joy"), or download the VSIX below.
 
-          **VS Code UI**: Command Palette → `Extensions: Install from VSIX...`, then pick the downloaded file.
+          **From VSIX (UI)**: open the Command Palette and run `Extensions: Install from VSIX...`, then pick the downloaded file.
 
-          **CLI**: `code --install-extension joy-vscode-${{ steps.version.outputs.version }}.vsix`
+          **From VSIX (CLI)**: `code --install-extension joy-vscode-__VERSION__.vsix`
 
           Requires the [joy CLI](https://github.com/joyint/joy) on PATH (auto-discovered via login shell and common install locations; configurable via the `joy.executablePath` setting).
 
           Verify the download with `sha256sum -c SHA256SUMS`.
           EOF
-          )"
+          sed -i "s/__VERSION__/${{ steps.version.outputs.version }}/g" "$RUNNER_TEMP/notes.md"
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          VSIX: ${{ steps.version.outputs.vsix }}
+          PRERELEASE_FLAG: ${{ steps.version.outputs.prerelease == 'true' && '--prerelease' || '' }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG exists; uploading artifacts to it."
+            gh release upload "$TAG" "$VSIX" package/SHA256SUMS --clobber
+          else
+            echo "Release $TAG does not exist; creating it."
+            gh release create "$TAG" $PRERELEASE_FLAG "$VSIX" package/SHA256SUMS \
+              --title "v${{ steps.version.outputs.version }}" \
+              --notes-file "$RUNNER_TEMP/notes.md"
+          fi
+
+      # Stable tags (vX.Y.Z) publish to the registries; pre-release tags
+      # (vX.Y.Z-rc1, etc.) only produce a GitHub release with the attached VSIX.
+      - name: Publish to VS Code Marketplace
+        if: ${{ steps.version.outputs.prerelease == 'false' }}
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx @vscode/vsce publish --packagePath "${{ steps.version.outputs.vsix }}"
+
+      - name: Publish to Open VSX
+        if: ${{ steps.version.outputs.prerelease == 'false' && env.OVSX_PAT != '' }}
+        run: npx --yes ovsx publish "${{ steps.version.outputs.vsix }}" -p "$OVSX_PAT"

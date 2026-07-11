@@ -129,6 +129,10 @@ out-test/
 # Packaged extension artifacts
 *.vsix
 
+# Build output directory for the packaged VSIX (kept, contents ignored)
+/package/*
+!/package/.gitkeep
+
 # pnpm
 .pnpm-store
 

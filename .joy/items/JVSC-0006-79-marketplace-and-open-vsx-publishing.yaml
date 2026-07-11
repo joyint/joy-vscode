@@ -1,9 +1,11 @@
 id: JVSC-0006-79
 title: Marketplace and Open VSX publishing setup
 type: story
-status: new
+status: closed
 priority: low
 parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -11,5 +13,15 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:19:14.859283476Z
-updated: 2026-05-15T10:19:14.859283476Z
+updated: 2026-07-11T09:40:37.565626Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T09:40:37.419060Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T09:40:37.565626Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Prepare for distribution: complete package.json metadata (publisher, categories, keywords, repository, bugs, icon 128x128), README with screenshots, CHANGELOG, telemetry disclosure if any data is collected. Set up Microsoft Marketplace publisher account and Open VSX publisher account. Add GitHub Actions workflow that runs vsce package on push and vsce publish + ovsx publish on tag. Verified publisher via DNS TXT record where applicable. Restrict activation events to keep startup impact low.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T09:40:37.490581Z
+  text: 'Implemented: gitignored package/ output dir with the VSIX written there via vsce --out; release.yml builds the VSIX from package/, creates-or-updates the GitHub release, and publishes to the VS Code Marketplace (VSCE_PAT) plus optional Open VSX (OVSX_PAT); pre-release tags skip the registry upload. justfile build recipe outputs to package/; .vscodeignore excludes package/ and .vibe/; README and ARCHITECTURE updated. VSCE_PAT set as a repo secret and verify-pat succeeded for publisher joyint.'

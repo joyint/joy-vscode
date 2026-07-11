@@ -1,7 +1,9 @@
 # Joy VS Code extension -- Task Runner
 #
 # Lifecycle recipes mirror the umbrella's expectations: install, check,
-# release, publish. Marketplace upload (vsce + ovsx) lands with JVSC-0006-79.
+# release, publish. `just publish` pushes the tag; the tag push then drives
+# the GitHub release and the Marketplace + Open VSX upload from CI
+# (.github/workflows/release.yml).
 
 # List recipes
 default:
@@ -56,15 +58,16 @@ doctor:
 check:
     npm run check
 
-# Bundle the extension into dist/extension.js.
+# Build the shippable VSIX into package/ (bundles via esbuild, then packages).
 build:
     npm run build
+    npm run package
 
 # Run extension-host tests via @vscode/test-cli.
 test-integration:
     npm run test:integration
 
-# Build a local VSIX (joy-vscode-X.Y.Z.vsix in the working tree).
+# Package the VSIX into package/ (bundle runs via the vsce prepublish hook).
 package:
     npm run package
 
@@ -97,7 +100,8 @@ release bump="patch":
     tag=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "unknown")
     echo "Tagged ${tag} locally. Run 'just publish' to ship."
 
-# Push commits + tag and create the GitHub release.
-# Marketplace + Open VSX upload is added by JVSC-0006-79.
+# Push commits + tag. The pushed tag triggers .github/workflows/release.yml,
+# which builds the VSIX, creates/updates the GitHub release, and uploads to
+# the VS Code Marketplace and Open VSX.
 publish:
     joy release publish

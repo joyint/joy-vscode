@@ -5,13 +5,13 @@
 | Component             | Version                                    | Rationale                                   |
 | --------------------- | ------------------------------------------ | ------------------------------------------- |
 | TypeScript            | `^5.6.3`                                   | VS Code extension API is TS-first           |
-| Node runtime          | `>=20`                                     | matches VS Code 1.92's bundled Node         |
+| Node runtime          | `>=20`                                     | matches the bundled Node of the targeted VS Code |
 | Bundler               | `esbuild ^0.24`                            | fast CJS bundle for the extension entry     |
 | Linter                | `eslint ^9` (flat config)                  | `@typescript-eslint`, prettier-compatible   |
 | Test runner           | `mocha ^10` + `@vscode/test-cli ^0.0.10`   | unit + extension-host tests                 |
 | VS Code Extension API | matches `engines.vscode` in `package.json` | target platform                             |
-| `vsce`                | <!-- TBD: pinned by JVSC-0006-79 -->       | Microsoft Marketplace packaging and publish |
-| `ovsx`                | <!-- TBD: pinned by JVSC-0006-79 -->       | Open VSX Registry publish                   |
+| `@vscode/vsce`        | `^3.9.2` (devDependency)                   | Microsoft Marketplace packaging and publish |
+| `ovsx`                | invoked via `npx` in CI (optional)         | Open VSX Registry publish                   |
 
 ## Repository Structure
 
