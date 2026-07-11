@@ -10,6 +10,7 @@ import { BacklogProvider } from './backlogProvider';
 import { BoardPanel } from './boardView';
 import { ItemDetailViewProvider } from './itemDetailView';
 import { JoyClient, JoyError, JoySessionExpiredError } from './joyClient';
+import { JoyHoverProvider, JoyLinkProvider } from './joyLinkProvider';
 import { JoyResolver, buildCommonJoyPaths, type JoyResolution } from './joyResolver';
 
 const execFileAsync = promisify(execFile);
@@ -80,6 +81,15 @@ export function activate(context: vscode.ExtensionContext): void {
   statusItem.name = 'Joy';
 
   context.subscriptions.push(treeView, statusItem);
+
+  // Turn Joy item ids (ACRONYM-XXXX[-YY]) in any text document into links that
+  // open the item detail view, with a hover showing the item's title/status.
+  const linkSelector: vscode.DocumentSelector = [{ scheme: 'file' }, { scheme: 'untitled' }];
+  const getItems = () => provider.currentItems();
+  context.subscriptions.push(
+    vscode.languages.registerDocumentLinkProvider(linkSelector, new JoyLinkProvider(getItems)),
+    vscode.languages.registerHoverProvider(linkSelector, new JoyHoverProvider(getItems)),
+  );
 
   let lastResolution: JoyResolution | undefined;
 
@@ -231,6 +241,35 @@ function registerCommands(
 
   sub('joy.openInstallDocs', () => {
     void vscode.env.openExternal(vscode.Uri.parse(INSTALL_DOCS_URL));
+  });
+
+  sub('joy.setupCopilot', async () => {
+    // `joy ai init --tool copilot` writes .github/copilot-instructions.md (which
+    // VS Code Copilot reads automatically), registers the ai:copilot@joy member,
+    // and adds the gitignore entries. Registering the member is attested with
+    // the operator passphrase, so prompt for it and feed it on stdin.
+    const passphrase = await vscode.window.showInputBox({
+      title: 'Joy: Set up Copilot Integration',
+      prompt:
+        'Enter your Joy passphrase to register the Copilot AI member and write .github/copilot-instructions.md.',
+      password: true,
+      ignoreFocusOut: true,
+      validateInput: (value) => (value.length === 0 ? 'Passphrase must not be empty.' : undefined),
+    });
+    if (passphrase === undefined) return;
+    try {
+      await client.run(['ai', 'init', '--tool', 'copilot', '--passphrase-stdin'], {
+        stdin: `${passphrase}\n`,
+        noAuthRetry: true,
+      });
+      await enableCopilotInstructionFiles();
+      vscode.window.showInformationMessage(
+        'Joy: Copilot integration set up. .github/copilot-instructions.md was written; reload the Copilot Chat window to pick it up.',
+      );
+      provider.refresh();
+    } catch (err) {
+      reportError(err);
+    }
   });
 
   sub('joy.configureExecutablePath', async () => {
@@ -424,6 +463,23 @@ function isItemNode(value: unknown): value is ItemNode {
     (value as ItemNode).kind === 'item' &&
     typeof (value as ItemNode).item?.id === 'string'
   );
+}
+
+/**
+ * Best-effort: make sure VS Code Copilot honours instruction files so it reads
+ * the `.github/copilot-instructions.md` joy just wrote. A missing Copilot
+ * extension leaves the setting unregistered; the write then no-ops and the file
+ * is simply there for whenever Copilot is installed.
+ */
+async function enableCopilotInstructionFiles(): Promise<void> {
+  try {
+    const config = vscode.workspace.getConfiguration('github.copilot.chat.codeGeneration');
+    if (config.get<boolean>('useInstructionFiles') === false) {
+      await config.update('useInstructionFiles', true, vscode.ConfigurationTarget.Workspace);
+    }
+  } catch {
+    // Copilot not installed or the setting is unavailable; nothing to do.
+  }
 }
 
 function reportError(err: unknown): void {

@@ -1,0 +1,27 @@
+id: JVSC-0024-93
+title: Command to set up GitHub Copilot integration via joy ai init
+type: story
+status: closed
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T14:23:53.288492Z
+updated: 2026-07-11T14:29:19.976183Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T14:23:53.437213Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T14:29:19.976183Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'Add a ''Joy: Set up Copilot Integration'' command that runs joy ai init --tool copilot (with a passphrase prompt for the member attestation), so .github/copilot-instructions.md is created and VS Code Copilot reads the Joy workflow instructions. Ensure github.copilot.chat.codeGeneration.useInstructionFiles is enabled. Delegates to joy so joy stays the source of truth for the instruction content.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T14:29:19.904338Z
+  text: '[x] Implemented. Command joy.setupCopilot runs joy ai init --tool copilot --passphrase-stdin (prompts for the operator passphrase) so .github/copilot-instructions.md is written and ai:copilot@joy registered; best-effort enables github.copilot.chat.codeGeneration.useInstructionFiles. Note: last test failed because copilot was never configured (joy update --check showed ''installed, not configured''); this command performs that setup.'

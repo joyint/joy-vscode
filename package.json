@@ -147,6 +147,11 @@
         "command": "joy.authenticate",
         "title": "Authenticate...",
         "category": "Joy"
+      },
+      {
+        "command": "joy.setupCopilot",
+        "title": "Set up Copilot Integration",
+        "category": "Joy"
       }
     ],
     "viewsWelcome": [

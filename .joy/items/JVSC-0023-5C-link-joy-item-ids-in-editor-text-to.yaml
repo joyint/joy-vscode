@@ -1,0 +1,27 @@
+id: JVSC-0023-5C
+title: Link Joy item IDs in editor text to the item detail view
+type: story
+status: closed
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T14:23:53.191315Z
+updated: 2026-07-11T14:29:19.832128Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T14:23:53.366175Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T14:29:19.832128Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Detect Joy item IDs (ACRONYM-XXXX or ACRONYM-XXXX-YY) in editor documents (code, markdown, plaintext, commit messages) via a DocumentLinkProvider and link them to a command that opens the item detail webview (joy.openDetail). Resolve short refs to the full id and only link ids that exist in the loaded backlog to avoid dead links. Optional hover showing title/status.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T14:29:19.750169Z
+  text: '[x] Implemented. Pure findJoyIdMatches (src/joyLinks.ts, unit-tested) resolves full ids and short refs against the loaded backlog and skips unknown tokens; JoyLinkProvider + JoyHoverProvider (src/joyLinkProvider.ts) render DocumentLinks to command:joy.openDetail and a title/status hover; registered for file+untitled documents. npm run check green (60 tests, 6 new).'
