@@ -88,10 +88,11 @@
   }
 
   function metaLine(label, who, when) {
-    let line = label;
-    if (who) line += ` by ${who}`;
-    if (when) line += ` on ${formatTimestamp(when)}`;
-    return line;
+    // Date/time first so the Created and Updated lines align on the left.
+    const parts = [];
+    if (when) parts.push(formatTimestamp(when));
+    parts.push(who ? `${label} by ${who}` : label);
+    return parts.join(' · ');
   }
 
   // Populate the fixed footer at the bottom of the panel (empty for no item).
