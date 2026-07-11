@@ -13,6 +13,18 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "product management",
+    "project management",
+    "backlog",
+    "issue tracking",
+    "kanban",
+    "agile",
+    "milestones",
+    "task tracking",
+    "jira",
+    "linear"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/joyint/joy-vscode.git"
