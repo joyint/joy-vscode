@@ -44,3 +44,4 @@
 2026-07-11T16:31:18.236Z JVSC-0026-6C item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-11T16:34:27.951Z JVSC-0026-6C comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-07-11T16:34:28.025Z JVSC-0026-6C item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-07-11T16:46:45.864Z v0.2.4 release.created [horst.schwarz@joydev.com]

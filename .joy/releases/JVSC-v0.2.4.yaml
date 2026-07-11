@@ -1,0 +1,11 @@
+version: v0.2.4
+date: 2026-07-11
+previous: v0.2.3
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 4
+  items: 1
+items:
+  stories:
+  - id: JVSC-0026-6C
+    title: Delete item from the item detail view for users with the delete capability
