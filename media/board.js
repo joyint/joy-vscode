@@ -45,23 +45,30 @@
   filterInput.addEventListener('input', render);
   sortSelect.addEventListener('change', render);
   mineButton.addEventListener('click', () => {
-    if (!member) return;
+    if (mineButton.disabled) return;
     mineOnly = !mineOnly;
-    mineButton.classList.toggle('active', mineOnly);
+    updateMineButton();
     render();
   });
 
-  // The filter stays visible at all times for discoverability; it is only
-  // disabled while we do not yet know who "me" is.
+  function assigneeFilterActive() {
+    return filterDim === 'assignee' && !!filterVal;
+  }
+
+  // The filter stays visible at all times for discoverability. It is disabled
+  // while we do not yet know who "me" is, and while the Assignee filter is
+  // active: that filter is the same axis and supersedes Mine, so they never
+  // intersect.
   function updateMineButton() {
-    mineButton.disabled = !member;
-    mineButton.title = member
-      ? 'Show only items assigned to me'
-      : 'Authenticate to filter by items assigned to you';
-    if (!member && mineOnly) {
-      mineOnly = false;
-      mineButton.classList.remove('active');
-    }
+    const superseded = assigneeFilterActive();
+    mineButton.disabled = !member || superseded;
+    mineButton.title = superseded
+      ? 'Superseded by the Assignee filter'
+      : member
+        ? 'Show only items assigned to me'
+        : 'Authenticate to filter by items assigned to you';
+    if (!member) mineOnly = false;
+    mineButton.classList.toggle('active', mineOnly && !!member && !superseded);
   }
 
   updateMineButton();
@@ -74,10 +81,12 @@
     filterDim = filterDimSelect.value;
     filterVal = '';
     rebuildFilterValues();
+    updateMineButton();
     render();
   });
   filterValSelect.addEventListener('change', () => {
     filterVal = filterValSelect.value;
+    updateMineButton();
     render();
   });
 
@@ -204,7 +213,7 @@
       const columnItems = items
         .filter((item) => column.statuses.includes(item.status))
         .filter((item) => matchesFilter(item, needle))
-        .filter((item) => !mineOnly || assignedToMe(item))
+        .filter((item) => assigneeFilterActive() || !mineOnly || assignedToMe(item))
         .filter(matchesDimensionFilter)
         .sort(compare);
       return renderColumn(column, columnItems);
