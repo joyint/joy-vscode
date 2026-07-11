@@ -1,0 +1,11 @@
+version: v0.2.3
+date: 2026-07-11
+previous: v0.2.2
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 4
+  items: 1
+items:
+  stories:
+  - id: JVSC-0025-F0
+    title: Command to issue an AI delegation token from the extension

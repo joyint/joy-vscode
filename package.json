@@ -2,7 +2,7 @@
   "name": "joy-vscode",
   "displayName": "Joy",
   "description": "Joy project management inside VS Code: backlog tree, item editor, session indicator. Shells out to the joy CLI.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "publisher": "joyint",
   "license": "MIT",
   "private": true,
