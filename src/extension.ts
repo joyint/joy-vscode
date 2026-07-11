@@ -243,7 +243,7 @@ function registerCommands(
     void vscode.env.openExternal(vscode.Uri.parse(INSTALL_DOCS_URL));
   });
 
-  sub('joy.setupCopilot', async () => {
+  sub('joy.initCopilot', async () => {
     // `joy ai init --tool copilot` writes .github/copilot-instructions.md (which
     // VS Code Copilot reads automatically), registers the ai:copilot@joy member,
     // and adds the gitignore entries. Registering the member is attested with

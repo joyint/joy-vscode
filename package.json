@@ -149,8 +149,8 @@
         "category": "Joy"
       },
       {
-        "command": "joy.setupCopilot",
-        "title": "Set up Copilot Integration",
+        "command": "joy.initCopilot",
+        "title": "Init Copilot",
         "category": "Joy"
       }
     ],

@@ -18,7 +18,7 @@ const EXPECTED_COMMANDS = [
   'joy.openInstallDocs',
   'joy.configureExecutablePath',
   'joy.authenticate',
-  'joy.setupCopilot',
+  'joy.initCopilot',
 ] as const;
 
 describe('extension activation', () => {
