@@ -243,6 +243,16 @@ body.vscode-high-contrast {
   min-width: 130px;
 }
 
+.dep-token {
+  font-size: 0.95em;
+}
+
+.parent-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
 .placeholder {
   opacity: 0.6;
 }

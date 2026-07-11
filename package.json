@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "vscode": "^1.92.0",
+    "vscode": "^1.106.0",
     "node": ">=20.19"
   },
   "categories": [
@@ -34,6 +34,13 @@
           "title": "Joy",
           "icon": "resources/joy.svg"
         }
+      ],
+      "secondarySidebar": [
+        {
+          "id": "joyItem",
+          "title": "Joy Item",
+          "icon": "resources/joy.svg"
+        }
       ]
     },
     "views": {
@@ -42,7 +49,9 @@
           "id": "joyBacklog",
           "name": "Backlog",
           "contextualTitle": "Joy"
-        },
+        }
+      ],
+      "joyItem": [
         {
           "id": "joyItemDetail",
           "name": "Item",
@@ -75,6 +84,24 @@
         "title": "Refresh Backlog",
         "category": "Joy",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "joy.sortOldest",
+        "title": "Sort: Oldest First",
+        "category": "Joy",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "joy.sortNewest",
+        "title": "Sort: Newest First",
+        "category": "Joy",
+        "icon": "$(arrow-down)"
+      },
+      {
+        "command": "joy.clearParent",
+        "title": "Remove Parent",
+        "category": "Joy",
+        "icon": "$(remove)"
       },
       {
         "command": "joy.openDetail",
@@ -147,16 +174,31 @@
           "group": "navigation@3"
         },
         {
+          "command": "joy.sortOldest",
+          "when": "view == joyBacklog && joy:backlogOrder != old",
+          "group": "navigation@4"
+        },
+        {
+          "command": "joy.sortNewest",
+          "when": "view == joyBacklog && joy:backlogOrder == old",
+          "group": "navigation@4"
+        },
+        {
           "command": "joy.refresh",
           "when": "view == joyBacklog",
-          "group": "navigation@4"
+          "group": "navigation@5"
         }
       ],
       "view/item/context": [
         {
           "command": "joy.show",
-          "when": "view == joyBacklog && viewItem =~ /^status:/",
+          "when": "view == joyBacklog && viewItem =~ /(^| )status:/",
           "group": "1_open@1"
+        },
+        {
+          "command": "joy.clearParent",
+          "when": "view == joyBacklog && viewItem =~ /(^| )has-parent( |$)/",
+          "group": "2_structure@1"
         }
       ]
     },

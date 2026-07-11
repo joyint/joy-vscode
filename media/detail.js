@@ -29,7 +29,7 @@
   window.addEventListener('message', (event) => {
     const message = event.data;
     if (message.type === 'item') {
-      render(message.item, message.milestones, message.members, message.statuses);
+      render(message.item, message.milestones, message.members, message.items, message.statuses);
     } else if (message.type === 'loadError') {
       app.className = 'load-error';
       app.replaceChildren(text(message.message));
@@ -51,7 +51,7 @@
     return typeof entry === 'string' ? entry : entry && entry.member ? entry.member : '';
   }
 
-  function render(item, milestones, members, statuses) {
+  function render(item, milestones, members, items, statuses) {
     app.className = '';
     app.replaceChildren(
       el('div', { className: 'item-id' }, text(item.id)),
@@ -59,6 +59,7 @@
       renderStatusControl(item, statuses),
       renderFields(item, milestones),
       renderAssignees(item, members),
+      renderDependencies(item, items),
       renderDescription(item),
       renderComments(item),
     );
@@ -136,7 +137,18 @@
     );
 
     if (item.parent) {
-      grid.append(fieldLabel('Parent'), el('span', {}, text(item.parent)));
+      const remove = el(
+        'button',
+        { className: 'chip-remove', title: 'Remove parent' },
+        text('×'),
+      );
+      remove.addEventListener('click', () =>
+        post({ type: 'edit', id: item.id, field: 'parent', value: 'none' }),
+      );
+      grid.append(
+        fieldLabel('Parent'),
+        el('span', { className: 'parent-value' }, text(item.parent), remove),
+      );
     }
     return grid;
   }
@@ -173,6 +185,56 @@
       picker.addEventListener('change', () => {
         if (picker.value) {
           post({ type: 'assign', id: item.id, member: picker.value });
+        }
+      });
+      chips.append(picker);
+    }
+
+    section.append(chips);
+    return section;
+  }
+
+  function renderDependencies(item, items) {
+    const section = el('div', { className: 'section' });
+    section.append(el('span', { className: 'section-label' }, text('Dependencies')));
+
+    const catalog = Array.isArray(items) ? items : [];
+    const titleById = new Map(catalog.map((entry) => [entry.id, entry.title]));
+    const deps = (Array.isArray(item.deps) ? item.deps : []).filter(Boolean);
+
+    const chips = el('div', { className: 'assignee-chips' });
+    for (const dep of deps) {
+      const label = titleById.has(dep) ? `${dep} ${titleById.get(dep)}` : dep;
+      const remove = el(
+        'button',
+        { className: 'chip-remove', title: `Remove dependency ${dep}` },
+        text('×'),
+      );
+      remove.addEventListener('click', () => post({ type: 'depRemove', id: item.id, dep }));
+      chips.append(
+        el(
+          'span',
+          { className: 'assignee-chip' },
+          el('span', { className: 'dep-token' }, text(label)),
+          remove,
+        ),
+      );
+    }
+
+    if (deps.length === 0) {
+      chips.append(el('span', { className: 'placeholder' }, text('None.')));
+    }
+
+    const addable = catalog.filter((entry) => entry.id !== item.id && !deps.includes(entry.id));
+    if (addable.length > 0) {
+      const picker = el('select', { className: 'assignee-add' });
+      picker.append(el('option', { value: '', selected: true }, text('Add dependency...')));
+      for (const entry of addable) {
+        picker.append(el('option', { value: entry.id }, text(`${entry.id} ${entry.title}`)));
+      }
+      picker.addEventListener('change', () => {
+        if (picker.value) {
+          post({ type: 'depAdd', id: item.id, dep: picker.value });
         }
       });
       chips.append(picker);

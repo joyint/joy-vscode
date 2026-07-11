@@ -1,0 +1,25 @@
+id: JVSC-001E-09
+title: Item detail panel defaults to the Secondary Side Bar
+type: task
+status: closed
+priority: high
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T09:40:08.792674Z
+updated: 2026-07-11T09:40:36.653189Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T09:40:36.493470Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T09:40:36.653189Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Bump engines.vscode to ^1.106.0 and register a secondarySidebar view container so the Joy Item webview is homed in the Secondary Side Bar by default, next to Chat, instead of only being reachable via drag-and-drop.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T09:40:36.568577Z
+  text: 'Implemented: engines.vscode ^1.106.0; new viewsContainers.secondarySidebar container ''joyItem''; moved the joyItemDetail webview into it so it defaults to the Secondary Side Bar. Key name ''secondarySidebar'' confirmed against VS Code 1.106 source; vsce package validates the manifest.'

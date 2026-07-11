@@ -4,7 +4,7 @@ import * as os from 'node:os';
 import { promisify } from 'node:util';
 import * as vscode from 'vscode';
 import { AuthService, type AuthState } from './auth';
-import type { BacklogNode, ItemNode } from './backlog';
+import type { BacklogNode, BacklogOrder, ItemNode } from './backlog';
 import { BacklogDragAndDropController } from './backlogDnd';
 import { BacklogProvider } from './backlogProvider';
 import { BoardPanel } from './boardView';
@@ -53,7 +53,10 @@ export function activate(context: vscode.ExtensionContext): void {
     },
   });
 
-  const provider = new BacklogProvider(client);
+  const backlogOrder = readBacklogOrder(context);
+  void vscode.commands.executeCommand('setContext', 'joy:backlogOrder', backlogOrder);
+
+  const provider = new BacklogProvider(client, backlogOrder);
   const treeView = vscode.window.createTreeView('joyBacklog', {
     treeDataProvider: provider,
     showCollapseAll: true,
@@ -130,6 +133,10 @@ export function deactivate(): void {
 function readMinimumVersion(context: vscode.ExtensionContext): string {
   const pkg = context.extension.packageJSON as { joyCli?: { minimumVersion?: string } };
   return pkg.joyCli?.minimumVersion ?? '0.0.0';
+}
+
+function readBacklogOrder(context: vscode.ExtensionContext): BacklogOrder {
+  return context.workspaceState.get<BacklogOrder>('joy.backlogOrder') === 'old' ? 'old' : 'new';
 }
 
 async function shellLookup(): Promise<string | undefined> {
@@ -248,6 +255,28 @@ function registerCommands(
 
   sub('joy.refresh', async () => {
     await performResolve();
+  });
+
+  const applyBacklogOrder = async (order: BacklogOrder): Promise<void> => {
+    provider.setOrder(order);
+    await context.workspaceState.update('joy.backlogOrder', order);
+    await vscode.commands.executeCommand('setContext', 'joy:backlogOrder', order);
+  };
+  sub('joy.sortOldest', () => applyBacklogOrder('old'));
+  sub('joy.sortNewest', () => applyBacklogOrder('new'));
+
+  sub('joy.clearParent', async (arg) => {
+    const id = resolveItemId(arg, treeView);
+    if (!id) {
+      vscode.window.showWarningMessage('Joy: no item selected.');
+      return;
+    }
+    try {
+      await client.run(['edit', id, '--parent', 'none']);
+      provider.refresh();
+    } catch (err) {
+      reportError(err);
+    }
   });
 
   sub('joy.openDetail', async (arg) => {

@@ -56,6 +56,15 @@ button:hover {
   background: var(--vscode-button-secondaryHoverBackground);
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button:disabled:hover {
+  background: var(--vscode-button-secondaryBackground);
+}
+
 #board {
   display: flex;
   gap: 10px;

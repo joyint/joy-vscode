@@ -33,6 +33,7 @@ export class BoardPanel {
   }
 
   private readonly panel: vscode.WebviewPanel;
+  private lastMember: string | undefined;
 
   private constructor(
     extensionUri: vscode.Uri,
@@ -82,10 +83,13 @@ export class BoardPanel {
         ['auth', 'status'],
         { noAuthRetry: true },
       );
-      return response.data.member;
+      if (response.data.member) {
+        this.lastMember = response.data.member;
+      }
     } catch {
-      return undefined;
+      // Keep the last known member so a transient failure does not hide the filter.
     }
+    return this.lastMember;
   }
 
   private async handleMessage(message: BoardMessage): Promise<void> {

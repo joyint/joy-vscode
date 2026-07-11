@@ -1,4 +1,4 @@
-import type { JoyItem, JoyItemPriority, JoyItemStatus, JoyMilestone } from './types';
+import type { JoyItem, JoyMilestone } from './types';
 
 export interface ItemNode {
   kind: 'item';
@@ -12,26 +12,24 @@ export interface MilestoneNode {
   children: ItemNode[];
 }
 
-export type BacklogNode = ItemNode | MilestoneNode;
+export interface NoMilestoneNode {
+  kind: 'no-milestone';
+  children: ItemNode[];
+}
 
-const STATUS_ORDER: Record<JoyItemStatus, number> = {
-  'in-progress': 0,
-  review: 1,
-  open: 2,
-  new: 3,
-  blocked: 4,
-  deferred: 5,
-  closed: 6,
-};
+export type BacklogNode = ItemNode | MilestoneNode | NoMilestoneNode;
 
-const PRIORITY_ORDER: Record<JoyItemPriority, number> = {
-  critical: 0,
-  high: 1,
-  medium: 2,
-  low: 3,
-};
+/**
+ * Chronological ordering for the backlog view. 'old' surfaces the earliest
+ * milestone and oldest items first; 'new' reverses it, with freshly created
+ * (and yet unassigned) items on top.
+ */
+export type BacklogOrder = 'old' | 'new';
 
-export function buildBacklogTree(items: readonly JoyItem[]): ItemNode[] {
+export function buildBacklogTree(
+  items: readonly JoyItem[],
+  order: BacklogOrder = 'new',
+): ItemNode[] {
   const byId = new Map<string, ItemNode>();
   for (const item of items) {
     byId.set(item.id, { kind: 'item', item, children: [] });
@@ -47,20 +45,25 @@ export function buildBacklogTree(items: readonly JoyItem[]): ItemNode[] {
     }
   }
 
-  sortRecursive(roots);
+  sortRecursive(roots, order);
   return roots;
 }
 
 /**
- * Full sidebar view: milestone group nodes first (each holding the root items
- * linked to it, empty milestones included so they remain drop targets), then
- * the root items without a milestone.
+ * Full sidebar view: milestone group nodes (each holding the root items linked
+ * to it, empty milestones included so they remain drop targets) plus a single
+ * "No Milestone" group for the unassigned roots. In 'old' order milestones run
+ * earliest-first with the unassigned group last; in 'new' order they run
+ * latest-first with the unassigned group on top. The unassigned group is only
+ * materialised when at least one milestone exists and there is something in it;
+ * without milestones the plain item tree is returned.
  */
 export function buildBacklogView(
   items: readonly JoyItem[],
   milestones: readonly JoyMilestone[],
+  order: BacklogOrder = 'new',
 ): BacklogNode[] {
-  const roots = buildBacklogTree(items);
+  const roots = buildBacklogTree(items, order);
   if (milestones.length === 0) {
     return roots;
   }
@@ -82,20 +85,32 @@ export function buildBacklogView(
     }
   }
 
-  milestoneNodes.sort(compareMilestones);
-  return [...milestoneNodes, ...unassigned];
+  milestoneNodes.sort((a, b) => compareMilestones(a, b, order));
+
+  const view: BacklogNode[] = [...milestoneNodes];
+  if (unassigned.length > 0) {
+    const noMilestone: NoMilestoneNode = { kind: 'no-milestone', children: unassigned };
+    if (order === 'new') {
+      view.unshift(noMilestone);
+    } else {
+      view.push(noMilestone);
+    }
+  }
+  return view;
 }
 
 export type DropAction =
   | { kind: 'reparent'; id: string; parent: string }
   | { kind: 'clearParent'; id: string }
-  | { kind: 'link'; id: string; milestone: string };
+  | { kind: 'link'; id: string; milestone: string }
+  | { kind: 'unlink'; id: string };
 
 /**
  * Decide what a drop means. Dropping on an item re-parents, dropping on a
- * milestone links, dropping on the empty view area clears the parent. No-op
- * moves (onto self, onto the current parent, onto a descendant, onto the
- * already-linked milestone) are rejected.
+ * milestone links, dropping on the "No Milestone" group unlinks the milestone,
+ * dropping on the empty view area clears the parent. No-op moves (onto self,
+ * onto the current parent, onto a descendant, onto the already-linked
+ * milestone, unlinking an already-unassigned item) are rejected.
  */
 export function planDrop(
   draggedIds: readonly string[],
@@ -110,6 +125,10 @@ export function planDrop(
     if (!target) {
       if (item.parent) {
         actions.push({ kind: 'clearParent', id });
+      }
+    } else if (target.kind === 'no-milestone') {
+      if (item.milestone) {
+        actions.push({ kind: 'unlink', id });
       }
     } else if (target.kind === 'milestone') {
       if (item.milestone !== target.milestone.id) {
@@ -140,38 +159,34 @@ function isAncestor(
   return false;
 }
 
-function compareMilestones(a: MilestoneNode, b: MilestoneNode): number {
+function compareMilestones(a: MilestoneNode, b: MilestoneNode, order: BacklogOrder): number {
   const aDate = a.milestone.date ?? '';
   const bDate = b.milestone.date ?? '';
-  if (aDate !== bDate) {
-    if (!aDate) return 1;
-    if (!bDate) return -1;
-    return aDate.localeCompare(bDate);
+  // Undated milestones always trail the dated ones, in both orderings.
+  if (!aDate && !bDate) {
+    return a.milestone.id.localeCompare(b.milestone.id);
   }
-  return a.milestone.id.localeCompare(b.milestone.id);
+  if (!aDate) return 1;
+  if (!bDate) return -1;
+  const delta = aDate.localeCompare(bDate);
+  return order === 'old' ? delta : -delta;
 }
 
-function sortRecursive(nodes: ItemNode[]): void {
-  nodes.sort(compareNodes);
+function sortRecursive(nodes: ItemNode[], order: BacklogOrder): void {
+  nodes.sort((a, b) => compareItems(a.item, b.item, order));
   for (const node of nodes) {
     if (node.children.length > 0) {
-      sortRecursive(node.children);
+      sortRecursive(node.children, order);
     }
   }
 }
 
-function compareNodes(a: ItemNode, b: ItemNode): number {
-  const statusDelta = statusRank(a.item.status) - statusRank(b.item.status);
-  if (statusDelta !== 0) return statusDelta;
-  const priorityDelta = priorityRank(a.item.priority) - priorityRank(b.item.priority);
-  if (priorityDelta !== 0) return priorityDelta;
-  return a.item.id.localeCompare(b.item.id);
-}
-
-function statusRank(status: JoyItemStatus): number {
-  return STATUS_ORDER[status] ?? 99;
-}
-
-function priorityRank(priority: JoyItemPriority): number {
-  return PRIORITY_ORDER[priority] ?? 99;
+function compareItems(a: JoyItem, b: JoyItem, order: BacklogOrder): number {
+  const aKey = a.created ?? '';
+  const bKey = b.created ?? '';
+  let delta = aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
+  if (delta === 0) {
+    delta = a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  }
+  return order === 'old' ? delta : -delta;
 }

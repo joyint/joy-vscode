@@ -1,0 +1,25 @@
+id: JVSC-0021-2B
+title: 'Backlog and item detail: remove parent and manage dependencies'
+type: task
+status: closed
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T09:40:09.037746Z
+updated: 2026-07-11T09:40:37.343944Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T09:40:37.195930Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T09:40:37.343944Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Un-parenting was only possible by dropping on empty space. Add a Remove Parent context command in the tree and dropping on the No Milestone group to unlink a milestone. In the item detail, make the parent removable and show dependencies as an add/remove list like assignees.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T09:40:37.266658Z
+  text: 'Implemented: joy.clearParent tree context command (edit --parent none) and drag-onto-No-Milestone unlink; item detail parent remove button; dependencies shown as an add/remove list backed by joy deps --add/--rm with an item picker. Tests updated.'

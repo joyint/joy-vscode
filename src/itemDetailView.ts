@@ -4,6 +4,7 @@ import type { JoyClient } from './joyClient';
 import { STATUSES, moveArgs } from './status';
 import type {
   JoyItemStatus,
+  JoyListResponse,
   JoyMilestone,
   JoyMilestoneListResponse,
   JoyShowResponse,
@@ -15,7 +16,14 @@ type DetailMessage =
   | { type: 'comment'; id: string; text: string }
   | { type: 'assign'; id: string; member: string }
   | { type: 'unassign'; id: string; member: string }
+  | { type: 'depAdd'; id: string; dep: string }
+  | { type: 'depRemove'; id: string; dep: string }
   | { type: 'refresh' };
+
+interface ItemRef {
+  id: string;
+  title: string;
+}
 
 const EDIT_FIELDS: readonly DetailEditField[] = [
   'title',
@@ -23,6 +31,7 @@ const EDIT_FIELDS: readonly DetailEditField[] = [
   'priority',
   'effort',
   'milestone',
+  'parent',
   'description',
 ];
 
@@ -79,16 +88,18 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
   private async pushItem(): Promise<void> {
     if (!this.view || !this.currentId) return;
     try {
-      const [shown, milestones, members] = await Promise.all([
+      const [shown, milestones, members, items] = await Promise.all([
         this.client.runJson<JoyShowResponse>(['show', this.currentId]),
         this.loadMilestones(),
         this.loadMembers(),
+        this.loadItems(),
       ]);
       await this.view.webview.postMessage({
         type: 'item',
         item: shown.data,
         milestones,
         members,
+        items,
         statuses: STATUSES,
       });
     } catch (err) {
@@ -120,6 +131,16 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
+  /** All items, id and title only, to label and pick dependencies. */
+  private async loadItems(): Promise<ItemRef[]> {
+    try {
+      const response = await this.client.runJson<JoyListResponse>(['ls', '--all']);
+      return response.data.items.map((item) => ({ id: item.id, title: item.title }));
+    } catch {
+      return [];
+    }
+  }
+
   private async handleMessage(message: DetailMessage): Promise<void> {
     try {
       switch (message.type) {
@@ -146,6 +167,14 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
         }
         case 'unassign': {
           await this.client.run(['assign', message.id, message.member, '--unassign']);
+          break;
+        }
+        case 'depAdd': {
+          await this.client.run(['deps', message.id, '--add', message.dep]);
+          break;
+        }
+        case 'depRemove': {
+          await this.client.run(['deps', message.id, '--rm', message.dep]);
           break;
         }
         case 'refresh': {

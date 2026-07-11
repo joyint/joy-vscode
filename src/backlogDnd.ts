@@ -50,6 +50,8 @@ export class BacklogDragAndDropController implements vscode.TreeDragAndDropContr
           await this.client.run(['edit', action.id, '--parent', action.parent]);
         } else if (action.kind === 'clearParent') {
           await this.client.run(['edit', action.id, '--parent', 'none']);
+        } else if (action.kind === 'unlink') {
+          await this.client.run(['edit', action.id, '--milestone', 'none']);
         } else {
           await this.client.run(['milestone', 'link', action.id, action.milestone]);
         }

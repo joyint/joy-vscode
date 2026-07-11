@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { buildBacklogView, type BacklogNode } from './backlog';
+import { buildBacklogView, type BacklogNode, type BacklogOrder } from './backlog';
 import type { JoyClient } from './joyClient';
 import type {
   JoyItem,
@@ -26,13 +26,26 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
   private cachedRoots: BacklogNode[] | undefined;
   private pendingLoad: Promise<BacklogNode[]> | undefined;
   private items: JoyItem[] = [];
+  private order: BacklogOrder;
 
-  constructor(private readonly client: JoyClient) {}
+  constructor(
+    private readonly client: JoyClient,
+    order: BacklogOrder = 'new',
+  ) {
+    this.order = order;
+  }
 
   refresh(): void {
     this.cachedRoots = undefined;
     this.pendingLoad = undefined;
     this.emitter.fire();
+  }
+
+  /** Change the chronological ordering and re-render. */
+  setOrder(order: BacklogOrder): void {
+    if (order === this.order) return;
+    this.order = order;
+    this.refresh();
   }
 
   currentItems(): readonly JoyItem[] {
@@ -42,6 +55,9 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
   getTreeItem(node: BacklogNode): vscode.TreeItem {
     if (node.kind === 'milestone') {
       return milestoneTreeItem(node.milestone, node.children.length > 0);
+    }
+    if (node.kind === 'no-milestone') {
+      return noMilestoneTreeItem();
     }
     const item = node.item;
     const treeItem = new vscode.TreeItem(
@@ -54,7 +70,7 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
     treeItem.description = `${item.id} · ${item.status} · ${item.priority}`;
     treeItem.tooltip = buildTooltip(item);
     treeItem.iconPath = new vscode.ThemeIcon(TYPE_ICONS[item.type] ?? 'circle-outline');
-    treeItem.contextValue = `status:${item.status}`;
+    treeItem.contextValue = itemContextValue(item);
     treeItem.command = {
       command: 'joy.openDetail',
       title: 'Open Item Detail',
@@ -88,7 +104,7 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
       this.loadMilestones(),
     ]);
     this.items = list.data.items;
-    return buildBacklogView(list.data.items, milestones);
+    return buildBacklogView(list.data.items, milestones, this.order);
   }
 
   private async loadMilestones(): Promise<JoyMilestone[]> {
@@ -99,6 +115,24 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
       return [];
     }
   }
+}
+
+function itemContextValue(item: JoyItem): string {
+  const flags = ['item', `status:${item.status}`];
+  if (item.parent) flags.push('has-parent');
+  if (item.milestone) flags.push('has-milestone');
+  return flags.join(' ');
+}
+
+function noMilestoneTreeItem(): vscode.TreeItem {
+  const treeItem = new vscode.TreeItem(
+    'No Milestone',
+    vscode.TreeItemCollapsibleState.Expanded,
+  );
+  treeItem.id = '__joy_no_milestone__';
+  treeItem.iconPath = new vscode.ThemeIcon('circle-slash');
+  treeItem.contextValue = 'no-milestone-group';
+  return treeItem;
 }
 
 function milestoneTreeItem(milestone: JoyMilestone, hasChildren: boolean): vscode.TreeItem {

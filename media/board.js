@@ -29,7 +29,7 @@
     if (message.type === 'board') {
       items = message.items;
       member = message.member;
-      mineButton.style.display = member ? '' : 'none';
+      updateMineButton();
       render();
     } else if (message.type === 'loadError') {
       board.className = 'empty load-error';
@@ -40,10 +40,26 @@
   filterInput.addEventListener('input', render);
   sortSelect.addEventListener('change', render);
   mineButton.addEventListener('click', () => {
+    if (!member) return;
     mineOnly = !mineOnly;
     mineButton.classList.toggle('active', mineOnly);
     render();
   });
+
+  // The filter stays visible at all times for discoverability; it is only
+  // disabled while we do not yet know who "me" is.
+  function updateMineButton() {
+    mineButton.disabled = !member;
+    mineButton.title = member
+      ? 'Show only items assigned to me'
+      : 'Authenticate to filter by items assigned to you';
+    if (!member && mineOnly) {
+      mineOnly = false;
+      mineButton.classList.remove('active');
+    }
+  }
+
+  updateMineButton();
   directionButton.addEventListener('click', () => {
     descending = !descending;
     directionButton.textContent = descending ? 'desc' : 'asc';

@@ -11,6 +11,7 @@ export type DetailEditField =
   | 'priority'
   | 'effort'
   | 'milestone'
+  | 'parent'
   | 'description';
 
 const EDIT_FLAGS: Record<DetailEditField, string> = {
@@ -19,6 +20,7 @@ const EDIT_FLAGS: Record<DetailEditField, string> = {
   priority: '--priority',
   effort: '--effort',
   milestone: '--milestone',
+  parent: '--parent',
   description: '--description',
 };
 

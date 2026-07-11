@@ -1,5 +1,12 @@
 import * as assert from 'node:assert/strict';
-import { buildBacklogTree, buildBacklogView, planDrop, type MilestoneNode } from '../../backlog';
+import {
+  buildBacklogTree,
+  buildBacklogView,
+  planDrop,
+  type BacklogNode,
+  type MilestoneNode,
+  type NoMilestoneNode,
+} from '../../backlog';
 import type { JoyItem, JoyMilestone } from '../../types';
 
 function item(overrides: Partial<JoyItem> & Pick<JoyItem, 'id'>): JoyItem {
@@ -36,26 +43,11 @@ describe('buildBacklogTree', () => {
     assert.equal(roots[0]!.item.id, 'X-0001-AA');
   });
 
-  it('sorts siblings by status (in-progress first, closed last)', () => {
+  it('orders siblings newest-created first by default', () => {
     const items: JoyItem[] = [
-      item({ id: 'X-0001-AA', status: 'closed' }),
-      item({ id: 'X-0002-BB', status: 'new' }),
-      item({ id: 'X-0003-CC', status: 'in-progress' }),
-      item({ id: 'X-0004-DD', status: 'review' }),
-    ];
-
-    const roots = buildBacklogTree(items);
-    assert.deepEqual(
-      roots.map((r) => r.item.id),
-      ['X-0003-CC', 'X-0004-DD', 'X-0002-BB', 'X-0001-AA'],
-    );
-  });
-
-  it('tiebreaks equal status by priority (critical first, low last)', () => {
-    const items: JoyItem[] = [
-      item({ id: 'X-0001-AA', status: 'new', priority: 'low' }),
-      item({ id: 'X-0002-BB', status: 'new', priority: 'critical' }),
-      item({ id: 'X-0003-CC', status: 'new', priority: 'medium' }),
+      item({ id: 'X-0001-AA', created: '2026-01-01T00:00:00Z' }),
+      item({ id: 'X-0002-BB', created: '2026-03-01T00:00:00Z' }),
+      item({ id: 'X-0003-CC', created: '2026-02-01T00:00:00Z' }),
     ];
 
     const roots = buildBacklogTree(items);
@@ -65,20 +57,40 @@ describe('buildBacklogTree', () => {
     );
   });
 
-  it('falls back to id order when status and priority are equal', () => {
-    const items: JoyItem[] = [item({ id: 'X-0002-BB' }), item({ id: 'X-0001-AA' })];
-    const roots = buildBacklogTree(items);
+  it('orders siblings oldest-created first when order is old', () => {
+    const items: JoyItem[] = [
+      item({ id: 'X-0001-AA', created: '2026-01-01T00:00:00Z' }),
+      item({ id: 'X-0002-BB', created: '2026-03-01T00:00:00Z' }),
+      item({ id: 'X-0003-CC', created: '2026-02-01T00:00:00Z' }),
+    ];
+
+    const roots = buildBacklogTree(items, 'old');
     assert.deepEqual(
       roots.map((r) => r.item.id),
-      ['X-0001-AA', 'X-0002-BB'],
+      ['X-0001-AA', 'X-0003-CC', 'X-0002-BB'],
     );
   });
 
-  it('sorts children recursively', () => {
+  it('tiebreaks equal created by id, following the order direction', () => {
     const items: JoyItem[] = [
-      item({ id: 'X-0001-AA', type: 'epic' }),
-      item({ id: 'X-0010-CH', parent: 'X-0001-AA', status: 'closed' }),
-      item({ id: 'X-0011-CH', parent: 'X-0001-AA', status: 'in-progress' }),
+      item({ id: 'X-0002-BB', created: '2026-01-01T00:00:00Z' }),
+      item({ id: 'X-0001-AA', created: '2026-01-01T00:00:00Z' }),
+    ];
+    assert.deepEqual(
+      buildBacklogTree(items, 'old').map((r) => r.item.id),
+      ['X-0001-AA', 'X-0002-BB'],
+    );
+    assert.deepEqual(
+      buildBacklogTree(items, 'new').map((r) => r.item.id),
+      ['X-0002-BB', 'X-0001-AA'],
+    );
+  });
+
+  it('sorts children recursively by age', () => {
+    const items: JoyItem[] = [
+      item({ id: 'X-0001-AA', type: 'epic', created: '2026-01-01T00:00:00Z' }),
+      item({ id: 'X-0010-CH', parent: 'X-0001-AA', created: '2026-01-02T00:00:00Z' }),
+      item({ id: 'X-0011-CH', parent: 'X-0001-AA', created: '2026-01-03T00:00:00Z' }),
     ];
 
     const roots = buildBacklogTree(items);
@@ -96,23 +108,47 @@ describe('buildBacklogView', () => {
     { id: 'X-MS-03', title: 'Undated' },
   ];
 
-  it('groups milestone-linked roots under milestone nodes, dated first', () => {
+  const label = (node: BacklogNode): string =>
+    node.kind === 'milestone'
+      ? node.milestone.id
+      : node.kind === 'no-milestone'
+        ? 'NO-MS'
+        : node.item.id;
+
+  it('newest order puts the unassigned group first, milestones latest-first, undated last', () => {
     const items: JoyItem[] = [
       item({ id: 'X-0001-AA', milestone: 'X-MS-01' }),
       item({ id: 'X-0002-BB' }),
     ];
 
-    const view = buildBacklogView(items, milestones);
+    const view = buildBacklogView(items, milestones, 'new');
+    assert.deepEqual(view.map(label), ['NO-MS', 'X-MS-02', 'X-MS-01', 'X-MS-03']);
+  });
 
-    assert.deepEqual(
-      view.map((node) => (node.kind === 'milestone' ? node.milestone.id : node.item.id)),
-      ['X-MS-01', 'X-MS-02', 'X-MS-03', 'X-0002-BB'],
-    );
+  it('oldest order runs milestones earliest-first, undated then the unassigned group last', () => {
+    const items: JoyItem[] = [
+      item({ id: 'X-0001-AA', milestone: 'X-MS-01' }),
+      item({ id: 'X-0002-BB' }),
+    ];
+
+    const view = buildBacklogView(items, milestones, 'old');
+    assert.deepEqual(view.map(label), ['X-MS-01', 'X-MS-02', 'X-MS-03', 'NO-MS']);
     const soon = view[0] as MilestoneNode;
     assert.deepEqual(
       soon.children.map((c) => c.item.id),
       ['X-0001-AA'],
     );
+    const noMilestone = view[3] as NoMilestoneNode;
+    assert.deepEqual(
+      noMilestone.children.map((c) => c.item.id),
+      ['X-0002-BB'],
+    );
+  });
+
+  it('omits the No Milestone group when every root is assigned', () => {
+    const items: JoyItem[] = [item({ id: 'X-0001-AA', milestone: 'X-MS-01' })];
+    const view = buildBacklogView(items, milestones, 'new');
+    assert.ok(!view.some((node) => node.kind === 'no-milestone'));
   });
 
   it('keeps children with their parent even when the milestone differs', () => {
@@ -121,7 +157,7 @@ describe('buildBacklogView', () => {
       item({ id: 'X-0002-BB', parent: 'X-0001-AA', milestone: 'X-MS-02' }),
     ];
 
-    const view = buildBacklogView(items, milestones);
+    const view = buildBacklogView(items, milestones, 'old');
     const soon = view[0] as MilestoneNode;
     assert.equal(soon.children[0]!.item.id, 'X-0001-AA');
     assert.equal(soon.children[0]!.children[0]!.item.id, 'X-0002-BB');
@@ -154,6 +190,7 @@ describe('planDrop', () => {
     milestone: { id: 'X-MS-01', title: 'Soon' },
     children: [],
   };
+  const noMilestoneNode: NoMilestoneNode = { kind: 'no-milestone', children: [] };
 
   it('re-parents a drop onto another item', () => {
     assert.deepEqual(planDrop(['X-0004-DD'], node('X-0001-AA'), items), [
@@ -179,6 +216,13 @@ describe('planDrop', () => {
       { kind: 'link', id: 'X-0001-AA', milestone: 'X-MS-01' },
     ]);
     assert.deepEqual(planDrop(['X-0004-DD'], milestoneNode, items), []);
+  });
+
+  it('unlinks the milestone on a drop onto the No Milestone group', () => {
+    assert.deepEqual(planDrop(['X-0004-DD'], noMilestoneNode, items), [
+      { kind: 'unlink', id: 'X-0004-DD' },
+    ]);
+    assert.deepEqual(planDrop(['X-0001-AA'], noMilestoneNode, items), []);
   });
 
   it('ignores unknown ids', () => {

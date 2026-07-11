@@ -1,0 +1,27 @@
+id: JVSC-0020-F9
+title: 'Backlog: oldest/newest ordering toggle and No Milestone group'
+type: story
+status: closed
+priority: high
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T09:40:08.959240Z
+updated: 2026-07-11T09:40:37.120522Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T09:40:36.972417Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T09:40:37.120522Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'Add an oldest/newest ordering toggle to the backlog tree. Oldest: earliest milestone and oldest items first. Newest: latest milestone (or the No Milestone group) and newest items on top. Introduce a No Milestone group, shown when at least one milestone exists and there are unassigned items.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T09:40:37.043846Z
+  text: 'Implemented: order-aware backlog sorting by created (tiebreak id) and milestone date; NoMilestoneNode grouping unassigned roots; title-bar toggle (joy.sortOldest/joy.sortNewest) with a workspace-persisted, context-key-gated state; default newest-first. Unit tests updated, 52 passing.'
