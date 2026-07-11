@@ -19,6 +19,7 @@ const EXPECTED_COMMANDS = [
   'joy.configureExecutablePath',
   'joy.authenticate',
   'joy.initCopilot',
+  'joy.addDelegationToken',
 ] as const;
 
 describe('extension activation', () => {

@@ -272,6 +272,67 @@ function registerCommands(
     }
   });
 
+  sub('joy.addDelegationToken', async () => {
+    // The operator issues a delegation token for one of the AI members they
+    // have delegated to (auth status -> delegated_sessions), then pastes it to
+    // the AI, which redeems it with `joy auth --token <token> --json`.
+    let status: { data: { delegated_sessions?: { member: string }[] } };
+    try {
+      status = await client.runJsonAllowFailure(['auth', 'status'], { noAuthRetry: true });
+    } catch (err) {
+      reportError(err);
+      return;
+    }
+    const members = (status.data.delegated_sessions ?? [])
+      .map((session) => session.member)
+      .filter((member): member is string => Boolean(member));
+    if (members.length === 0) {
+      vscode.window.showWarningMessage(
+        'Joy: no delegated AI members. Set one up with "Joy: Init Copilot" or `joy project member add ai:<name>@joy`.',
+      );
+      return;
+    }
+
+    const member =
+      members.length === 1
+        ? members[0]
+        : await vscode.window.showQuickPick(members, {
+            title: 'Joy: Add AI Delegation Token',
+            placeHolder: 'AI member to issue a delegation token for',
+          });
+    if (!member) return;
+
+    const passphrase = await vscode.window.showInputBox({
+      title: `Joy: Delegation Token for ${member}`,
+      prompt: 'Enter your Joy passphrase to issue the token.',
+      password: true,
+      ignoreFocusOut: true,
+      validateInput: (value) => (value.length === 0 ? 'Passphrase must not be empty.' : undefined),
+    });
+    if (passphrase === undefined) return;
+
+    try {
+      const result = await client.runJson<{
+        data: { token: string; member: string; ttl_hours: number };
+      }>(['auth', 'token', 'add', member, '--passphrase-stdin'], {
+        stdin: `${passphrase}\n`,
+        noAuthRetry: true,
+      });
+      const { token, ttl_hours: ttl } = result.data;
+      await vscode.env.clipboard.writeText(token);
+      const choice = await vscode.window.showInformationMessage(
+        `Joy: delegation token for ${member} copied to clipboard (valid ${ttl}h). The AI redeems it with: joy auth --token <token> --json`,
+        'Copy redeem command',
+      );
+      if (choice === 'Copy redeem command') {
+        await vscode.env.clipboard.writeText(`joy auth --token ${token} --json`);
+        vscode.window.showInformationMessage('Joy: redeem command copied to clipboard.');
+      }
+    } catch (err) {
+      reportError(err);
+    }
+  });
+
   sub('joy.configureExecutablePath', async () => {
     const config = vscode.workspace.getConfiguration('joy');
     const current = config.get<string>('executablePath') ?? '';

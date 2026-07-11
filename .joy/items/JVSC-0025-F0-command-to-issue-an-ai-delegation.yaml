@@ -1,0 +1,27 @@
+id: JVSC-0025-F0
+title: Command to issue an AI delegation token from the extension
+type: story
+status: closed
+priority: medium
+parent: JVSC-0001-D4
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-07-11T15:32:31.981750Z
+updated: 2026-07-11T15:33:46.665772Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-07-11T15:32:32.067010Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T15:33:46.665772Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'Add a ''Joy: Add AI Delegation Token'' command: pick one of the current user''s delegated AI members (auth status --json -> delegated_sessions[].member), prompt for the passphrase, run joy auth token add <member> --passphrase-stdin --json, parse data.token, copy it to the clipboard so the operator can paste it to the AI (which redeems with joy auth --token <token> --json). Offer a ''Copy redeem command'' action.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T15:33:46.588288Z
+  text: '[x] Implemented. Command joy.addDelegationToken: lists the current user''s delegated AI members from auth status (delegated_sessions, works even unauthenticated via runJsonAllowFailure), QuickPick when more than one, passphrase input, runs joy auth token add <member> --passphrase-stdin --json, copies data.token to the clipboard, and offers a ''Copy redeem command'' action. npm run check green (60 tests).'

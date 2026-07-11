@@ -152,6 +152,11 @@
         "command": "joy.initCopilot",
         "title": "Init Copilot",
         "category": "Joy"
+      },
+      {
+        "command": "joy.addDelegationToken",
+        "title": "Add AI Delegation Token",
+        "category": "Joy"
       }
     ],
     "viewsWelcome": [
