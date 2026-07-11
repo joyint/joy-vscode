@@ -1,0 +1,13 @@
+version: v0.2.2
+date: 2026-07-11
+previous: v0.2.1
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 8
+  items: 2
+items:
+  stories:
+  - id: JVSC-0023-5C
+    title: Link Joy item IDs in editor text to the item detail view
+  - id: JVSC-0024-93
+    title: Command to set up GitHub Copilot integration via joy ai init
