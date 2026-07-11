@@ -324,14 +324,24 @@ function registerCommands(
         noAuthRetry: true,
       });
       const { token, ttl_hours: ttl } = result.data;
-      await vscode.env.clipboard.writeText(token);
+      // Copy a directive addressed to the AI, not just the raw token: it must
+      // understand that it *is* this member and use the session for its own
+      // writes, rather than handing the session back to the operator.
+      const directive = [
+        `You are the Joy AI member ${member}, delegated by the operator. Authenticate as yourself and use the session for all your own Joy writes. Run these yourself; do not ask the operator to run them.`,
+        ``,
+        `joy auth --token ${token} --json`,
+        ``,
+        `That prints a session_env. Pass --session <session_env> on every joy write (each command runs in a fresh shell, so an exported env var will not persist). Run \`joy ai tutorial\` first for the full workflow.`,
+      ].join('\n');
+      await vscode.env.clipboard.writeText(directive);
       const choice = await vscode.window.showInformationMessage(
-        `Joy: delegation token for ${member} copied to clipboard (valid ${ttl}h). The AI redeems it with: joy auth --token <token> --json`,
-        'Copy redeem command',
+        `Joy: an authentication directive for ${member} was copied to the clipboard (token valid ${ttl}h). Paste it to the AI in chat.`,
+        'Copy token only',
       );
-      if (choice === 'Copy redeem command') {
-        await vscode.env.clipboard.writeText(`joy auth --token ${token} --json`);
-        vscode.window.showInformationMessage('Joy: redeem command copied to clipboard.');
+      if (choice === 'Copy token only') {
+        await vscode.env.clipboard.writeText(token);
+        vscode.window.showInformationMessage('Joy: raw token copied to clipboard.');
       }
     } catch (err) {
       reportError(err);
