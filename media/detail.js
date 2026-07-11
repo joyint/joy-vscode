@@ -72,11 +72,34 @@
       renderDependencies(item, items),
       renderDescription(item),
       renderComments(item),
+      renderFooter(item),
     ];
     if (canDelete) {
       children.push(renderDelete(item));
     }
     app.replaceChildren(...children);
+  }
+
+  function formatTimestamp(ts) {
+    return ts ? ts.slice(0, 16).replace('T', ' ') : '';
+  }
+
+  function metaLine(label, who, when) {
+    let line = label;
+    if (who) line += ` by ${who}`;
+    if (when) line += ` on ${formatTimestamp(when)}`;
+    return line;
+  }
+
+  function renderFooter(item) {
+    const footer = el('div', { className: 'detail-footer' });
+    if (item.created || item.created_by) {
+      footer.append(el('div', {}, text(metaLine('Created', item.created_by, item.created))));
+    }
+    if ((item.updated_by || item.updated) && item.updated !== item.created) {
+      footer.append(el('div', {}, text(metaLine('Updated', item.updated_by, item.updated))));
+    }
+    return footer;
   }
 
   function renderDelete(item) {
