@@ -150,6 +150,21 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+# Local AI tool scaffolding. Each developer runs their own `joy ai init`, so
+# these stay local and must not be committed. joy is supposed to ignore them via
+# its managed block below, but `joy update` rewrites that block to base-only
+# entries and drops the per-tool lines (joy-core update_registry.rs:
+# GitignoreBlockItem ignores TOOL_GITIGNORE_ENTRIES). Pinned here until joy is
+# fixed. See joy JOY-01AA-9E.
+.claude/
+.qwen/
+.vibe/
+AGENTS.md
+.github/copilot-instructions.md
+.github/copilot/
+.github/agents/
+.github/prompts/
+
 ### joy:start -- managed by joy, do not edit manually
 .joy/config.yaml
 .joy/chat-state.yaml
