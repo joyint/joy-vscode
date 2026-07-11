@@ -7,6 +7,7 @@
   const EFFORT_LABELS = ['xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl'];
 
   const app = /** @type {HTMLElement} */ (document.getElementById('app'));
+  const footer = /** @type {HTMLElement} */ (document.getElementById('footer'));
 
   /**
    * Unsaved edits per item id: { comment, description, editingDescription }.
@@ -40,9 +41,11 @@
     } else if (message.type === 'cleared') {
       app.className = 'empty';
       app.replaceChildren(text('Select an item in the Backlog view.'));
+      updateFooter(null);
     } else if (message.type === 'loadError') {
       app.className = 'load-error';
       app.replaceChildren(text(message.message));
+      updateFooter(null);
     }
   });
 
@@ -72,12 +75,12 @@
       renderDependencies(item, items),
       renderDescription(item),
       renderComments(item),
-      renderFooter(item),
     ];
     if (canDelete) {
       children.push(renderDelete(item));
     }
     app.replaceChildren(...children);
+    updateFooter(item);
   }
 
   function formatTimestamp(ts) {
@@ -91,15 +94,16 @@
     return line;
   }
 
-  function renderFooter(item) {
-    const footer = el('div', { className: 'detail-footer' });
-    if (item.created || item.created_by) {
-      footer.append(el('div', {}, text(metaLine('Created', item.created_by, item.created))));
+  // Populate the fixed footer at the bottom of the panel (empty for no item).
+  function updateFooter(item) {
+    const lines = [];
+    if (item && (item.created || item.created_by)) {
+      lines.push(el('div', {}, text(metaLine('Created', item.created_by, item.created))));
     }
-    if ((item.updated_by || item.updated) && item.updated !== item.created) {
-      footer.append(el('div', {}, text(metaLine('Updated', item.updated_by, item.updated))));
+    if (item && (item.updated_by || item.updated) && item.updated !== item.created) {
+      lines.push(el('div', {}, text(metaLine('Updated', item.updated_by, item.updated))));
     }
-    return footer;
+    footer.replaceChildren(...lines);
   }
 
   function renderDelete(item) {

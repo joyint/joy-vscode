@@ -11,15 +11,22 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-07-11T17:54:29.182799Z
-updated: 2026-07-11T17:55:38.404436Z
+updated: 2026-07-11T18:16:18.139646Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-07-11T17:54:29.265661Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-07-11T17:55:38.404436Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T18:16:17.981320Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-07-11T18:16:18.139646Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Add a footer to the item detail webview showing who created the item and when (created_by, created), and the last update (updated_by, updated) when it differs, from joy show --json.
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-07-11T17:55:38.321332Z
   text: '[x] Implemented. Item detail webview now renders a muted footer under the comments: ''Created by <created_by> on <date>'' and ''Updated by <updated_by> on <date>'' (the update line only when updated differs from created). Fields come from joy show --json (created_by/created/updated_by/updated). detail.js node --check ok, npm run check green.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-07-11T18:16:18.063687Z
+  text: 'Rework: the first version put the metadata inline after the comments (ugly, buried in the scroll). Turned it into a real fixed footer: body is a flex column over the full height, #app scrolls, and a pinned #footer at the bottom holds ''Created/Updated by ... on ...'' (hidden when empty). detail.js node --check ok, npm run check green.'

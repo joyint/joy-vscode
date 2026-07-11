@@ -264,6 +264,7 @@ function renderHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
 </head>
 <body>
   <div id="app" class="empty">Select an item in the Backlog view.</div>
+  <footer id="footer"></footer>
   <script nonce="${nonce}" src="${markdownUri.toString()}"></script>
   <script nonce="${nonce}" src="${scriptUri.toString()}"></script>
 </body>

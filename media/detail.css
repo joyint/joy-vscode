@@ -2,7 +2,31 @@ body {
   color: var(--vscode-foreground);
   font-family: var(--vscode-font-family);
   font-size: var(--vscode-font-size);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+#app {
+  flex: 1;
+  overflow-y: auto;
   padding: 0 12px 12px;
+}
+
+#footer {
+  flex: none;
+  padding: 6px 12px;
+  border-top: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+  background: var(--vscode-sideBar-background, var(--vscode-editor-background));
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
+#footer:empty {
+  display: none;
 }
 
 .empty {
@@ -270,14 +294,6 @@ body.vscode-high-contrast {
 .delete-button:hover {
   background: var(--vscode-errorForeground, #f14c4c);
   opacity: 0.85;
-}
-
-.detail-footer {
-  margin-top: 12px;
-  padding-top: 8px;
-  border-top: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
-  font-size: 0.85em;
-  opacity: 0.7;
 }
 
 .md p {
