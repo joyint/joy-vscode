@@ -16,6 +16,7 @@ members:
       document: {}
       create: {}
       assign: {}
+    adapter: claude-code
     attestation:
       attester: horst.schwarz@joydev.com
       signed_fields:
@@ -43,6 +44,7 @@ members:
       document: {}
       create: {}
       assign: {}
+    adapter: copilot
     attestation:
       attester: horst.schwarz@joydev.com
       signed_fields:
@@ -70,6 +72,7 @@ members:
       document: {}
       create: {}
       assign: {}
+    adapter: mistral-vibe
     attestation:
       attester: horst.schwarz@joydev.com
       signed_fields:
