@@ -2,8 +2,8 @@
 (function () {
   const vscode = acquireVsCodeApi();
 
-  const TYPES = ['epic', 'story', 'task', 'bug', 'rework', 'decision', 'idea'];
-  const PRIORITIES = ['low', 'medium', 'high', 'critical'];
+  const TYPES = ['epic', 'story', 'task', 'bug', 'rework', 'decision', 'idea', 'job'];
+  const PRIORITIES = ['low', 'medium', 'high', 'critical', 'extreme'];
   const EFFORT_LABELS = ['xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl'];
 
   const app = /** @type {HTMLElement} */ (document.getElementById('app'));

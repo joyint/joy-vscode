@@ -1,4 +1,12 @@
-export type JoyItemType = 'epic' | 'story' | 'task' | 'bug' | 'rework' | 'decision' | 'idea';
+export type JoyItemType =
+  | 'epic'
+  | 'story'
+  | 'task'
+  | 'bug'
+  | 'rework'
+  | 'decision'
+  | 'idea'
+  | 'job';
 
 export type JoyItemStatus =
   | 'new'
@@ -6,10 +14,9 @@ export type JoyItemStatus =
   | 'in-progress'
   | 'review'
   | 'closed'
-  | 'deferred'
-  | 'blocked';
+  | 'deferred';
 
-export type JoyItemPriority = 'critical' | 'high' | 'medium' | 'low';
+export type JoyItemPriority = 'extreme' | 'critical' | 'high' | 'medium' | 'low';
 
 export interface JoyAssignee {
   member: string;

@@ -17,6 +17,8 @@ const TYPE_ICONS: Record<JoyItemType, string> = {
   rework: 'tools',
   decision: 'law',
   idea: 'lightbulb',
+  // Jobs are items too since JOY-01FE-37: delegated AI work, hence the robot.
+  job: 'robot',
 };
 
 export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {

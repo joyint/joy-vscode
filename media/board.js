@@ -4,13 +4,13 @@
 
   const COLUMNS = [
     { key: 'new', label: 'New', statuses: ['new'] },
-    { key: 'open', label: 'Open', statuses: ['open', 'blocked'] },
+    { key: 'open', label: 'Open', statuses: ['open'] },
     { key: 'in-progress', label: 'In progress', statuses: ['in-progress'] },
     { key: 'review', label: 'Review', statuses: ['review'] },
     { key: 'closed', label: 'Closed', statuses: ['closed'] },
     { key: 'deferred', label: 'Deferred', statuses: ['deferred'] },
   ];
-  const PRIORITY_RANK = { critical: 0, high: 1, medium: 2, low: 3 };
+  const PRIORITY_RANK = { extreme: 0, critical: 1, high: 2, medium: 3, low: 4 };
   const EFFORT_LABELS = ['xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl'];
 
   const board = /** @type {HTMLElement} */ (document.getElementById('board'));
