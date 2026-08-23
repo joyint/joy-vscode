@@ -1,0 +1,13 @@
+id: JVSC-0029-66
+title: Board verliert die Scrollposition der Spalten beim Refresh
+type: task
+status: new
+priority: low
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-08-23T17:44:28.848090997Z
+updated: 2026-08-23T17:44:28.848090997Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'Wird ein Item in der Sidebar bearbeitet, lädt das Board neu (nötig, weil das Item die Spalte wechseln kann). Dabei springen alle Spalten wieder an den Anfang. In längeren Listen geht damit der Kontext verloren: das nächste Item, das man bearbeiten wollte, muss man erneut heruntersuchen. Gewünscht ist, dass die Scrollposition je Spalte den Refresh übersteht. Komfortthema, von Horst ausdrücklich als nicht entscheidend eingestuft.'
