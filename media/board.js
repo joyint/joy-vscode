@@ -197,7 +197,32 @@
     return descending ? -delta : delta;
   }
 
+  /** Where each column body is scrolled to right now, by column key. */
+  function captureScroll() {
+    const positions = new Map();
+    for (const node of board.querySelectorAll('.column[data-column]')) {
+      const body = node.querySelector('.column-body');
+      if (body) positions.set(node.dataset.column, body.scrollTop);
+    }
+    return { columns: positions, boardLeft: board.scrollLeft };
+  }
+
+  /** Put the reader back where they were. Every render replaces all columns,
+   * so without this an edit in the sidebar sends long columns back to the top
+   * and the next item has to be searched for again. Positions past the new
+   * end are clamped by the browser, so a shrunken column just lands at its
+   * bottom instead of jumping. */
+  function restoreScroll(scroll) {
+    for (const node of board.querySelectorAll('.column[data-column]')) {
+      const body = node.querySelector('.column-body');
+      const top = scroll.columns.get(node.dataset.column);
+      if (body && top) body.scrollTop = top;
+    }
+    board.scrollLeft = scroll.boardLeft;
+  }
+
   function render() {
+    const scroll = captureScroll();
     const needle = filterInput.value.trim().toLowerCase();
     board.className = '';
     const columns = COLUMNS.map((column) => {
@@ -210,12 +235,16 @@
       return renderColumn(column, columnItems);
     });
     board.replaceChildren(...columns);
+    restoreScroll(scroll);
   }
 
   function renderColumn(column, columnItems) {
     const slim = columnItems.length === 0;
     const title = `${column.label} (${columnItems.length})`;
     const node = el('div', { className: slim ? 'column slim' : 'column' });
+    // Names the column across renders, so its scroll position can be handed
+    // from the old DOM to the new one.
+    node.dataset.column = column.key;
     if (slim) {
       node.append(el('div', { className: 'slim-title' }, document.createTextNode(title)));
     } else {
