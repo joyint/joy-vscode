@@ -1,0 +1,17 @@
+id: JVSC-0029-66
+title: The board loses the columns' scroll position on a refresh
+type: task
+status: new
+priority: low
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-08-23T17:44:28.848090997Z
+updated: 2026-08-31T15:17:09.066606405Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'When an item is edited in the sidebar, the board reloads, which is necessary because the item may change column. All columns jump back to the top in the process. In longer lists that loses the context: the next item one wanted to edit has to be searched for again. Wanted: the scroll position per column survives the refresh. A comfort matter, which Horst explicitly called not decisive.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-08-31T15:17:09.066605693Z
+  text: 'State in English for the record (2026-08-31): still new, not started.'
