@@ -1,7 +1,7 @@
 id: JVSC-0001-D4
 title: VS Code extension for Joy management
 type: epic
-status: new
+status: closed
 priority: medium
 capabilities:
 - conceive
@@ -9,5 +9,10 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T10:18:40.843853407Z
-updated: 2026-05-15T10:18:40.843853407Z
+updated: 2026-09-01T21:08:51.288844406Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Build a Visual Studio Code extension that wraps the joy CLI for product management work directly inside the editor. Scope: a tree view panel listing items with sorting and nesting, a webview form editor for create and edit, a status bar session indicator with passphrase re-prompt on expiry, and Marketplace plus Open VSX publishing. The extension expects the joy binary to be installed on the system (with an optional override path in settings) and enforces a minimum version. Out of scope: AI agent panel integration is tracked separately.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-09-01T21:08:51.235780827Z
+  text: 'Closed in the backlog sweep of 2026-09-01 (ordered by Horst): delivered. Commits: joy-vscode b26cdca (2026-05-15) chore: bootstrap joy workspace and add initial b. the extension is published (v0.2.5, publisher joyint).'
