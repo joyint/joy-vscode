@@ -43,8 +43,11 @@ On first activation the extension auto-discovers `joy` via PATH, your login shel
 Run **Joy: Init Copilot** from the Command Palette to wire Copilot into this repo. It runs `joy ai init --tool copilot` (prompting once for your Joy passphrase) and:
 
 - writes `.github/copilot-instructions.md`, so Copilot Chat knows to drive the backlog through the `joy` CLI instead of reading or editing `.joy/` files directly;
-- adds a **`/joy`** prompt (`.github/prompts/joy.prompt.md`) — type `/joy` in Copilot Chat to get the Joy-aware assistant;
+- writes the Joy agents to `.github/agents/`, which Copilot Chat and the Copilot CLI both read;
+- adds the **`/joy`** skill (`.github/skills/joy/SKILL.md`) — type `/joy` in Copilot Chat to get the Joy-aware assistant. This replaced a prompt file under `.github/prompts/`, which GitHub has deprecated and the Copilot CLI never read at all; an older setup is migrated on the next run;
 - registers the `ai:copilot@joy` member so Copilot's commits are attributed.
+
+You do not need this command to get the files. `joy ai init` in a terminal finds Copilot under the `copilot` command, under `gh copilot`, and in a VS Code-family editor even when neither is installed, because Copilot Chat is built into VS Code and reads the same files. The command is here so you never have to leave the editor, and so the passphrase prompt is a proper dialog.
 
 Pick a capable Copilot model (for example a full GPT-5 or a Claude model). Smaller models such as GPT-5 mini tend to ignore custom instructions and count `.joy/` files by hand instead of running `joy ls`.
 
