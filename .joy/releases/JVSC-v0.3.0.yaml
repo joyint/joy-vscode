@@ -1,0 +1,26 @@
+version: v0.3.0
+date: 2026-09-20
+previous: v0.2.5
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 36
+  items: 6
+- id: horst.schwarz@joydev.com
+  events: 5
+  items: 4
+items:
+  epics:
+  - id: JVSC-0001-D4
+    title: VS Code extension for Joy management
+  stories:
+  - id: JVSC-000D-49
+    title: 'Board view: status columns with drag and drop and card actions'
+  - id: JVSC-0005-FD
+    title: Status bar session indicator with auth prompt on expiry
+  - id: JVSC-0004-C8
+    title: Webview form editor for item add and edit
+  - id: JVSC-0007-95
+    title: VSIX pre-release distribution via GitHub Releases
+  tasks:
+  - id: JVSC-0029-66
+    title: The board loses the columns' scroll position on a refresh
