@@ -3,3 +3,4 @@
 2026-09-20T02:11:20.653Z JVSC-0005-FD item.status_changed "review -> closed" [horst.schwarz@joydev.com]
 2026-09-20T02:11:27.501Z JVSC-0004-C8 item.status_changed "review -> closed" [horst.schwarz@joydev.com]
 2026-09-20T02:11:31.364Z JVSC-0007-95 item.status_changed "review -> closed" [horst.schwarz@joydev.com]
+2026-09-20T10:26:40.663Z release guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
