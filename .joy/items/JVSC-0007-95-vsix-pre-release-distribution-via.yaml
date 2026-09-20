@@ -1,7 +1,7 @@
 id: JVSC-0007-95
 title: VSIX pre-release distribution via GitHub Releases
 type: story
-status: review
+status: closed
 priority: medium
 parent: JVSC-0001-D4
 assignees:
@@ -15,19 +15,8 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-16T01:20:05.616133811Z
-updated: 2026-05-16T02:22:35.293814080Z
-updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-history:
-- date: 2026-05-16T01:20:09.210461311Z
-  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-- date: 2026-05-16T02:13:26.599949024Z
-  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-- date: 2026-05-16T02:16:58.272453796Z
-  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-- date: 2026-05-16T02:21:03.553739846Z
-  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-- date: 2026-05-16T02:22:35.293814080Z
-  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+updated: 2026-09-20T02:11:31.356768168Z
+updated_by: horst.schwarz@joydev.com
 description: |-
   Make the extension installable for early testers before any marketplace publishing.
 
