@@ -73,7 +73,7 @@ package:
 
 # Local-only release: bump version files, record, commit, tag.
 # Follow with `just publish` once this succeeds.
-release bump="patch":
+release bump="patch" prerelease="":
     #!/usr/bin/env bash
     set -euo pipefail
     if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
@@ -95,8 +95,8 @@ release bump="patch":
         echo "Error: working tree is not clean."
         exit 1
     fi
-    joy release bump "{{bump}}"
-    joy release record "{{bump}}"
+    joy release bump "{{bump}}" "{{prerelease}}"
+    joy release record "{{bump}}" "{{prerelease}}"
     tag=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "unknown")
     echo "Tagged ${tag} locally. Run 'just publish' to ship."
 
