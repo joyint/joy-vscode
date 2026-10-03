@@ -1,3 +1,21 @@
+<p align="center">
+  <a href="https://joyint.com/joy/"><img src="docs/assets/banner.png" alt="Joy for VS Code. Your Joy backlog, right inside the editor." width="100%"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/joyint/joy-vscode/releases/latest"><img src="https://img.shields.io/github/v/release/joyint/joy-vscode?color=12b9a8&label=release" alt="Latest release"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=joyint.joy-vscode"><img src="https://img.shields.io/badge/VS%20Code-Marketplace-12b9a8" alt="VS Code Marketplace"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-12b9a8" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://joyint.com/joy/">Website</a> ·
+  <a href="https://joyint.com/joy/docs/">Docs</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#github-copilot-integration">Copilot</a>
+</p>
+
 # Joy for VS Code
 
 **Your Joy backlog, right inside the editor.**
@@ -6,7 +24,7 @@ A VS Code extension that surfaces the [Joy](https://github.com/joyint/joy) backl
 
 ## Install
 
-**From the Marketplace**: open the Extensions view, search for **Joy**, and install `joyint.joy-vscode`. Also on the [Open VSX Registry](https://open-vsx.org/extension/joyint/joy-vscode) for VSCodium, Cursor, and other Open VSX editors.
+**From the Marketplace**: open the Extensions view, search for **Joy**, and install [`joyint.joy-vscode`](https://marketplace.visualstudio.com/items?itemName=joyint.joy-vscode).
 
 **From a VSIX**: grab it from the [latest GitHub release](https://github.com/joyint/joy-vscode/releases/latest) and install it one of two ways:
 
@@ -32,7 +50,7 @@ On first activation the extension auto-discovers `joy` via PATH, your login shel
 - **Item detail form**, in the secondary side bar by default: edit title, type, priority, effort, milestone, and description; add and remove parent, assignees, and dependencies; trigger lifecycle verbs; read and add comments.
 - **Board** with status columns and a Mine filter: drag cards between columns to change status, click a card to open it, filter by id or title, and sort by updated, created, id, title, effort, priority, or type.
 - **Editor links**: Joy item ids (`ACRONYM-XXXX`) in code, Markdown, or commit messages become links that open the item, with a hover showing its title and status.
-- **GitHub Copilot integration**: the **Joy: Init Copilot** command teaches Copilot the Joy workflow and adds a `/joy` prompt to Copilot Chat — see [GitHub Copilot integration](#github-copilot-integration).
+- **GitHub Copilot integration**: the **Joy: Init Copilot** command teaches Copilot the Joy workflow and adds a `/joy` prompt to Copilot Chat, see [GitHub Copilot integration](#github-copilot-integration).
 - **Authentication built in**: a modal passphrase prompt (with reveal toggle) appears when joy requires auth; the failed action retries automatically after login.
 - **Live refresh** on changes under `.joy/items/` (debounced) so tree, detail, and board stay in sync with terminal use, `git pull`, or AI edits.
 - **Compact status bar entry**: check when ready, key when unauthenticated, warning when the CLI is missing or too old - details in the tooltip.
@@ -44,7 +62,7 @@ Run **Joy: Init Copilot** from the Command Palette to wire Copilot into this rep
 
 - writes `.github/copilot-instructions.md`, so Copilot Chat knows to drive the backlog through the `joy` CLI instead of reading or editing `.joy/` files directly;
 - writes the Joy agents to `.github/agents/`, which Copilot Chat and the Copilot CLI both read;
-- adds the **`/joy`** skill (`.github/skills/joy/SKILL.md`) — type `/joy` in Copilot Chat to get the Joy-aware assistant. This replaced a prompt file under `.github/prompts/`, which GitHub has deprecated and the Copilot CLI never read at all; an older setup is migrated on the next run;
+- adds the **`/joy`** skill (`.github/skills/joy/SKILL.md`): type `/joy` in Copilot Chat to get the Joy-aware assistant. This replaced a prompt file under `.github/prompts/`, which GitHub has deprecated and the Copilot CLI never read at all; an older setup is migrated on the next run;
 - registers the `ai:copilot@joy` member so Copilot's commits are attributed.
 
 You do not need this command to get the files. `joy ai init` in a terminal finds Copilot under the `copilot` command, under `gh copilot`, and in a VS Code-family editor even when neither is installed, because Copilot Chat is built into VS Code and reads the same files. The command is here so you never have to leave the editor, and so the passphrase prompt is a proper dialog.
@@ -53,13 +71,14 @@ Pick a capable Copilot model (for example a full GPT-5 or a Claude model). Small
 
 ## Documentation
 
+- [Joy documentation](https://joyint.com/joy/docs/) - the CLI this extension drives, on joyint.com
 - [Vision](VISION.md) - what's in and out of scope
 - [Architecture](ARCHITECTURE.md) - how the extension talks to the joy CLI
 - [Contributing](CONTRIBUTING.md) - coding conventions, development setup, commit messages
 
 ## Status
 
-Published to the VS Code Marketplace and Open VSX. Each `vX.Y.Z` tag (pushed by `just publish` / `joy release publish`) drives a GitHub release plus the Marketplace and Open VSX uploads from CI. Tracked under [JVSC-0001-D4](https://github.com/joyint/joy-vscode) and the milestones beneath it.
+Published to the VS Code Marketplace. Each `vX.Y.Z` tag (pushed by `just publish` / `joy release publish`) drives a GitHub release plus the Marketplace upload from CI. Tracked under [JVSC-0001-D4](https://github.com/joyint/joy-vscode) and the milestones beneath it.
 
 ## License
 
