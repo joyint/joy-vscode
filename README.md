@@ -24,7 +24,7 @@ A VS Code extension that surfaces the [Joy](https://github.com/joyint/joy) backl
 
 ## Install
 
-**From the Marketplace**: open the Extensions view, search for **Joy**, and install [`joyint.joy-vscode`](https://marketplace.visualstudio.com/items?itemName=joyint.joy-vscode). Also on the [Open VSX Registry](https://open-vsx.org/extension/joyint/joy-vscode) for VSCodium, Cursor, and other Open VSX editors.
+**From the Marketplace**: open the Extensions view, search for **Joy**, and install [`joyint.joy-vscode`](https://marketplace.visualstudio.com/items?itemName=joyint.joy-vscode).
 
 **From a VSIX**: grab it from the [latest GitHub release](https://github.com/joyint/joy-vscode/releases/latest) and install it one of two ways:
 
@@ -78,7 +78,7 @@ Pick a capable Copilot model (for example a full GPT-5 or a Claude model). Small
 
 ## Status
 
-Published to the VS Code Marketplace and Open VSX. Each `vX.Y.Z` tag (pushed by `just publish` / `joy release publish`) drives a GitHub release plus the Marketplace and Open VSX uploads from CI. Tracked under [JVSC-0001-D4](https://github.com/joyint/joy-vscode) and the milestones beneath it.
+Published to the VS Code Marketplace. Each `vX.Y.Z` tag (pushed by `just publish` / `joy release publish`) drives a GitHub release plus the Marketplace upload from CI. Tracked under [JVSC-0001-D4](https://github.com/joyint/joy-vscode) and the milestones beneath it.
 
 ## License
 
