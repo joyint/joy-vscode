@@ -11,6 +11,7 @@ import { BoardPanel } from './boardView';
 import { ItemDetailViewProvider } from './itemDetailView';
 import { JoyClient, JoyError, JoySessionExpiredError } from './joyClient';
 import { JoyHoverProvider, JoyLinkProvider } from './joyLinkProvider';
+import { aiMembers } from './members';
 import { JoyResolver, buildCommonJoyPaths, type JoyResolution } from './joyResolver';
 
 const execFileAsync = promisify(execFile);
@@ -245,7 +246,7 @@ function registerCommands(
 
   sub('joy.initCopilot', async () => {
     // `joy ai init --tool copilot` writes .github/copilot-instructions.md (which
-    // VS Code Copilot reads automatically), registers the ai:copilot@joy member,
+    // VS Code Copilot reads automatically), registers the copilot member,
     // and adds the gitignore entries. Registering the member is attested with
     // the operator passphrase, so prompt for it and feed it on stdin.
     const passphrase = await vscode.window.showInputBox({
@@ -284,16 +285,14 @@ function registerCommands(
       const project = await client.runJson<{ data: { members?: Record<string, unknown> } }>([
         'project',
       ]);
-      members = Object.keys(project.data.members ?? {})
-        .filter((id) => id.startsWith('ai:'))
-        .sort();
+      members = aiMembers(Object.keys(project.data.members ?? {}));
     } catch (err) {
       reportError(err);
       return;
     }
     if (members.length === 0) {
       vscode.window.showWarningMessage(
-        'Joy: no AI members in this project. Add one with "Joy: Init Copilot" or `joy project member add ai:<name>@joy`.',
+        'Joy: no AI members in this project. Add one with "Joy: Init Copilot" or `joy project member add <name>`.',
       );
       return;
     }
