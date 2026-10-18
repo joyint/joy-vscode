@@ -1,0 +1,20 @@
+type: ai
+identity:
+  copilot: {}
+adapter: copilot
+capabilities:
+- conceive
+- plan
+- design
+- implement
+- test
+- review
+- document
+- create
+- assign
+level: autonomous
+granted:
+  by: horst.schwarz@joydev.com
+  at: 2026-10-18T21:05:52.166663802Z
+  signature: b4918757a7f3cda61aceb400bbc051c5a2228820e22d5cc151a524628991433e2853c5bbb33fcec2e144dbe8e38169a725b4fb08e94e05ef3103bab09c7d3d0e
+updated: 2026-10-18T21:05:52.167507812Z

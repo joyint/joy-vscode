@@ -1,0 +1,14 @@
+type: person
+identity:
+  horst.schwarz@joydev.com:
+    verify_key: 84004b374c74d2c4a6e1875cdd165714dc80359bc3582a0bf2969f047ca1d5d9
+    kdf_nonce: e107ba864d9f08bacbbb8a31c00560ec8ad6b2093211f1454846adbc7f7898b8
+    seed_wrap: fc5aa60ceba96e531d239de4448ff35a2bca6b5fa1573360d9acee1e87b7297e8dc6aa94909ceace42da97c6122ca2ab4b6eeef2cbacf1a7a80b37b8
+    seed_wrap_recovery: 1d37521c044497e6f17f5a13e964613f8919af293b3d3b33c8d835a60754c998e7b942532ec34ca27ae9359fd30642be80f696223d709577b90adb30
+capabilities: all
+ai_delegations:
+  claude:
+    delegation_verifier: 0e5e8c7b53567274b0fb80d0ac11400013d54c78951f1e30c300749bf96f686f
+    delegation_salt: 7bd5bf9a4b89e6c637e989c14affe93fccb32f5fa8da3c0b929fc0dec51d7cd9
+    created: 2026-05-15T10:15:02.037018859Z
+updated: 2026-10-18T21:05:52.167507812Z

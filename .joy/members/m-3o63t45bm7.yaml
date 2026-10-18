@@ -1,0 +1,20 @@
+type: ai
+identity:
+  vibe: {}
+adapter: vibe
+capabilities:
+- conceive
+- plan
+- design
+- implement
+- test
+- review
+- document
+- create
+- assign
+level: autonomous
+granted:
+  by: horst.schwarz@joydev.com
+  at: 2026-10-18T21:05:52.166717291Z
+  signature: 3318d31afea5bf289f055ac11d4433eb3aff111b1742f9351fd8933073b0af46115b22a8476558950331b7bc8ae65fc5605a631b04d8cd477866ad840a153904
+updated: 2026-10-18T21:05:52.167507812Z

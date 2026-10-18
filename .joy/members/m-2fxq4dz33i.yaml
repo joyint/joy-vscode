@@ -1,0 +1,21 @@
+type: ai
+identity:
+  claude:
+    verify_key: 0e5e8c7b53567274b0fb80d0ac11400013d54c78951f1e30c300749bf96f686f
+adapter: claude
+capabilities:
+- conceive
+- plan
+- design
+- implement
+- test
+- review
+- document
+- create
+- assign
+level: autonomous
+granted:
+  by: horst.schwarz@joydev.com
+  at: 2026-10-18T21:05:52.166612267Z
+  signature: 7c3673bbe0342b62c30d8ac882f2176886615c1cba580996ed7f9b9e70a69fa72d7c990a53ec945b3bb767b5cce09279d4c0b55f902efaa4f51d876302a6cf0d
+updated: 2026-10-18T21:05:52.167507812Z
