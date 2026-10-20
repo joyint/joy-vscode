@@ -1,7 +1,7 @@
 id: JVSC-002A-7E
 title: Board and backlog fail with stdout maxBuffer length exceeded on a large project
 type: bug
-status: review
+status: closed
 priority: high
 assignees:
 - member: claude
@@ -10,6 +10,6 @@ capabilities:
 - review
 created_by: claude delegated-by:horst.schwarz@joydev.com
 created: 2026-10-20T09:56:42.418619821Z
-updated: 2026-10-20T09:56:51.053778026Z
-updated_by: claude delegated-by:horst.schwarz@joydev.com
+updated: 2026-10-20T17:16:13.157365330Z
+updated_by: horst.schwarz@joydev.com
 description: 'Customers see "stdout maxBuffer length exceeded" on the board and an empty backlog. The plugin reads joy through Node execFile, whose default buffer is 1 MiB; joy --json ls --all carries every item with description and comments and is larger in a long-lived project (JAPP: 1.43 MB for 863 items, 73 % comments and descriptions). Fix: no cap on what joy prints (joyClient.ts). Repro: unit test with 3 MB of stdout, e2e/board.spec.ts with a project whose ls is over 1 MiB; both red without the fix. A slimmer joy ls (no comments) is a separate joy question.'

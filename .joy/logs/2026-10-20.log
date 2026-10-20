@@ -13,3 +13,4 @@
 2026-10-20T09:56:51.146Z JVSC-002D-EA item.status_changed "new -> in-progress" [claude delegated-by:horst.schwarz@joydev.com]
 2026-10-20T09:56:51.162Z JVSC-002D-EA item.status_changed "in-progress -> review" [claude delegated-by:horst.schwarz@joydev.com]
 2026-10-20T10:26:10.099Z JVSC-002B-7A comment.added [claude delegated-by:horst.schwarz@joydev.com]
+2026-10-20T17:16:13.260Z JVSC-002A-7E item.status_changed "review -> closed" [horst.schwarz@joydev.com]
