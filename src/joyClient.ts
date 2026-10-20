@@ -109,7 +109,10 @@ export class JoyClient {
     const cwd = options.cwd ?? this.options.resolveCwd();
     const timeout = options.timeoutMs ?? 15_000;
 
-    const pending = execFileAsync(executable, [...args], { cwd, timeout });
+    // No cap on what joy prints: `ls --all` carries every item with its
+    // description and comments, and Node's default of 1 MiB cut a large
+    // project off with "stdout maxBuffer length exceeded".
+    const pending = execFileAsync(executable, [...args], { cwd, timeout, maxBuffer: Infinity });
     if (options.stdin !== undefined) {
       pending.child.stdin?.write(options.stdin);
       pending.child.stdin?.end();
