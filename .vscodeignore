@@ -26,3 +26,6 @@ CONTRIBUTING.md
 **/*.map
 **/*.ts
 !dist/extension.js
+e2e/**
+playwright.config.mjs
+test-results/**

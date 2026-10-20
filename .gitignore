@@ -191,3 +191,6 @@ AGENTS.md
 .github/prompts/
 ### joy:end
 .DS_Store
+
+# Playwright output of the e2e specs
+test-results/

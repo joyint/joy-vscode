@@ -67,6 +67,12 @@ build:
 test-integration:
     npm run test:integration
 
+# Run the e2e specs: the plugin in a real VS Code against projects joy
+# builds for the run (JOY_BIN picks the joy, default the one on PATH; on a
+# machine without a display run it under xvfb-run).
+e2e:
+    npm run test:e2e
+
 # Package the VSIX into package/ (bundle runs via the vsce prepublish hook).
 package:
     npm run package
