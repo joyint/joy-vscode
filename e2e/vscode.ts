@@ -95,6 +95,8 @@ export async function launch(project: Project): Promise<{ app: ElectronApplicati
       'workbench.startupEditor': 'none',
       'update.mode': 'none',
       'telemetry.telemetryLevel': 'off',
+      // dialogs drawn in the window, where the specs can answer them
+      'window.dialogStyle': 'custom',
     }),
   );
   const app = await electron.launch({
@@ -123,56 +125,117 @@ export async function launch(project: Project): Promise<{ app: ElectronApplicati
 }
 
 export const BACKLOG = '.pane:has(.pane-header[aria-label*="Backlog"])';
+/** The backlog's rows, without the parents VS Code's sticky scroll repeats over the top. */
+export const ROWS = `${BACKLOG} .monaco-list-rows > .monaco-list-row`;
 
 /** Show the Joy view; its activity bar icon toggles, so click only while hidden. */
 export async function showBacklog(page: Page): Promise<void> {
   if (!(await page.isVisible(`${BACKLOG} .monaco-list`))) {
     await page.click('.activitybar a[aria-label^="Joy"]');
   }
-  await page.waitForSelector(`${BACKLOG} .monaco-list-row`);
+  await page.waitForSelector(ROWS);
 }
 
 export async function runCommand(page: Page, title: string): Promise<void> {
   await page.keyboard.press('Control+Shift+P');
   await page.keyboard.type(title);
-  await page.waitForSelector(`.quick-input-list .monaco-list-row[aria-label*="${title}"]`);
-  await page.keyboard.press('Enter');
+  // click the command itself: Enter would take whatever the fuzzy match put first
+  const rows = page.locator('.quick-input-list .monaco-list-row');
+  await expect(rows.first()).toBeVisible();
+  for (let tries = 0; tries < 50; tries++) {
+    for (const row of await rows.all()) {
+      const label = (await row.getAttribute('aria-label')) ?? '';
+      if (label === title || label.startsWith(`${title},`)) {
+        await row.click();
+        return;
+      }
+    }
+    await page.waitForTimeout(100);
+  }
+  throw new Error(`no command ${title}`);
 }
 
 export interface BacklogState {
-  /** The row at the top of the view, as the reader sees it. */
-  topRow?: string;
+  /** The id of the row at the top of the view, as the reader sees it. */
+  topId?: string;
   /** How far the selected row sits below the top of the view, in pixels. */
   selectedAt?: number;
-  selected?: string;
+  selectedId?: string;
   message?: string;
 }
 
+const ID = /\b([A-Z]{2,5}-[0-9A-F]{4}-[0-9A-F]{2})\b/;
+
 /** What the reader sees of the backlog: the top row, the selection and where it sits, the message. */
 export async function backlogState(page: Page): Promise<BacklogState> {
-  return page.evaluate((pane) => {
-    const p = document.querySelector(pane)!;
-    const list = p.querySelector('.monaco-list');
-    const view = list?.getBoundingClientRect();
-    const rows = [...p.querySelectorAll('.monaco-list-row')];
-    const top = view && rows.find((r) => r.getBoundingClientRect().bottom > view.top + 1);
-    const selected = rows.find((r) => r.classList.contains('selected'));
-    return {
-      topRow: top?.getAttribute('aria-label') ?? undefined,
-      selectedAt: selected && view ? Math.round(selected.getBoundingClientRect().top - view.top) : undefined,
-      selected: selected?.getAttribute('aria-label') ?? undefined,
-      message: p.querySelector('.message')?.textContent?.trim() || undefined,
-    };
-  }, BACKLOG);
+  return page.evaluate(
+    ([pane, id]) => {
+      const p = document.querySelector(pane)!;
+      const view = p.querySelector('.monaco-list')?.getBoundingClientRect();
+      const rows = [...p.querySelectorAll('.monaco-list-rows > .monaco-list-row')];
+      const idOf = (r?: Element) => r?.getAttribute('aria-label')?.match(new RegExp(id))?.[1];
+      const top = view && rows.find((r) => r.getBoundingClientRect().bottom > view.top + 1);
+      const selected = rows.find((r) => r.classList.contains('selected'));
+      return {
+        topId: idOf(top),
+        selectedAt: selected && view ? Math.round(selected.getBoundingClientRect().top - view.top) : undefined,
+        selectedId: idOf(selected),
+        message: p.querySelector('.message')?.textContent?.trim() || undefined,
+      };
+    },
+    [BACKLOG, ID.source],
+  );
 }
 
-/** Scroll the backlog well down and select a row in the middle of the view. */
-export async function scrollAndSelect(page: Page): Promise<BacklogState> {
+/** Where the row of an item sits below the top of the view, in pixels; undefined when it is not drawn. */
+export async function rowOffset(page: Page, itemId: string): Promise<number | undefined> {
+  return page.evaluate(
+    ([pane, itemId]) => {
+      const p = document.querySelector(pane)!;
+      const view = p.querySelector('.monaco-list')!.getBoundingClientRect();
+      const row = [...p.querySelectorAll('.monaco-list-rows > .monaco-list-row')].find((r) =>
+        (r.getAttribute('aria-label') ?? '').includes(itemId),
+      );
+      return row ? Math.round(row.getBoundingClientRect().top - view.top) : undefined;
+    },
+    [BACKLOG, itemId],
+  );
+}
+
+/** How many drawn backlog rows show the item. */
+export async function rowsOf(page: Page, itemId: string): Promise<number> {
+  return page.locator(`${ROWS}[aria-label*="${itemId}"]`).count();
+}
+
+/** One row of the backlog, in pixels. */
+export const ROW = 22;
+
+/**
+ * Scroll the backlog until the row titled `anchor` is at the top of the view
+ * and select the row under the middle. Ctrl+Down (VS Code's list.scrollDown)
+ * moves the list by exactly one row, so every start is alike; the mouse
+ * wheel scrolls by varying amounts.
+ */
+export async function scrollAndSelect(page: Page, anchor = 'Story 9'): Promise<BacklogState> {
   const box = (await page.locator(`${BACKLOG} .monaco-list`).boundingBox())!;
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  for (let i = 0; i < 6; i++) {
-    await page.mouse.wheel(0, 400);
+  // keys go to the list (a first open of the item detail takes the focus)
+  await page.locator(`${BACKLOG} .monaco-list`).focus();
+  await page.keyboard.press('Home');
+  const anchorAt = () =>
+    page.evaluate(
+      ([rows, anchor]) => {
+        const view = document.querySelector(rows.split(' .monaco-list-rows')[0] + ' .monaco-list')!.getBoundingClientRect();
+        const row = [...document.querySelectorAll(rows)].find((r) =>
+          (r.getAttribute('aria-label') ?? '').startsWith(`${anchor} `),
+        );
+        return row ? row.getBoundingClientRect().top - view.top : Infinity;
+      },
+      [ROWS, anchor],
+    );
+  for (let i = 0; i < 400 && (await anchorAt()) > 0; i++) {
+    await page.keyboard.press('Control+ArrowDown');
   }
+  if ((await anchorAt()) > 0) throw new Error(`could not scroll ${anchor} to the top`);
   await settled(page);
   // the row under the middle of the view: a row cut off at an edge would be
   // scrolled fully into view by the click itself
@@ -186,7 +249,7 @@ async function settled(page: Page): Promise<BacklogState> {
   for (let i = 0; i < 50; i++) {
     await page.waitForTimeout(100);
     const now = await backlogState(page);
-    if (now.topRow === last.topRow && now.selectedAt === last.selectedAt) return now;
+    if (now.topId === last.topId && now.selectedAt === last.selectedAt) return now;
     last = now;
   }
   throw new Error('the backlog did not stop scrolling');

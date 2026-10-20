@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { BACKLOG, Project, backlogState, launch, runCommand, showBacklog, webviewFrame } from './vscode';
+import { ROWS, Project, backlogState, launch, runCommand, showBacklog, webviewFrame } from './vscode';
 
 // joy ls of a large project is more than Node's default 1 MiB buffer.
 test('board and backlog load a project whose joy ls is larger than 1 MiB', async () => {
@@ -12,7 +12,7 @@ test('board and backlog load a project whose joy ls is larger than 1 MiB', async
   try {
     await showBacklog(page);
     expect((await backlogState(page)).message).toBeUndefined();
-    expect(await page.locator(`${BACKLOG} .monaco-list-row`).count()).toBeGreaterThan(0);
+    expect(await page.locator(`${ROWS}`).count()).toBeGreaterThan(0);
 
     await runCommand(page, 'Joy: Open Board');
     const board = await webviewFrame(page, '#board .card');
