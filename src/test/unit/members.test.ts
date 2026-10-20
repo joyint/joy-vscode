@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import { aiMembers, isAiMember } from '../../members';
+import { aiMembers, isAiMember, memberLabel } from '../../members';
 
 describe('members', () => {
   it('tells an AI member from a person the way joy does', () => {
@@ -16,5 +16,13 @@ describe('members', () => {
       ['claude', 'vibe'],
     );
     assert.deepStrictEqual(aiMembers(['horst@example.com']), []);
+  });
+
+  it('says a delegation in words', () => {
+    assert.strictEqual(
+      memberLabel('claude delegated-by:horst@example.com'),
+      'claude delegated by horst@example.com',
+    );
+    assert.strictEqual(memberLabel('horst@example.com'), 'horst@example.com');
   });
 });

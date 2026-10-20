@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { buildEditArgs, type DetailEditField } from './itemDetail';
+import { buildEditArgs, sinceLine, type DetailEditField } from './itemDetail';
 import type { JoyClient } from './joyClient';
 import { STATUSES, moveArgs } from './status';
 import type {
@@ -100,6 +100,7 @@ export class ItemDetailViewProvider implements vscode.WebviewViewProvider {
       await this.view.webview.postMessage({
         type: 'item',
         item: shown.data,
+        since: sinceLine(shown.data.created, shown.data.created_by),
         milestones,
         members,
         items,
