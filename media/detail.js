@@ -32,6 +32,7 @@
     if (message.type === 'item') {
       render(
         message.item,
+        message.since,
         message.milestones,
         message.members,
         message.items,
@@ -64,10 +65,10 @@
     return typeof entry === 'string' ? entry : entry && entry.member ? entry.member : '';
   }
 
-  function render(item, milestones, members, items, statuses, canDelete) {
+  function render(item, since, milestones, members, items, statuses, canDelete) {
     app.className = '';
     const children = [
-      el('div', { className: 'item-id' }, text(item.id)),
+      renderHead(item, since),
       renderTitle(item),
       renderStatusControl(item, statuses),
       renderFields(item, milestones),
@@ -81,6 +82,20 @@
     }
     app.replaceChildren(...children);
     updateFooter(item);
+  }
+
+  // The id, then quietly since when and by whom the item exists, as the Joy
+  // app's item head shows it, so nobody scrolls to the footer for it.
+  function renderHead(item, since) {
+    const head = el(
+      'div',
+      { className: 'item-head' },
+      el('span', { className: 'item-id' }, text(item.id)),
+    );
+    if (since) {
+      head.append(el('span', { className: 'item-since', title: since }, text(since)));
+    }
+    return head;
   }
 
   function formatTimestamp(ts) {

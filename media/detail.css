@@ -34,11 +34,32 @@ body {
   padding-top: 12px;
 }
 
+.item-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
 .item-id {
+  flex: none;
   font-family: var(--vscode-editor-font-family);
   font-size: 0.85em;
   opacity: 0.7;
-  margin-top: 10px;
+}
+
+/* Since when and by whom: quiet beside the id and set apart from it, in
+   the panel's font, smaller and in a faint description ink, one line cut
+   with an ellipsis where the panel runs out of room. */
+.item-since {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.75em;
+  color: var(--vscode-descriptionForeground);
+  opacity: 0.45;
 }
 
 .title-row {

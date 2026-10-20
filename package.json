@@ -8,8 +8,9 @@
   "private": true,
   "engines": {
     "vscode": "^1.106.0",
-    "node": ">=20.19"
+    "node": ">=24"
   },
+  "packageManager": "npm@11.6.2",
   "categories": [
     "Other"
   ],
@@ -243,23 +244,30 @@
     "lint": "eslint src",
     "test:unit": "tsc -p tsconfig.test.json && mocha --recursive out-test/test/unit",
     "test:integration": "tsc -p tsconfig.test.json && vscode-test",
+    "test:e2e": "node esbuild.config.mjs && playwright test",
     "test": "npm run test:unit && npm run test:integration",
     "check": "npm run typecheck && npm run lint && npm run test:unit",
     "package": "vsce package --no-dependencies --out package"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^20.16.10",
-    "@types/vscode": "^1.92.0",
-    "@typescript-eslint/eslint-plugin": "^8.63.0",
-    "@typescript-eslint/parser": "^8.63.0",
+    "@types/node": "^22.20.5",
+    "@types/vscode": "~1.106.1",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
     "@vscode/test-cli": "^0.0.15",
-    "@vscode/test-electron": "^3.0.0",
-    "@vscode/vsce": "^3.9.2",
-    "esbuild": "^0.28.1",
-    "eslint": "^10.6.0",
-    "mocha": "^11.7.6",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.13.0",
+    "mocha": "^12.0.3",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.63.0"
+    "typescript-eslint": "^8.72.0"
+  },
+  "overrides": {
+    "@vscode/test-cli": {
+      "mocha": "$mocha"
+    }
   }
 }

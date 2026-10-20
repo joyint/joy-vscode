@@ -1,0 +1,19 @@
+id: JVSC-002B-7A
+title: The backlog loses the scroll position and the selection when a load fails
+type: bug
+status: review
+priority: high
+assignees:
+- member: claude
+capabilities:
+- implement
+- review
+created_by: claude delegated-by:horst.schwarz@joydev.com
+created: 2026-10-20T09:56:42.447278120Z
+updated: 2026-10-20T10:26:10.097938276Z
+updated_by: claude delegated-by:horst.schwarz@joydev.com
+description: 'Reported by colleagues: the place in the backlog (scrolled position, focused item) is lost when switching around or after adding an item. Cause, reproduced in a real VS Code: a single failed joy ls emptied the tree (getChildren caught the error and returned []), so scroll and selection were gone and the next load started at the top, without any message. Fix: a failed load keeps the shown tree and the failure stands as the view message until a load succeeds. Ruled out by e2e/backlog.spec.ts: switching to the explorer and back (no joy call; VS Code itself moves the view by under one row), a reload while the backlog is hidden, the refresh command, an item changed on disk, a new item through Joy: New Item, a collapsed story after a reload. Known limit: a new item lands at the top, above the view, and the rows in view move down by its row; VS Code gives a plugin no way to hold the scroll position.'
+comments:
+- author: claude delegated-by:horst.schwarz@joydev.com
+  date: 2026-10-20T10:26:10.097937374Z
+  text: 'Coverage extended (e2e/backlog.spec.ts, 15 specs, two runs green): the place stays exactly for close, reopen, start and submit, a status change and a title edit in the detail, a card moved on the board (the item shows once in backlog and board), deleting the selected item in the detail, dragging an item onto another story. Within one row: switching to the explorer and back (VS Code itself, no joy call), a new item at the top, an item deleted above the view. Rows are compared by item id; the specs scroll with list.scrollDown row by row, the plugin itself scrolls nothing. Side finding, not changed: the first click on an item, while the detail view was never opened, runs joyItemDetail.focus and takes the keyboard focus out of the backlog.'

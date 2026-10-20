@@ -41,6 +41,12 @@ describe('JoyClient', () => {
     assert.equal(result.stdout.trim(), 'joy 0.0.0');
   });
 
+  it('reads stdout past the 1 MiB of Node\'s default buffer', async () => {
+    const fake = writeFakeJoy(tmp, '#!/usr/bin/env bash\nhead -c 3000000 /dev/zero | tr "\\0" x\n');
+    const result = await makeClient(fake).run(['ls', '--all']);
+    assert.equal(result.stdout.length, 3_000_000);
+  });
+
   it('maps stderr containing "must authenticate" to JoySessionExpiredError', async () => {
     const fake = writeFakeJoy(
       tmp,
