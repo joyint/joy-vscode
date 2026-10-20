@@ -24,8 +24,12 @@ const TYPE_ICONS: Record<JoyItemType, string> = {
 export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
   private readonly emitter = new vscode.EventEmitter<BacklogNode | undefined | void>();
   readonly onDidChangeTreeData = this.emitter.event;
+  private readonly loadErrorEmitter = new vscode.EventEmitter<string | undefined>();
+  /** The last load's failure, or undefined once a load succeeded again. */
+  readonly onDidChangeLoadError = this.loadErrorEmitter.event;
 
   private cachedRoots: BacklogNode[] | undefined;
+  private shownRoots: BacklogNode[] = [];
   private pendingLoad: Promise<BacklogNode[]> | undefined;
   private items: JoyItem[] = [];
   private order: BacklogOrder;
@@ -101,8 +105,14 @@ export class BacklogProvider implements vscode.TreeDataProvider<BacklogNode> {
       }
       try {
         this.cachedRoots = await this.pendingLoad;
-      } catch {
-        this.cachedRoots = [];
+        this.shownRoots = this.cachedRoots;
+        this.loadErrorEmitter.fire(undefined);
+      } catch (err) {
+        // A failed load keeps the tree that is shown: an empty tree threw
+        // away the reader's scroll position and selection, and the next
+        // load started again at the top.
+        this.cachedRoots = this.shownRoots;
+        this.loadErrorEmitter.fire(err instanceof Error ? err.message : String(err));
       } finally {
         this.pendingLoad = undefined;
       }

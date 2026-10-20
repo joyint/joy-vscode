@@ -65,6 +65,11 @@ export function activate(context: vscode.ExtensionContext): void {
     canSelectMany: true,
     dragAndDropController: new BacklogDragAndDropController(client, provider, reportError),
   });
+  context.subscriptions.push(
+    provider.onDidChangeLoadError((message) => {
+      treeView.message = message ? `Joy: ${message}` : undefined;
+    }),
+  );
 
   const detailProvider = new ItemDetailViewProvider(
     context.extensionUri,
