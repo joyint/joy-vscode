@@ -1,0 +1,14 @@
+id: JVSC-002D-EA
+title: 'Dependency pass: Node 24, no install warnings, no audit findings'
+type: task
+status: review
+priority: medium
+assignees:
+- member: claude
+capabilities:
+- implement
+created_by: claude delegated-by:horst.schwarz@joydev.com
+created: 2026-10-20T09:56:42.482043311Z
+updated: 2026-10-20T09:56:51.160579856Z
+updated_by: claude delegated-by:horst.schwarz@joydev.com
+description: 'All dev dependencies to current versions (typescript-eslint 8.72, eslint 10.13, esbuild 0.28.2, mocha 12, test-electron 3.1, vsce 4, Playwright 1.64); @types/vscode follows engines.vscode 1.106, @types/node the extension host Node 22, typescript stays 6.0 (typescript-eslint caps it). Node 24 pinned as in the app (.nvmrc, packageManager npm@11.6.2). Override hands @vscode/test-cli mocha 12. npm audit 0 (16 before), no npm warnings. The plugin has no runtime dependencies: esbuild bundles src, vsce packages with --no-dependencies.'

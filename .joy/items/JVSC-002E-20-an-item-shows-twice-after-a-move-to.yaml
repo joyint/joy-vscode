@@ -1,0 +1,13 @@
+id: JVSC-002E-20
+title: An item shows twice after a move to deferred
+type: bug
+status: new
+priority: medium
+capabilities:
+- implement
+- review
+created_by: claude delegated-by:horst.schwarz@joydev.com
+created: 2026-10-20T09:56:42.499534346Z
+updated: 2026-10-20T09:56:42.499534346Z
+updated_by: claude delegated-by:horst.schwarz@joydev.com
+description: 'Reported by a customer (attachment not available): after a transition to deferred the item stays twice in the VS Code plugin. joy is ruled out: item files are written atomically under a name that a status change does not touch, and joy ls returns no duplicate ids. The board redraws all columns from one list on every load. Suspicion, not proven: after a move the backlog loads twice (right away and 250 ms later through the file watcher), and getChildren in backlogProvider.ts clears the pending load in its finally even when a newer refresh started its own load, so two root loads can overlap. The e2e run with two reloads close together showed no duplicate. Needs the customer view (board or backlog) and an e2e repro before any change.'
