@@ -1,0 +1,22 @@
+version: v0.4.0
+date: 2026-10-20
+previous: v0.3.0
+contributors:
+- id: claude delegated-by:horst.schwarz@joydev.com
+  events: 13
+  items: 4
+- id: horst.schwarz@joydev.com
+  events: 4
+  items: 4
+items:
+  stories:
+  - id: JVSC-002C-E9
+    title: The item head says since when and by whom the item exists
+  tasks:
+  - id: JVSC-002D-EA
+    title: 'Dependency pass: Node 24, no install warnings, no audit findings'
+  bugs:
+  - id: JVSC-002A-7E
+    title: Board and backlog fail with stdout maxBuffer length exceeded on a large project
+  - id: JVSC-002B-7A
+    title: The backlog loses the scroll position and the selection when a load fails

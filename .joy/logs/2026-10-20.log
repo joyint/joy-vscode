@@ -18,3 +18,4 @@
 2026-10-20T17:16:14.778Z JVSC-002C-E9 item.status_changed "review -> closed" [horst.schwarz@joydev.com]
 2026-10-20T17:16:15.418Z JVSC-002D-EA item.status_changed "review -> closed" [horst.schwarz@joydev.com]
 2026-10-20T17:16:24.370Z JVSC-002E-20 item.status_changed "new -> open" [horst.schwarz@joydev.com]
+2026-10-20T17:17:17.298Z v0.4.0 release.created [horst.schwarz@joydev.com]
