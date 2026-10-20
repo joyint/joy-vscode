@@ -10,7 +10,7 @@
     "vscode": "^1.106.0",
     "node": ">=24"
   },
-  "packageManager": "npm@11.6.2",
+  "packageManager": "npm@11.19.1",
   "categories": [
     "Other"
   ],
@@ -269,5 +269,9 @@
     "@vscode/test-cli": {
       "mocha": "$mocha"
     }
+  },
+  "allowScripts": {
+    "@vscode/vsce-sign@2.1.0": true,
+    "esbuild@0.28.2": true
   }
 }
