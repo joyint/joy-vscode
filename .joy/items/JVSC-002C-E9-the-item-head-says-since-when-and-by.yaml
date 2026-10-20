@@ -1,7 +1,7 @@
 id: JVSC-002C-E9
 title: The item head says since when and by whom the item exists
 type: story
-status: review
+status: closed
 priority: medium
 assignees:
 - member: claude
@@ -11,6 +11,6 @@ capabilities:
 - review
 created_by: claude delegated-by:horst.schwarz@joydev.com
 created: 2026-10-20T09:56:42.464657715Z
-updated: 2026-10-20T09:56:51.127674073Z
-updated_by: claude delegated-by:horst.schwarz@joydev.com
+updated: 2026-10-20T17:16:14.757084179Z
+updated_by: horst.schwarz@joydev.com
 description: 'As in the Joy app item head: next to the id, quietly, "since 2026-06-30 by claude delegated by horst@example.com". Panel font (the id alone stays mono), smaller and in the faint description ink, centred on the id, one line cut with an ellipsis. Members show by address; the plugin resolves no names. Covered by the unit tests for sinceLine/memberLabel and e2e/backlog.spec.ts.'
